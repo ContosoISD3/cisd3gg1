@@ -1,0 +1,15 @@
+{
+	"$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+	"contentVersion": "1.0.0.0",
+	"parameters": {
+		"workspaceName": {
+			"value": "syn-oea-cisd3gg1"
+		},
+		"syn-oea-cisd3gg1-WorkspaceDefaultSqlServer_connectionString": {
+			"value": ""
+		},
+		"syn-oea-cisd3gg1-WorkspaceDefaultStorage_properties_typeProperties_url": {
+			"value": "https://stoeacisd3gg1.dfs.core.windows.net"
+		}
+	}
+}
