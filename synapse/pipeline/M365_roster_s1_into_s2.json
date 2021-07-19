@@ -42,7 +42,7 @@
 				"type": "ForEach",
 				"dependsOn": [
 					{
-						"activity": "Filter1",
+						"activity": "folders",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -51,7 +51,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"items": {
-						"value": "@activity('inbound_files').output.childitems",
+						"value": "@activity('folders').output.childitems",
 						"type": "Expression"
 					},
 					"isSequential": false,
@@ -125,7 +125,7 @@
 				}
 			},
 			{
-				"name": "Filter1",
+				"name": "folders",
 				"type": "Filter",
 				"dependsOn": [
 					{
