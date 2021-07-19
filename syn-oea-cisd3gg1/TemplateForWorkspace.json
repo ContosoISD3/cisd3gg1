@@ -7,6 +7,10 @@
 			"metadata": "Workspace name",
 			"defaultValue": "syn-oea-cisd3gg1"
 		},
+		"EdFi_Ods_Production_connectionString": {
+			"type": "secureString",
+			"metadata": "Secure string for 'connectionString' of 'EdFi_Ods_Production'"
+		},
 		"syn-oea-cisd3gg1-WorkspaceDefaultSqlServer_connectionString": {
 			"type": "secureString",
 			"metadata": "Secure string for 'connectionString' of 'syn-oea-cisd3gg1-WorkspaceDefaultSqlServer'"
@@ -216,7 +220,7 @@
 			"properties": {
 				"activities": [
 					{
-						"name": "Get Metadata1",
+						"name": "list_dir_content",
 						"type": "GetMetadata",
 						"dependsOn": [],
 						"policy": {
@@ -250,11 +254,11 @@
 						}
 					},
 					{
-						"name": "ForEach1",
+						"name": "For each file in inbound folder",
 						"type": "ForEach",
 						"dependsOn": [
 							{
-								"activity": "Get Metadata1",
+								"activity": "list_dir_content",
 								"dependencyConditions": [
 									"Succeeded"
 								]
@@ -263,7 +267,7 @@
 						"userProperties": [],
 						"typeProperties": {
 							"items": {
-								"value": "@activity('Get Metadata1').output.childitems",
+								"value": "@activity('list_dir_content').output.childitems",
 								"type": "Expression"
 							},
 							"isSequential": false,
@@ -374,6 +378,170 @@
 			},
 			"dependsOn": [
 				"[concat(variables('workspaceId'), '/pipelines/Clever_land_in_s1')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('workspaceName'), '/M365_roster_s1_into_s2')]",
+			"type": "Microsoft.Synapse/workspaces/pipelines",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"activities": [
+					{
+						"name": "inbound_files",
+						"description": "Gets the list of files in the inbound folder in stage1.",
+						"type": "GetMetadata",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"dataset": {
+								"referenceName": "data_lake_binary",
+								"type": "DatasetReference",
+								"parameters": {
+									"filesystem": "stage1",
+									"directory": "M365/inbound/roster"
+								}
+							},
+							"fieldList": [
+								"childItems"
+							],
+							"storeSettings": {
+								"type": "AzureBlobFSReadSettings",
+								"recursive": true,
+								"enablePartitionDiscovery": false
+							},
+							"formatSettings": {
+								"type": "BinaryReadSettings"
+							}
+						}
+					},
+					{
+						"name": "for each file in inbound folder",
+						"type": "ForEach",
+						"dependsOn": [
+							{
+								"activity": "folders",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"userProperties": [],
+						"typeProperties": {
+							"items": {
+								"value": "@activity('folders').output.childitems",
+								"type": "Expression"
+							},
+							"isSequential": false,
+							"activities": [
+								{
+									"name": "M365_s1_to_s2",
+									"type": "SynapseNotebook",
+									"dependsOn": [],
+									"policy": {
+										"timeout": "7.00:00:00",
+										"retry": 0,
+										"retryIntervalInSeconds": 30,
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"userProperties": [],
+									"typeProperties": {
+										"notebook": {
+											"referenceName": "M365_roster_v0p3_s1_to_s2",
+											"type": "NotebookReference"
+										},
+										"parameters": {
+											"storage_account": {
+												"value": "stoeacisd3gg1",
+												"type": "string"
+											},
+											"date_time_str": {
+												"value": {
+													"value": "@item().name",
+													"type": "Expression"
+												},
+												"type": "string"
+											}
+										},
+										"snapshot": true
+									}
+								},
+								{
+									"name": "Move_Files",
+									"type": "ExecutePipeline",
+									"dependsOn": [
+										{
+											"activity": "M365_s1_to_s2",
+											"dependencyConditions": [
+												"Succeeded"
+											]
+										}
+									],
+									"userProperties": [],
+									"typeProperties": {
+										"pipeline": {
+											"referenceName": "Move_files",
+											"type": "PipelineReference"
+										},
+										"waitOnCompletion": true,
+										"parameters": {
+											"source_filesystem": "stage1",
+											"source_path": {
+												"value": "M365/inbound/roster/@{item().name}",
+												"type": "Expression"
+											},
+											"destination_filesystem": "stage1",
+											"destination_path": {
+												"value": "M365/processed/roster/@{item().name}",
+												"type": "Expression"
+											}
+										}
+									}
+								}
+							]
+						}
+					},
+					{
+						"name": "folders",
+						"type": "Filter",
+						"dependsOn": [
+							{
+								"activity": "inbound_files",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"userProperties": [],
+						"typeProperties": {
+							"items": {
+								"value": "@activity('inbound_files').output.childitems",
+								"type": "Expression"
+							},
+							"condition": {
+								"value": "@equals(item().type(), 'Folder')",
+								"type": "Expression"
+							}
+						}
+					}
+				],
+				"folder": {
+					"name": "2) Process from s1 into s2"
+				},
+				"annotations": [],
+				"lastPublishTime": "2021-07-16T20:23:32Z"
+			},
+			"dependsOn": [
+				"[concat(variables('workspaceId'), '/datasets/data_lake_binary')]",
+				"[concat(variables('workspaceId'), '/notebooks/M365_roster_v0p3_s1_to_s2')]",
+				"[concat(variables('workspaceId'), '/pipelines/Move_files')]"
 			]
 		},
 		{
@@ -728,6 +896,62 @@
 			},
 			"dependsOn": [
 				"[concat(variables('workspaceId'), '/linkedServices/syn-oea-cisd3gg1-WorkspaceDefaultStorage')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('workspaceName'), '/data_lake_test1')]",
+			"type": "Microsoft.Synapse/workspaces/datasets",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "syn-oea-cisd3gg1-WorkspaceDefaultStorage",
+					"type": "LinkedServiceReference"
+				},
+				"parameters": {
+					"filesystem": {
+						"type": "string"
+					},
+					"directory": {
+						"type": "string"
+					}
+				},
+				"annotations": [],
+				"type": "Binary",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobFSLocation",
+						"folderPath": {
+							"value": "@dataset().directory",
+							"type": "Expression"
+						},
+						"fileSystem": {
+							"value": "@dataset().filesystem",
+							"type": "Expression"
+						}
+					}
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('workspaceId'), '/linkedServices/syn-oea-cisd3gg1-WorkspaceDefaultStorage')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('workspaceName'), '/EdFi_Ods_Production')]",
+			"type": "Microsoft.Synapse/workspaces/linkedServices",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"annotations": [],
+				"type": "AzureSqlDatabase",
+				"typeProperties": {
+					"connectionString": "[parameters('EdFi_Ods_Production_connectionString')]"
+				},
+				"connectVia": {
+					"referenceName": "AutoResolveIntegrationRuntime",
+					"type": "IntegrationRuntimeReference"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('workspaceId'), '/integrationRuntimes/AutoResolveIntegrationRuntime')]"
 			]
 		},
 		{
@@ -1129,6 +1353,297 @@
 						"attachments": null,
 						"outputs": [],
 						"execution_count": 2
+					}
+				]
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('workspaceName'), '/M365_roster_v0p3_s1_to_s2')]",
+			"type": "Microsoft.Synapse/workspaces/notebooks",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"folder": {
+					"name": "s1_to_s2"
+				},
+				"nbformat": 4,
+				"nbformat_minor": 2,
+				"bigDataPool": {
+					"referenceName": "spark2v3",
+					"type": "BigDataPoolReference"
+				},
+				"sessionProperties": {
+					"driverMemory": "28g",
+					"driverCores": 4,
+					"executorMemory": "28g",
+					"executorCores": 4,
+					"numExecutors": 2,
+					"conf": {
+						"spark.dynamicAllocation.enabled": "false",
+						"spark.dynamicAllocation.minExecutors": "2",
+						"spark.dynamicAllocation.maxExecutors": "2"
+					}
+				},
+				"metadata": {
+					"saveOutput": true,
+					"kernelspec": {
+						"name": "synapse_pyspark",
+						"display_name": "Synapse PySpark"
+					},
+					"language_info": {
+						"name": "python"
+					},
+					"a365ComputeOptions": {
+						"id": "/subscriptions/7b9a4896-4541-483f-bdc7-d8f4ec6be3ee/resourceGroups/rg-oea-CISD3GG1/providers/Microsoft.Synapse/workspaces/syn-oea-cisd3gg1/bigDataPools/spark2v3",
+						"name": "spark2v3",
+						"type": "Spark",
+						"endpoint": "https://syn-oea-cisd3gg1.dev.azuresynapse.net/livyApi/versions/2019-11-01-preview/sparkPools/spark2v3",
+						"auth": {
+							"type": "AAD",
+							"authResource": "https://dev.azuresynapse.net"
+						},
+						"sparkVersion": "3.0",
+						"nodeCount": 10,
+						"cores": 4,
+						"memory": 28,
+						"automaticScaleJobs": false
+					},
+					"sessionKeepAliveTimeout": 30
+				},
+				"cells": [
+					{
+						"cell_type": "markdown",
+						"metadata": {
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							}
+						},
+						"source": [
+							"# Process all roster data from stage1/M365/inbound/roster into stage 2 in delta lake format.\r\n",
+							"(overwrites previously loaded data with the latest snapshot data)"
+						]
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"tags": [
+								"parameters"
+							]
+						},
+						"source": [
+							"storage_account = 'stoeacisd3gg1'\r\n",
+							"date_time_str = ''"
+						],
+						"outputs": [],
+						"execution_count": 2
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"jupyter": {
+								"source_hidden": false,
+								"outputs_hidden": false
+							},
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							},
+							"collapsed": true
+						},
+						"source": [
+							"stage1 = 'abfss://stage1@' + storage_account + '.dfs.core.windows.net'\r\n",
+							"stage2 = 'abfss://stage2@' + storage_account + '.dfs.core.windows.net'\r\n",
+							"stage3 = 'abfss://stage3@' + storage_account + '.dfs.core.windows.net'"
+						],
+						"outputs": [],
+						"execution_count": null
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"jupyter": {
+								"source_hidden": false,
+								"outputs_hidden": false
+							},
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							},
+							"collapsed": true
+						},
+						"source": [
+							"from pyspark.sql.types import StructType, StructField, StringType, IntegerType, DoubleType, ArrayType, TimestampType, BooleanType\r\n",
+							"\r\n",
+							"#AadUser\r\n",
+							"schema = StructType([StructField('ObjectId', StringType()),StructField('AnchorId', StringType()),StructField('DisplayName', StringType()),StructField('FirstSeenDateTime', TimestampType()),StructField('GivenName', StringType()),StructField('LastSeenDateTime', TimestampType()),StructField('Mail', StringType()),StructField('MailNickname', StringType()),StructField('Role', StringType()),StructField('Surname', StringType()),StructField('UserPrincipalName', StringType()),StructField('StudentId', StringType()),StructField('TeacherId', StringType())])\r\n",
+							"df = spark.read.csv(stage1 + '/M365/roster/' + date_time_str + '/AadUser', header='false', schema=schema)\r\n",
+							"df.write.format('delta').mode('overwrite').save(stage2 + '/M365/AadUser')\r\n",
+							"#AadUserPersonMapping\r\n",
+							"schema = StructType([StructField('ObjectId', StringType()),StructField('FirstSeenDateTime', TimestampType()),StructField('LastSeenDateTime', TimestampType()),StructField('PersonId', StringType())])\r\n",
+							"df = spark.read.csv(stage1 + '/M365/roster/' + date_time_str + '/AadUserPersonMapping', header='false', schema=schema)\r\n",
+							"df.write.format('delta').mode('overwrite').save(stage2 + '/M365/AadUserPersonMapping')\r\n",
+							"#Course\r\n",
+							"schema = StructType([StructField('Id', StringType()),StructField('AcademicYearSessionId', StringType()),StructField('ExternalId', StringType()),StructField('FirstSeenDateTime', TimestampType()),StructField('IsActiveInSession', BooleanType()),StructField('LastSeenDateTime', TimestampType()),StructField('Name', StringType()),StructField('OrganizationId', StringType()),StructField('SourceSystemId', StringType()),StructField('Code', StringType())])\r\n",
+							"df = spark.read.csv(stage1 + '/M365/roster/' + date_time_str + '/Course', header='false', schema=schema)\r\n",
+							"df.write.format('delta').mode('overwrite').save(stage2 + '/M365/Course')\r\n",
+							"#CourseGradeLevel\r\n",
+							"schema = StructType([StructField('Id', StringType()),StructField('CourseId', StringType()),StructField('FirstSeenDateTime', TimestampType()),StructField('RefGradeLevelId', StringType())])\r\n",
+							"df = spark.read.csv(stage1 + '/M365/roster/' + date_time_str + '/CourseGradeLevel', header='false', schema=schema)\r\n",
+							"df.write.format('delta').mode('overwrite').save(stage2 + '/M365/CourseGradeLevel')\r\n",
+							"#CourseSubject\r\n",
+							"schema = StructType([StructField('Id', StringType()),StructField('CourseId', StringType()),StructField('FirstSeenDateTime', TimestampType()),StructField('RefAcademicSubjectId', StringType())])\r\n",
+							"df = spark.read.csv(stage1 + '/M365/roster/' + date_time_str + '/CourseSubject', header='false', schema=schema)\r\n",
+							"df.write.format('delta').mode('overwrite').save(stage2 + '/M365/CourseSubject')\r\n",
+							"#Enrollment\r\n",
+							"schema = StructType([StructField('Id', StringType()),StructField('ExternalId', StringType()),StructField('FirstSeenDateTime', TimestampType()),StructField('IsActiveInSession', BooleanType()),StructField('LastSeenDateTime', TimestampType()),StructField('PersonId', StringType()),StructField('RefSectionRoleId', StringType()),StructField('SectionId', StringType()),StructField('SourceSystemId', StringType()),StructField('EntryDate', StringType()),StructField('ExitDate', StringType()),StructField('IsPrimaryStaffForSection', BooleanType())])\r\n",
+							"df = spark.read.csv(stage1 + '/M365/roster/' + date_time_str + '/Enrollment', header='false', schema=schema)\r\n",
+							"df.write.format('delta').mode('overwrite').save(stage2 + '/M365/Enrollment')\r\n",
+							"#Organization\r\n",
+							"schema = StructType([StructField('Id', StringType()),StructField('ExternalId', StringType()),StructField('FirstSeenDateTime', TimestampType()),StructField('LastSeenDateTime', TimestampType()),StructField('Name', StringType()),StructField('RefOrganizationTypeId', StringType()),StructField('SourceSystemId', StringType()),StructField('Identifier', StringType()),StructField('ParentOrganizationId', StringType())])\r\n",
+							"df = spark.read.csv(stage1 + '/M365/roster/' + date_time_str + '/Organization', header='false', schema=schema)\r\n",
+							"df.write.format('delta').mode('overwrite').save(stage2 + '/M365/Organization')\r\n",
+							"#Person\r\n",
+							"schema = StructType([StructField('Id', StringType()),StructField('FirstSeenDateTime', TimestampType()),StructField('LastSeenDateTime', TimestampType()),StructField('GivenName', StringType()),StructField('MiddleName', StringType()),StructField('PreferredGivenName', StringType()),StructField('PreferredMiddleName', StringType()),StructField('PreferredSurname', StringType()),StructField('Surname', StringType())])\r\n",
+							"df = spark.read.csv(stage1 + '/M365/roster/' + date_time_str + '/Person', header='false', schema=schema)\r\n",
+							"df.write.format('delta').mode('overwrite').save(stage2 + '/M365/Person')\r\n",
+							"#PersonDemographic\r\n",
+							"schema = StructType([StructField('PersonId', StringType()),StructField('FirstSeenDateTime', TimestampType()),StructField('BirthCity', StringType()),StructField('BirthCountryCode', StringType()),StructField('BirthDate', StringType()),StructField('BirthState', StringType()),StructField('RefSexId', StringType())])\r\n",
+							"df = spark.read.csv(stage1 + '/M365/roster/' + date_time_str + '/PersonDemographic', header='false', schema=schema)\r\n",
+							"df.write.format('delta').mode('overwrite').save(stage2 + '/M365/PersonDemographic')\r\n",
+							"#PersonDemographicEthnicity\r\n",
+							"schema = StructType([StructField('Id', StringType()),StructField('FirstSeenDateTime', TimestampType()),StructField('PersonId', StringType()),StructField('RefEthnicityId', StringType())])\r\n",
+							"df = spark.read.csv(stage1 + '/M365/roster/' + date_time_str + '/PersonDemographicEthnicity', header='false', schema=schema)\r\n",
+							"df.write.format('delta').mode('overwrite').save(stage2 + '/M365/PersonDemographicEthnicity')\r\n",
+							"#PersonDemographicPersonFlag\r\n",
+							"schema = StructType([StructField('Id', StringType()),StructField('FirstSeenDateTime', TimestampType()),StructField('PersonId', StringType()),StructField('RefPersonFlagId', StringType())])\r\n",
+							"df = spark.read.csv(stage1 + '/M365/roster/' + date_time_str + '/PersonDemographicPersonFlag', header='false', schema=schema)\r\n",
+							"df.write.format('delta').mode('overwrite').save(stage2 + '/M365/PersonDemographicPersonFlag')\r\n",
+							"#PersonDemographicRace\r\n",
+							"schema = StructType([StructField('Id', StringType()),StructField('FirstSeenDateTime', TimestampType()),StructField('PersonId', StringType()),StructField('RefRaceId', StringType())])\r\n",
+							"df = spark.read.csv(stage1 + '/M365/roster/' + date_time_str + '/PersonDemographicRace', header='false', schema=schema)\r\n",
+							"df.write.format('delta').mode('overwrite').save(stage2 + '/M365/PersonDemographicRace')\r\n",
+							"#PersonEmailAddress\r\n",
+							"schema = StructType([StructField('Id', StringType()),StructField('EmailAddress', StringType()),StructField('FirstSeenDateTime', TimestampType()),StructField('PersonId', StringType()),StructField('PriorityOrder', IntegerType()),StructField('RefEmailAddressTypeId', StringType())])\r\n",
+							"df = spark.read.csv(stage1 + '/M365/roster/' + date_time_str + '/PersonEmailAddress', header='false', schema=schema)\r\n",
+							"df.write.format('delta').mode('overwrite').save(stage2 + '/M365/PersonEmailAddress')\r\n",
+							"#PersonIdentifier\r\n",
+							"schema = StructType([StructField('Id', StringType()),StructField('FirstSeenDateTime', TimestampType()),StructField('Identifier', StringType()),StructField('IsPresentInSource', BooleanType()),StructField('PersonId', StringType()),StructField('RefIdentifierTypeId', StringType()),StructField('SourceSystemId', StringType())])\r\n",
+							"df = spark.read.csv(stage1 + '/M365/roster/' + date_time_str + '/PersonIdentifier', header='false', schema=schema)\r\n",
+							"df.write.format('delta').mode('overwrite').save(stage2 + '/M365/PersonIdentifier')\r\n",
+							"#PersonOrganizationRole\r\n",
+							"schema = StructType([StructField('Id', StringType()),StructField('ExternalId', StringType()),StructField('FirstSeenDateTime', TimestampType()),StructField('IsActiveInSession', BooleanType()),StructField('LastSeenDateTime', TimestampType()),StructField('OrganizationId', StringType()),StructField('PersonId', StringType()),StructField('RefRoleId', StringType()),StructField('SessionId', StringType()),StructField('SourceSystemId', StringType()),StructField('IsPrimary', BooleanType()),StructField('RefGradeLevelId', StringType()),StructField('RoleEndDate', StringType()),StructField('RoleStartDate', StringType())])\r\n",
+							"df = spark.read.csv(stage1 + '/M365/roster/' + date_time_str + '/PersonOrganizationRole', header='false', schema=schema)\r\n",
+							"df.write.format('delta').mode('overwrite').save(stage2 + '/M365/PersonOrganizationRole')\r\n",
+							"#PersonPhoneNumber\r\n",
+							"schema = StructType([StructField('Id', StringType()),StructField('FirstSeenDateTime', TimestampType()),StructField('PersonId', StringType()),StructField('PhoneNumber', StringType()),StructField('PriorityOrder', IntegerType()),StructField('RefPhoneNumberTypeId', StringType())])\r\n",
+							"df = spark.read.csv(stage1 + '/M365/roster/' + date_time_str + '/PersonPhoneNumber', header='false', schema=schema)\r\n",
+							"df.write.format('delta').mode('overwrite').save(stage2 + '/M365/PersonPhoneNumber')\r\n",
+							"#PersonRelationship\r\n",
+							"schema = StructType([StructField('Id', StringType()),StructField('FirstSeenDateTime', TimestampType()),StructField('PersonId', StringType()),StructField('RefPersonRelationshipId', StringType()),StructField('RelatedPersonId', StringType())])\r\n",
+							"df = spark.read.csv(stage1 + '/M365/roster/' + date_time_str + '/PersonRelationship', header='false', schema=schema)\r\n",
+							"df.write.format('delta').mode('overwrite').save(stage2 + '/M365/PersonRelationship')\r\n",
+							"#RefDefinition\r\n",
+							"schema = StructType([StructField('Id', StringType()),StructField('Code', StringType()),StructField('FirstSeenDateTime', TimestampType()),StructField('LastSeenDateTime', TimestampType()),StructField('Namespace', StringType()),StructField('RefType', StringType()),StructField('SortOrder', IntegerType())])\r\n",
+							"df = spark.read.csv(stage1 + '/M365/roster/' + date_time_str + '/RefDefinition', header='false', schema=schema)\r\n",
+							"df.write.format('delta').mode('overwrite').save(stage2 + '/M365/RefDefinition')\r\n",
+							"#Section\r\n",
+							"schema = StructType([StructField('Id', StringType()),StructField('ExternalId', StringType()),StructField('FirstSeenDateTime', TimestampType()),StructField('LastSeenDateTime', TimestampType()),StructField('Name', StringType()),StructField('OrganizationId', StringType()),StructField('SourceSystemId', StringType()),StructField('Code', StringType()),StructField('CourseId', StringType()),StructField('Location', StringType())])\r\n",
+							"df = spark.read.csv(stage1 + '/M365/roster/' + date_time_str + '/Section', header='false', schema=schema)\r\n",
+							"df.write.format('delta').mode('overwrite').save(stage2 + '/M365/Section')\r\n",
+							"#SectionGradeLevel\r\n",
+							"schema = StructType([StructField('Id', StringType()),StructField('FirstSeenDateTime', TimestampType()),StructField('RefGradeLevelId', StringType()),StructField('SectionId', StringType())])\r\n",
+							"df = spark.read.csv(stage1 + '/M365/roster/' + date_time_str + '/SectionGradeLevel', header='false', schema=schema)\r\n",
+							"df.write.format('delta').mode('overwrite').save(stage2 + '/M365/SectionGradeLevel')\r\n",
+							"#SectionSession\r\n",
+							"schema = StructType([StructField('Id', StringType()),StructField('FirstSeenDateTime', TimestampType()),StructField('IsActiveInSession', BooleanType()),StructField('LastSeenDateTime', TimestampType()),StructField('SectionId', StringType()),StructField('SessionId', StringType())])\r\n",
+							"df = spark.read.csv(stage1 + '/M365/roster/' + date_time_str + '/SectionSession', header='false', schema=schema)\r\n",
+							"df.write.format('delta').mode('overwrite').save(stage2 + '/M365/SectionSession')\r\n",
+							"#SectionSubject\r\n",
+							"schema = StructType([StructField('Id', StringType()),StructField('FirstSeenDateTime', TimestampType()),StructField('RefAcademicSubjectId', StringType()),StructField('SectionId', StringType())])\r\n",
+							"df = spark.read.csv(stage1 + '/M365/roster/' + date_time_str + '/SectionSubject', header='false', schema=schema)\r\n",
+							"df.write.format('delta').mode('overwrite').save(stage2 + '/M365/SectionSubject')\r\n",
+							"#Session\r\n",
+							"schema = StructType([StructField('Id', StringType()),StructField('EndDate', StringType()),StructField('ExternalId', StringType()),StructField('FirstSeenDateTime', TimestampType()),StructField('LastSeenDateTime', TimestampType()),StructField('Name', StringType()),StructField('RefAcademicYearId', StringType()),StructField('RefSessionTypeId', StringType()),StructField('SourceSystemId', StringType()),StructField('StartDate', StringType()),StructField('ParentSessionId', StringType())])\r\n",
+							"df = spark.read.csv(stage1 + '/M365/roster/' + date_time_str + '/Session', header='false', schema=schema)\r\n",
+							"df.write.format('delta').mode('overwrite').save(stage2 + '/M365/Session')\r\n",
+							"#SourceSystem\r\n",
+							"schema = StructType([StructField('Id', StringType()),StructField('FirstSeenDateTime', TimestampType()),StructField('LastSeenDateTime', TimestampType()),StructField('Name', StringType())])\r\n",
+							"df = spark.read.csv(stage1 + '/M365/roster/' + date_time_str + '/SourceSystem', header='false', schema=schema)\r\n",
+							"df.write.format('delta').mode('overwrite').save(stage2 + '/M365/SourceSystem')\r\n",
+							"\r\n",
+							""
+						],
+						"outputs": [],
+						"execution_count": null
+					},
+					{
+						"cell_type": "markdown",
+						"metadata": {
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							}
+						},
+						"source": [
+							"# 2) Now ingest the new activity data"
+						]
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"jupyter": {
+								"source_hidden": false,
+								"outputs_hidden": false
+							},
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							},
+							"collapsed": true
+						},
+						"source": [
+							"from pyspark.sql.types import StructType, StructField, StringType, IntegerType, DoubleType, ArrayType, TimestampType, BooleanType\r\n",
+							"\r\n",
+							"#TechActivity\r\n",
+							"schema = StructType([StructField('SignalType', StringType()),StructField('StartTime', TimestampType()),StructField('UserAgent', StringType()),StructField('SignalId', StringType()),StructField('SisClassId', StringType()),StructField('ClassId', StringType()),StructField('ChannelId', StringType()),StructField('AppName', StringType()),StructField('ActorId', StringType()),StructField('ActorRole', StringType()),StructField('SchemaVersion', StringType()),StructField('AssignmentId', StringType()),StructField('SubmissionId', StringType()),StructField('Action', StringType()),StructField('DueDate', TimestampType()),StructField('ClassCreationDate', TimestampType()),StructField('Grade', StringType()),StructField('SourceFileExtension', StringType()),StructField('MeetingDuration', IntegerType())])\r\n",
+							"\r\n",
+							"df = spark.read.csv(stage1 + '/M365/activity/2021-06-10/*.csv', header='false', schema=schema)\r\n",
+							"df.write.format('delta').mode('append').save(stage2 + '/M365/TechActivity')\r\n",
+							"#df.write.format('delta').mode('overwrite').save(stage2 + '/M365/TechActivity')\r\n",
+							"\r\n",
+							""
+						],
+						"outputs": [],
+						"execution_count": 24
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"jupyter": {
+								"source_hidden": false,
+								"outputs_hidden": false
+							},
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							},
+							"collapsed": false
+						},
+						"source": [
+							"# Note that you can't rely on this having the latest for some reason (you can verify that by running a comparison query in SQL)\r\n",
+							"df = spark.read.load('abfss://stage2@stoeacisd3gg1.dfs.core.windows.net/M365/TechActivity', format='delta')\r\n",
+							"display(df)\r\n",
+							"print(df.count())"
+						],
+						"outputs": [],
+						"execution_count": 22
 					}
 				]
 			},
@@ -1743,6 +2258,84 @@
 		},
 		{
 			"name": "[concat(parameters('workspaceName'), '/OEA_Utils')]",
+			"type": "Microsoft.Synapse/workspaces/notebooks",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"nbformat": 4,
+				"nbformat_minor": 2,
+				"sessionProperties": {
+					"driverMemory": "28g",
+					"driverCores": 4,
+					"executorMemory": "28g",
+					"executorCores": 4,
+					"numExecutors": 2,
+					"conf": {
+						"spark.dynamicAllocation.enabled": "false",
+						"spark.dynamicAllocation.minExecutors": "2",
+						"spark.dynamicAllocation.maxExecutors": "2"
+					}
+				},
+				"metadata": {
+					"saveOutput": true,
+					"synapse_widget": {
+						"version": "0.1"
+					},
+					"kernelspec": {
+						"name": "synapse_pyspark",
+						"display_name": "python"
+					},
+					"language_info": {
+						"name": "python"
+					}
+				},
+				"cells": [
+					{
+						"cell_type": "markdown",
+						"metadata": {
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							}
+						},
+						"source": [
+							"# Microsoft Spark Utilities\r\n",
+							"[Intro to Microsoft Spark Utilities](https://docs.microsoft.com/en-us/azure/synapse-analytics/spark/microsoft-spark-utilities?pivots=programming-language-python)"
+						],
+						"attachments": null
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"jupyter": {
+								"source_hidden": false,
+								"outputs_hidden": false
+							},
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							},
+							"collapsed": true
+						},
+						"source": [
+							"from notebookutils import mssparkutils\r\n",
+							"# to list out all of the available commands\r\n",
+							"mssparkutils.fs.help()\r\n",
+							"\r\n",
+							"# an example of deleting a directory (and everything within it)\r\n",
+							"mssparkutils.fs.rm('abfss://stage1@stoeacisd3gg1.dfs.core.windows.net/tutorial_01', True)"
+						],
+						"attachments": null,
+						"outputs": [],
+						"execution_count": null
+					}
+				]
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('workspaceName'), '/OEA_utils_test1')]",
 			"type": "Microsoft.Synapse/workspaces/notebooks",
 			"apiVersion": "2019-06-01-preview",
 			"properties": {
