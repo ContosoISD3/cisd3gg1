@@ -1,9 +1,10 @@
 {
-	"name": "Clever_s1_into_s2",
+	"name": "M365_roster_s1_into_s2",
 	"properties": {
 		"activities": [
 			{
-				"name": "list files in inbound folder",
+				"name": "inbound_files",
+				"description": "Gets the list of files in the inbound folder in stage1.",
 				"type": "GetMetadata",
 				"dependsOn": [],
 				"policy": {
@@ -20,7 +21,7 @@
 						"type": "DatasetReference",
 						"parameters": {
 							"filesystem": "stage1",
-							"directory": "Clever/inbound"
+							"directory": "M365/inbound/roster"
 						}
 					},
 					"fieldList": [
@@ -37,11 +38,11 @@
 				}
 			},
 			{
-				"name": "For each file in inbound folder",
+				"name": "for each file in inbound folder",
 				"type": "ForEach",
 				"dependsOn": [
 					{
-						"activity": "list files in inbound folder",
+						"activity": "inbound_files",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -50,13 +51,13 @@
 				"userProperties": [],
 				"typeProperties": {
 					"items": {
-						"value": "@activity('Get Metadata1').output.childitems",
+						"value": "@activity('inbound_files').output.childitems",
 						"type": "Expression"
 					},
 					"isSequential": false,
 					"activities": [
 						{
-							"name": "Clever_s1_to_s2",
+							"name": "M365_s1_to_s2",
 							"type": "SynapseNotebook",
 							"dependsOn": [],
 							"policy": {
@@ -69,11 +70,15 @@
 							"userProperties": [],
 							"typeProperties": {
 								"notebook": {
-									"referenceName": "Clever_s1_to_s2",
+									"referenceName": "M365_roster_v0p3_s1_to_s2",
 									"type": "NotebookReference"
 								},
 								"parameters": {
-									"folder_to_process": {
+									"storage_account": {
+										"value": "stoeacisd3gg1",
+										"type": "string"
+									},
+									"date_time_str": {
 										"value": {
 											"value": "inbound/@{item().name}",
 											"type": "Expression"
@@ -89,7 +94,7 @@
 							"type": "ExecutePipeline",
 							"dependsOn": [
 								{
-									"activity": "Clever_s1_to_s2",
+									"activity": "M365_s1_to_s2",
 									"dependencyConditions": [
 										"Succeeded"
 									]
@@ -105,12 +110,12 @@
 								"parameters": {
 									"source_filesystem": "stage1",
 									"source_path": {
-										"value": "Clever/inbound/@{item().name}",
+										"value": "M365/inbound/roster/@{item().name}",
 										"type": "Expression"
 									},
 									"destination_filesystem": "stage1",
 									"destination_path": {
-										"value": "Clever/processed/@{item().name}",
+										"value": "M365/processed/roster/@{item().name}",
 										"type": "Expression"
 									}
 								}
