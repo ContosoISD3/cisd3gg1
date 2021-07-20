@@ -3,7 +3,7 @@
 	"properties": {
 		"activities": [
 			{
-				"name": "inbound_files",
+				"name": "folder_metadata",
 				"description": "Gets the list of files in the inbound folder in stage1.",
 				"type": "GetMetadata",
 				"dependsOn": [],
@@ -51,7 +51,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"items": {
-						"value": "@activity('folders').output.childitems",
+						"value": "@activity('folders').output.Value",
 						"type": "Expression"
 					},
 					"isSequential": false,
@@ -78,9 +78,9 @@
 										"value": "stoeacisd3gg1",
 										"type": "string"
 									},
-									"date_time_str": {
+									"file_path": {
 										"value": {
-											"value": "@item().name",
+											"value": "/M365/inbound/roster/@{item().name}",
 											"type": "Expression"
 										},
 										"type": "string"
@@ -129,7 +129,7 @@
 				"type": "Filter",
 				"dependsOn": [
 					{
-						"activity": "inbound_files",
+						"activity": "folder_metadata",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -138,11 +138,11 @@
 				"userProperties": [],
 				"typeProperties": {
 					"items": {
-						"value": "@activity('inbound_files').output.childitems",
+						"value": "@activity('folder_metadata').output.childitems",
 						"type": "Expression"
 					},
 					"condition": {
-						"value": "@equals(item().type(), 'Folder')",
+						"value": "@equals(item().type, 'Folder')",
 						"type": "Expression"
 					}
 				}
