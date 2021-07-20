@@ -1,6 +1,9 @@
 {
 	"name": "M365_v0p3",
 	"properties": {
+		"folder": {
+			"name": "archive"
+		},
 		"nbformat": 4,
 		"nbformat_minor": 2,
 		"bigDataPool": {
@@ -21,9 +24,6 @@
 		},
 		"metadata": {
 			"saveOutput": true,
-			"synapse_widget": {
-				"version": "0.1"
-			},
 			"kernelspec": {
 				"name": "synapse_pyspark",
 				"display_name": "Synapse PySpark"
@@ -44,8 +44,9 @@
 				"nodeCount": 10,
 				"cores": 4,
 				"memory": 28,
-				"extraHeader": null
-			}
+				"automaticScaleJobs": false
+			},
+			"sessionKeepAliveTimeout": 30
 		},
 		"cells": [
 			{
@@ -54,7 +55,6 @@
 					"storage_account = 'stoeacisd3gg1'\r\n",
 					"use_test_env = False"
 				],
-				"attachments": null,
 				"execution_count": null
 			},
 			{
@@ -81,7 +81,6 @@
 					"    stage2 = 'abfss://stage2@' + storage_account + '.dfs.core.windows.net'\r\n",
 					"    stage3 = 'abfss://stage3@' + storage_account + '.dfs.core.windows.net'"
 				],
-				"attachments": null,
 				"execution_count": 3
 			},
 			{
@@ -123,7 +122,6 @@
 					"\r\n",
 					""
 				],
-				"attachments": null,
 				"execution_count": 5
 			},
 			{
@@ -146,7 +144,6 @@
 					"for folder in folders:\r\n",
 					"    print(folder[1])"
 				],
-				"attachments": null,
 				"execution_count": 15
 			}
 		]

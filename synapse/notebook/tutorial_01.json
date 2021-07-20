@@ -1,6 +1,9 @@
 {
 	"name": "tutorial_01",
 	"properties": {
+		"folder": {
+			"name": "archive"
+		},
 		"nbformat": 4,
 		"nbformat_minor": 2,
 		"bigDataPool": {
@@ -21,9 +24,6 @@
 		},
 		"metadata": {
 			"saveOutput": true,
-			"synapse_widget": {
-				"version": "0.1"
-			},
 			"kernelspec": {
 				"name": "synapse_pyspark",
 				"display_name": "Synapse PySpark"
@@ -44,8 +44,9 @@
 				"nodeCount": 10,
 				"cores": 4,
 				"memory": 28,
-				"extraHeader": null
-			}
+				"automaticScaleJobs": false
+			},
+			"sessionKeepAliveTimeout": 30
 		},
 		"cells": [
 			{
@@ -61,7 +62,6 @@
 					"stage2 = 'abfss://stage2@' + storage_account + '.dfs.core.windows.net'\r\n",
 					"stage3 = 'abfss://stage3@' + storage_account + '.dfs.core.windows.net'"
 				],
-				"attachments": null,
 				"execution_count": 1
 			},
 			{
@@ -91,7 +91,6 @@
 					"df = spark.read.format(\"delta\").load(stage2 + '/tutorial_01/Person')\r\n",
 					"df.show(100)"
 				],
-				"attachments": null,
 				"execution_count": null
 			},
 			{
@@ -124,7 +123,6 @@
 					"df = spark.read.format(\"delta\").load(stage2 + '/tutorial_01/Person')\r\n",
 					"df.show(30)"
 				],
-				"attachments": null,
 				"execution_count": null
 			},
 			{
@@ -187,7 +185,6 @@
 					"df.show(30)\r\n",
 					""
 				],
-				"attachments": null,
 				"execution_count": null
 			},
 			{
@@ -209,7 +206,6 @@
 					"df = spark.read.format(\"delta\").load(stage2 + '/tutorial_01/Person')\r\n",
 					"df.show(50)"
 				],
-				"attachments": null,
 				"execution_count": null
 			},
 			{
@@ -238,7 +234,6 @@
 					"df1 = spark.read.format('delta').option('versionAsOf', 1).load(stage2 + '/tutorial_01/Person')\r\n",
 					"df1.show(30)"
 				],
-				"attachments": null,
 				"execution_count": null
 			},
 			{
@@ -262,7 +257,6 @@
 					"spark.sql('CREATE DATABASE IF NOT EXISTS tutorial_02')\r\n",
 					"spark.sql(\"create table if not exists tutorial_02.Person using DELTA location '\" + stage2 + \"/tutorial_01/Person'\")"
 				],
-				"attachments": null,
 				"execution_count": 2
 			},
 			{
@@ -287,7 +281,6 @@
 					"df = spark.sql(\"SELECT * FROM tutorial_01.person\")\r\n",
 					"df.show(10)"
 				],
-				"attachments": null,
 				"execution_count": 9
 			},
 			{
@@ -302,8 +295,7 @@
 				"source": [
 					"# Activity data\r\n",
 					""
-				],
-				"attachments": null
+				]
 			},
 			{
 				"cell_type": "code",
@@ -328,7 +320,6 @@
 					"  .whenNotMatchedInsertAll() \\\r\n",
 					"  .execute()"
 				],
-				"attachments": null,
 				"execution_count": null
 			},
 			{
@@ -342,8 +333,7 @@
 				},
 				"source": [
 					"# Reset the tutorial"
-				],
-				"attachments": null
+				]
 			},
 			{
 				"cell_type": "code",
@@ -364,7 +354,6 @@
 					"from notebookutils import mssparkutils\r\n",
 					"mssparkutils.fs.rm(stage2 + '/tutorial_01', True)"
 				],
-				"attachments": null,
 				"execution_count": 9
 			},
 			{
@@ -387,7 +376,6 @@
 					"mssparkutils.fs.help()\r\n",
 					""
 				],
-				"attachments": null,
 				"execution_count": 2
 			}
 		]
