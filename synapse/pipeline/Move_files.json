@@ -22,10 +22,6 @@
 						"storeSettings": {
 							"type": "AzureBlobFSReadSettings",
 							"recursive": true,
-							"wildcardFolderPath": {
-								"value": "@pipeline().parameters.source_path",
-								"type": "Expression"
-							},
 							"deleteFilesAfterCompletion": true
 						},
 						"formatSettings": {
@@ -60,7 +56,7 @@
 								"value": "@pipeline().parameters.source_filesystem",
 								"type": "Expression"
 							},
-							"directory": "not_applicable"
+							"directory": "@pipeline().parameters.source_path"
 						}
 					}
 				],
@@ -80,49 +76,6 @@
 						}
 					}
 				]
-			},
-			{
-				"name": "Delete1",
-				"type": "Delete",
-				"dependsOn": [
-					{
-						"activity": "move_files",
-						"dependencyConditions": [
-							"Succeeded"
-						]
-					}
-				],
-				"policy": {
-					"timeout": "7.00:00:00",
-					"retry": 0,
-					"retryIntervalInSeconds": 30,
-					"secureOutput": false,
-					"secureInput": false
-				},
-				"userProperties": [],
-				"typeProperties": {
-					"dataset": {
-						"referenceName": "data_lake_binary",
-						"type": "DatasetReference",
-						"parameters": {
-							"filesystem": {
-								"value": "@pipeline().parameters.source_filesystem",
-								"type": "Expression"
-							},
-							"directory": "not_applicable"
-						}
-					},
-					"enableLogging": false,
-					"storeSettings": {
-						"type": "AzureBlobFSReadSettings",
-						"recursive": true,
-						"wildcardFileName": {
-							"value": "@pipeline().parameters.source_path",
-							"type": "Expression"
-						},
-						"enablePartitionDiscovery": false
-					}
-				}
 			}
 		],
 		"parameters": {
