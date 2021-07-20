@@ -72,7 +72,7 @@
 				},
 				"source": [
 					"storage_account = 'stoeacisd3gg1'\r\n",
-					"file_path = ''"
+					"file_path = '/M365/inbound/roster/2021-06-15T04-04-12'"
 				],
 				"execution_count": 2
 			},
