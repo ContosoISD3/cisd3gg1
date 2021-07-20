@@ -112,11 +112,14 @@
 							"directory": "not_applicable"
 						}
 					},
-					"enableLogging": true,
+					"enableLogging": false,
 					"storeSettings": {
 						"type": "AzureBlobFSReadSettings",
 						"recursive": true,
-						"wildcardFileName": "@pipeline().parameters.source_path",
+						"wildcardFileName": {
+							"value": "@pipeline().parameters.source_path",
+							"type": "Expression"
+						},
 						"enablePartitionDiscovery": false
 					}
 				}
