@@ -74,7 +74,7 @@
 					"storage_account = 'stoeacisd3gg1'\r\n",
 					"file_path = '/M365/inbound/roster/2021-06-15T04-04-12'"
 				],
-				"execution_count": 9
+				"execution_count": 24
 			},
 			{
 				"cell_type": "code",
@@ -95,7 +95,7 @@
 					"stage2 = 'abfss://stage2@' + storage_account + '.dfs.core.windows.net'\r\n",
 					"stage3 = 'abfss://stage3@' + storage_account + '.dfs.core.windows.net'"
 				],
-				"execution_count": 11
+				"execution_count": 25
 			},
 			{
 				"cell_type": "code",
@@ -113,6 +113,7 @@
 				},
 				"source": [
 					"from pyspark.sql.types import StructType, StructField, StringType, IntegerType, DoubleType, ArrayType, TimestampType, BooleanType\r\n",
+					"from pyspark.sql.utils import AnalysisException\r\n",
 					"\r\n",
 					"def process_M365_roster(file_path):\r\n",
 					"    #AadUser\r\n",
@@ -187,10 +188,16 @@
 					"    schema = StructType([StructField('Id', StringType()),StructField('Code', StringType()),StructField('FirstSeenDateTime', TimestampType()),StructField('LastSeenDateTime', TimestampType()),StructField('Namespace', StringType()),StructField('RefType', StringType()),StructField('SortOrder', IntegerType())])\r\n",
 					"    df = spark.read.csv(file_path + '/RefDefinition', header='false', schema=schema)\r\n",
 					"    df.write.format('delta').mode('overwrite').save(stage2 + '/M365/RefDefinition')\r\n",
+					"\r\n",
 					"    #Section\r\n",
 					"    schema = StructType([StructField('Id', StringType()),StructField('ExternalId', StringType()),StructField('FirstSeenDateTime', TimestampType()),StructField('LastSeenDateTime', TimestampType()),StructField('Name', StringType()),StructField('OrganizationId', StringType()),StructField('SourceSystemId', StringType()),StructField('Code', StringType()),StructField('CourseId', StringType()),StructField('Location', StringType())])\r\n",
-					"    df = spark.read.csv(file_path + '/Section', header='false', schema=schema)\r\n",
-					"    df.write.format('delta').mode('overwrite').save(stage2 + '/M365/Section')\r\n",
+					"    try:\r\n",
+					"        df = spark.read.csv(file_path + '/Section', header='false', schema=schema)\r\n",
+					"        df.write.format('delta').mode('overwrite').save(stage2 + '/M365/Section')\r\n",
+					"    except (AnalysisException) as error:\r\n",
+					"        print(\"----OEAexception\", error)\r\n",
+					"        return \"\"\r\n",
+					"\r\n",
 					"    #SectionGradeLevel\r\n",
 					"    schema = StructType([StructField('Id', StringType()),StructField('FirstSeenDateTime', TimestampType()),StructField('RefGradeLevelId', StringType()),StructField('SectionId', StringType())])\r\n",
 					"    df = spark.read.csv(file_path + '/SectionGradeLevel', header='false', schema=schema)\r\n",
@@ -214,31 +221,7 @@
 					"\r\n",
 					""
 				],
-				"execution_count": 17
-			},
-			{
-				"cell_type": "code",
-				"metadata": {
-					"jupyter": {
-						"source_hidden": false,
-						"outputs_hidden": false
-					},
-					"nteract": {
-						"transient": {
-							"deleting": false
-						}
-					},
-					"collapsed": true
-				},
-				"source": [
-					"from notebookutils import mssparkutils\r\n",
-					"# to list out all of the available commands\r\n",
-					"mssparkutils.fs.help()\r\n",
-					"\r\n",
-					"# an example of deleting a directory (and everything within it)\r\n",
-					"#mssparkutils.fs.rm('abfss://stage1@stoeacisd3gg1.dfs.core.windows.net/tutorial_01', True)"
-				],
-				"execution_count": null
+				"execution_count": 18
 			},
 			{
 				"cell_type": "code",
@@ -264,7 +247,7 @@
 					"        mssparkutils.fs.mv(file.path, stage1 + '/M365/processed/roster', True)\r\n",
 					"    print(file.name, file.isDir, file.isFile, file.path, file.size)"
 				],
-				"execution_count": 21
+				"execution_count": 19
 			},
 			{
 				"cell_type": "code",
@@ -306,7 +289,95 @@
 					"mssparkutils.fs.rm(stage2 + '/M365', True)\r\n",
 					"mssparkutils.fs.mv('abfss://stage1@stoeacisd3gg1.dfs.core.windows.net/M365/processed/roster/2021-06-15T04-04-12', stage1 + '/M365/inbound/roster', True)"
 				],
-				"execution_count": 20
+				"execution_count": 16
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					},
+					"collapsed": true
+				},
+				"source": [
+					"import logging\r\n",
+					"logger = logging.getLogger(\"broadcast\")\r\n",
+					"logger.info(\"mytest: oeamsg\")\r\n",
+					"print(\"--------------- straight from print\")"
+				],
+				"execution_count": 21
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					},
+					"collapsed": true
+				},
+				"source": [
+					"import logging from opencensus.ext.azure.log_exporter import AzureLogHandler\r\n",
+					"\r\n",
+					"logger = logging.getLogger(__name__)\r\n",
+					"# TODO: replace the all-zero GUID with your instrumentation key.\r\n",
+					"logger.addHandler(AzureLogHandler(\r\n",
+					"    connection_string='InstrumentationKey=5a4a6026-f008-4e9e-a48a-96a412d250d6')\r\n",
+					")\r\n",
+					"\r\n",
+					"from opencensus.ext.azure.trace_exporter import AzureExporter\r\n",
+					"from opencensus.trace.samplers import ProbabilitySampler\r\n",
+					"from opencensus.trace.tracer import Tracer\r\n",
+					"properties = {'custom_dimensions': {'key_1': 'value_1', 'key_2': 'value_2'}}\r\n",
+					"\r\n",
+					"# Use properties in exception logs\r\n",
+					"try:\r\n",
+					"    result = 1 / 0  # generate a ZeroDivisionError\r\n",
+					"except Exception:\r\n",
+					"    logger.exception('Captured an exception.', extra=properties)\r\n",
+					""
+				],
+				"execution_count": 3
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					},
+					"collapsed": true
+				},
+				"source": [
+					"from opencensus.ext.azure.log_exporter import AzureLogHandler, logging\r\n",
+					"\r\n",
+					"logger = logging.getLogger(__name__)\r\n",
+					"logger.addHandler(AzureLogHandler(connection_string='InstrumentationKey=5a4a6026-f008-4e9e-a48a-96a412d250d6'))\r\n",
+					"logger.info(\"OEA info msg\")\r\n",
+					"logger.debug(\"OEA: debug msg\")\r\n",
+					"logger.debug(\"OEA: warning msg\")\r\n",
+					"logger.error(\"OEA: error msg\")\r\n",
+					"logger.exception(\"OEA: exception msg\")\r\n",
+					"\r\n",
+					""
+				],
+				"execution_count": 8
 			}
 		]
 	}
