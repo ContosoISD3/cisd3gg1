@@ -121,11 +121,8 @@
 					"        df = spark.read.csv(source_path, header='false', schema=schema)\r\n",
 					"        df.write.format('delta').mode('overwrite').option(\"mergeSchema\", \"true\").save(destination_path)\r\n",
 					"    except (AnalysisException) as error:\r\n",
-					"        #logger.exception(\"[OEA] Exception caught: \" + str(error))\r\n",
-					"        logger.exception(\"[OEA] Exception caught.\")\r\n",
-					"        logger.exception(str(error))\r\n",
-					"        logger.error(\"[OEA] this is an error\")\r\n",
-					"        logger.error(\"[OEA] this is a detailed error\" + str(error))\r\n",
+					"        logger.exception(\"[OEA] \" + str(error))\r\n",
+					"        logger.warning(\"[OEA] Warning: \" + str(error))\r\n",
 					"        return \"\"\r\n",
 					"\r\n",
 					"def process_M365_roster(file_path):\r\n",
@@ -202,7 +199,7 @@
 					"    schema = StructType([StructField('Id', StringType()),StructField('FirstSeenDateTime', TimestampType()),StructField('LastSeenDateTime', TimestampType()),StructField('Name', StringType())])\r\n",
 					"    s1_to_s2(file_path + '/SourceSystem', schema, stage2 + '/M365/SourceSystem')"
 				],
-				"execution_count": 28
+				"execution_count": 33
 			},
 			{
 				"cell_type": "markdown",
