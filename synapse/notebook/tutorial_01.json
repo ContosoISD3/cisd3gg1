@@ -319,7 +319,13 @@
 					"    newDedupedLogs.alias(\"newDedupedLogs\"),\r\n",
 					"    \"logs.uniqueId = newDedupedLogs.uniqueId\") \\\r\n",
 					"  .whenNotMatchedInsertAll() \\\r\n",
-					"  .execute()"
+					"  .execute()\r\n",
+					"\r\n",
+					"from delta.tables import DeltaTable\r\n",
+					"deltaTable = DeltaTable.forPath(spark, dest_path)\r\n",
+					"deltaTable.alias(\"TechActivity\").merge(updatesDF.alias(\"updates\"), \"TechActivity.SignalId = updates.SignalId\") \\\r\n",
+					"    .whenNotMatchedInsertAll() \\\r\n",
+					"    .execute()"
 				],
 				"execution_count": null
 			},

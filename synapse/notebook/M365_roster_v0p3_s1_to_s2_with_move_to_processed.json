@@ -74,7 +74,7 @@
 					"storage_account = 'stoeacisd3gg1'\r\n",
 					"instrumentation_key = 'InstrumentationKey=5a4a6026-f008-4e9e-a48a-96a412d250d6'"
 				],
-				"execution_count": 75
+				"execution_count": 1
 			},
 			{
 				"cell_type": "code",
@@ -103,7 +103,7 @@
 					"logger.setLevel(logging.DEBUG) # https://docs.python.org/3/library/logging.html#logging-levels\r\n",
 					"logger.addHandler(AzureLogHandler(connection_string=instrumentation_key))"
 				],
-				"execution_count": 83
+				"execution_count": 3
 			},
 			{
 				"cell_type": "code",
@@ -333,7 +333,7 @@
 				},
 				"source": [
 					"from pyspark.sql.types import StructType, StructField, StringType, IntegerType, DoubleType, ArrayType, TimestampType, BooleanType\r\n",
-					"from delta.tables import *\r\n",
+					"from delta.tables import DeltaTable\r\n",
 					"\r\n",
 					"inbound_path = stage1 + '/tutorial_01/activity'\r\n",
 					"dest_path = stage2 + '/tutorial_01/TechActivity'\r\n",
@@ -341,17 +341,14 @@
 					"schema = StructType([StructField('SignalType', StringType()),StructField('StartTime', TimestampType()),StructField('UserAgent', StringType()),StructField('SignalId', StringType()),StructField('SisClassId', StringType()),StructField('ClassId', StringType()),StructField('ChannelId', StringType()),StructField('AppName', StringType()),StructField('ActorId', StringType()),StructField('ActorRole', StringType()),StructField('SchemaVersion', StringType()),StructField('AssignmentId', StringType()),StructField('SubmissionId', StringType()),StructField('Action', StringType()),StructField('DueDate', TimestampType()),StructField('ClassCreationDate', TimestampType()),StructField('Grade', StringType()),StructField('SourceFileExtension', StringType()),StructField('MeetingDuration', IntegerType())])\r\n",
 					"\r\n",
 					"csvDF = spark.readStream.csv(inbound_path + '/*/*.csv', header='false', schema=schema)\r\n",
-					"csvDF.dropDuplicates('SignalId')\r\n",
+					"#csvDF.dropDuplicates('SignalId')\r\n",
 					"\r\n",
 					"#https://docs.delta.io/latest/delta-streaming.html#delta-table-as-a-sink\r\n",
 					"query = csvDF.writeStream.format(\"delta\").outputMode(\"append\").trigger(once=True).option(\"checkpointLocation\", inbound_path + '/_checkpoints').start(dest_path)\r\n",
 					"\r\n",
-					"#deltaTable = DeltaTable.forPath(spark, dest_path)\r\n",
-					"#deltaTable.alias(\"TechActivity\").merge(updatesDF.alias(\"updates\"), \"TechActivity.SignalId = updates.SignalId\") \\\r\n",
-					"#    .whenNotMatchedInsertAll() \\\r\n",
-					"#    .execute()"
+					""
 				],
-				"execution_count": 104
+				"execution_count": 18
 			},
 			{
 				"cell_type": "code",
@@ -373,7 +370,29 @@
 					"print(query.explain())\r\n",
 					"print(spark.streams.active)"
 				],
-				"execution_count": 109
+				"execution_count": 15
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					},
+					"collapsed": true
+				},
+				"source": [
+					"query.stop()\r\n",
+					"print(query.id)\r\n",
+					"print(query.explain())\r\n",
+					"print(spark.streams.active)"
+				],
+				"execution_count": 17
 			},
 			{
 				"cell_type": "markdown",

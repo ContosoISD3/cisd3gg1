@@ -179,32 +179,6 @@
 				"execution_count": null
 			},
 			{
-				"cell_type": "code",
-				"metadata": {
-					"jupyter": {
-						"source_hidden": false,
-						"outputs_hidden": false
-					},
-					"nteract": {
-						"transient": {
-							"deleting": false
-						}
-					},
-					"collapsed": true
-				},
-				"source": [
-					"from pyspark.sql.types import StructType, StructField, StringType, TimestampType\r\n",
-					"from delta.tables import *\r\n",
-					"\r\n",
-					"schema = StructType([StructField('SignalType', StringType()),StructField('StartTime', TimestampType())])\r\n",
-					"\r\n",
-					"if not DeltaTable.isDeltaTable(spark, stage2 + '/tutorial_01/test'):\r\n",
-					"    emptyDF = spark.createDataFrame(spark.sparkContext.emptyRDD(), schema)\r\n",
-					"    emptyDF.write.format('delta').mode('overwrite').save(stage2 + '/tutorial_01/test')"
-				],
-				"execution_count": null
-			},
-			{
 				"cell_type": "markdown",
 				"metadata": {
 					"nteract": {
