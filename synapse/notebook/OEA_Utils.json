@@ -89,6 +89,81 @@
 					"mssparkutils.fs.mv('abfss://stage1@stoeacisd3gg1.dfs.core.windows.net/M365/processed/roster/2021-06-15T04-04-12', stage1 + '/M365/inbound/roster', True)"
 				],
 				"execution_count": null
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					},
+					"collapsed": true
+				},
+				"source": [
+					"# Logging example. More info at: https://github.com/balakreshnan/Samples2021/blob/main/Synapseworkspace/opencensuslog.md#azure-synapse-spark-logs-runtime-errors-to-application-insights\r\n",
+					"from opencensus.ext.azure.log_exporter import AzureLogHandler, logging\r\n",
+					"\r\n",
+					"logger = logging.getLogger(__name__)\r\n",
+					"logger.setLevel(logging.INFO) # https://docs.python.org/3/library/logging.html#logging-levels\r\n",
+					"logger.addHandler(AzureLogHandler(connection_string='InstrumentationKey=<insert instrumentation key here>'))\r\n",
+					"\r\n",
+					"logger.info(\"OEA info msg\")\r\n",
+					"logger.debug(\"OEA: debug msg\")\r\n",
+					"logger.debug(\"OEA: warning msg\")\r\n",
+					"logger.error(\"OEA: error msg\")\r\n",
+					"logger.exception(\"OEA: exception msg\")"
+				],
+				"execution_count": null
+			},
+			{
+				"cell_type": "markdown",
+				"metadata": {
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					"# Reset M365 data"
+				]
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					},
+					"collapsed": true
+				},
+				"source": [
+					"# Delete stage2/M365 if it exists\r\n",
+					"files = mssparkutils.fs.ls(stage2)\r\n",
+					"#print(file.name, file.isDir, file.isFile, file.path, file.size)\r\n",
+					"for file in files:\r\n",
+					"    print(file.name)\r\n",
+					"    if file.name == 'M365':\r\n",
+					"        mssparkutils.fs.rm(stage2 + '/M365', True)\r\n",
+					"\r\n",
+					"# Move roster data back in to \"inbound\" folder\r\n",
+					"files = mssparkutils.fs.ls(stage1 + '/M365/processed/roster')\r\n",
+					"for file in files:\r\n",
+					"    mssparkutils.fs.mv(file.path, stage1 + '/M365/inbound/roster', True)\r\n",
+					"\r\n",
+					"    "
+				],
+				"execution_count": null
 			}
 		]
 	}
