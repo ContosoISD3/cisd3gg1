@@ -74,7 +74,7 @@
 					"storage_account = 'stoeacisd3gg1'\r\n",
 					"file_path = '/M365/inbound/roster/2021-06-15T04-04-12'"
 				],
-				"execution_count": 4
+				"execution_count": 2
 			},
 			{
 				"cell_type": "code",
