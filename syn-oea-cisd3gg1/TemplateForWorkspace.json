@@ -1963,23 +1963,11 @@
 							"\r\n",
 							"schema = StructType([StructField('SignalType', StringType()),StructField('StartTime', TimestampType()),StructField('UserAgent', StringType()),StructField('SignalId', StringType()),StructField('SisClassId', StringType()),StructField('ClassId', StringType()),StructField('ChannelId', StringType()),StructField('AppName', StringType()),StructField('ActorId', StringType()),StructField('ActorRole', StringType()),StructField('SchemaVersion', StringType()),StructField('AssignmentId', StringType()),StructField('SubmissionId', StringType()),StructField('Action', StringType()),StructField('DueDate', TimestampType()),StructField('ClassCreationDate', TimestampType()),StructField('Grade', StringType()),StructField('SourceFileExtension', StringType()),StructField('MeetingDuration', IntegerType())])\r\n",
 							"\r\n",
-							"#if not DeltaTable.isDeltaTable(spark, dest_path):\r\n",
-							"#    emptyDF = spark.createDataFrame(spark.sparkContext.emptyRDD(), schema)\r\n",
-							"#    emptyDF.write.format('delta').mode('overwrite').save(dest_path)\r\n",
-							"\r\n",
 							"csvDF = spark.readStream.csv(inbound_path + '/*/*.csv', header='false', schema=schema)\r\n",
-							"\r\n",
-							"#print(csvDF.isStreaming)\r\n",
-							"\r\n",
-							"#display(csvDF)\r\n",
+							"csvDF.dropDuplicates('SignalId')\r\n",
 							"\r\n",
 							"#https://docs.delta.io/latest/delta-streaming.html#delta-table-as-a-sink\r\n",
-							"query = csvDF.writeStream \\\r\n",
-							"  .format(\"delta\") \\\r\n",
-							"  .outputMode(\"append\") \\\r\n",
-							"  .trigger(once=True) \\\r\n",
-							"  .option(\"checkpointLocation\", inbound_path + '/_checkpoints') \\\r\n",
-							"  .start(dest_path)\r\n",
+							"query = csvDF.writeStream.format(\"delta\").outputMode(\"append\").trigger(once=True).option(\"checkpointLocation\", inbound_path + '/_checkpoints').start(dest_path)\r\n",
 							"\r\n",
 							"#deltaTable = DeltaTable.forPath(spark, dest_path)\r\n",
 							"#deltaTable.alias(\"TechActivity\").merge(updatesDF.alias(\"updates\"), \"TechActivity.SignalId = updates.SignalId\") \\\r\n",
@@ -2011,27 +1999,6 @@
 						],
 						"outputs": [],
 						"execution_count": 109
-					},
-					{
-						"cell_type": "code",
-						"metadata": {
-							"jupyter": {
-								"source_hidden": false,
-								"outputs_hidden": false
-							},
-							"nteract": {
-								"transient": {
-									"deleting": false
-								}
-							},
-							"collapsed": false
-						},
-						"source": [
-							"df = spark.read.load('abfss://stage2@stoeacisd3gg1.dfs.core.windows.net/tutorial_01/TechActivity', format='delta')\r\n",
-							"display(df)"
-						],
-						"outputs": [],
-						"execution_count": 86
 					},
 					{
 						"cell_type": "markdown",
