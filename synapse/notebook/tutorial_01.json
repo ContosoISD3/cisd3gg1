@@ -142,6 +142,7 @@
 				"source": [
 					"# step 3 - update table with delta data (upsert)\r\n",
 					"# Ingest delta data consisting of a new student \"Sheldon Bergeron\", and an update to \"Shelby Berger\" (lastnamt changed to \"Bergeron\")\r\n",
+					"# https://docs.delta.io/latest/api/python/index.html?highlight=whenmatchedupdateall#delta.tables.DeltaTable.merge\r\n",
 					"from delta.tables import *\r\n",
 					"\r\n",
 					"updatesDF = spark.read.csv(stage1 + '/tutorial_01/roster/2021-06-11/Person', header='false')\r\n",

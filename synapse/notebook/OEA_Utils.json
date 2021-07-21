@@ -152,6 +152,59 @@
 				"execution_count": null
 			},
 			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					},
+					"collapsed": true
+				},
+				"source": [
+					"# Create an empty delta table if one doesn't yet exist\r\n",
+					"from pyspark.sql.types import StructType, StructField, StringType, IntegerType, DoubleType, ArrayType, TimestampType, BooleanType\r\n",
+					"from delta.tables import *\r\n",
+					"\r\n",
+					"schema = StructType([StructField('SignalType', StringType()),StructField('StartTime', TimestampType()),StructField('UserAgent', StringType()),StructField('SignalId', StringType()),StructField('SisClassId', StringType()),StructField('ClassId', StringType()),StructField('ChannelId', StringType()),StructField('AppName', StringType()),StructField('ActorId', StringType()),StructField('ActorRole', StringType()),StructField('SchemaVersion', StringType()),StructField('AssignmentId', StringType()),StructField('SubmissionId', StringType()),StructField('Action', StringType()),StructField('DueDate', TimestampType()),StructField('ClassCreationDate', TimestampType()),StructField('Grade', StringType()),StructField('SourceFileExtension', StringType()),StructField('MeetingDuration', IntegerType())])\r\n",
+					"\r\n",
+					"if not DeltaTable.isDeltaTable(spark, stage2 + '/tutorial_01/TechActivity'):\r\n",
+					"    emptyDF = spark.createDataFrame(spark.sparkContext.emptyRDD(), schema)\r\n",
+					"    emptyDF.write.format('delta').mode('overwrite').save(stage2 + '/tutorial_01/TechActivity')"
+				],
+				"execution_count": null
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					},
+					"collapsed": true
+				},
+				"source": [
+					"from pyspark.sql.types import StructType, StructField, StringType, TimestampType\r\n",
+					"from delta.tables import *\r\n",
+					"\r\n",
+					"schema = StructType([StructField('SignalType', StringType()),StructField('StartTime', TimestampType())])\r\n",
+					"\r\n",
+					"if not DeltaTable.isDeltaTable(spark, stage2 + '/tutorial_01/test'):\r\n",
+					"    emptyDF = spark.createDataFrame(spark.sparkContext.emptyRDD(), schema)\r\n",
+					"    emptyDF.write.format('delta').mode('overwrite').save(stage2 + '/tutorial_01/test')"
+				],
+				"execution_count": null
+			},
+			{
 				"cell_type": "markdown",
 				"metadata": {
 					"nteract": {
