@@ -121,6 +121,37 @@
 				"execution_count": null
 			},
 			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					},
+					"collapsed": true
+				},
+				"source": [
+					"# Check on existence of a folder in the data lake.\r\n",
+					"\r\n",
+					"from notebookutils import mssparkutils\r\n",
+					"\r\n",
+					"def folderExists(path, foldername):\r\n",
+					"    items = mssparkutils.fs.ls(path)\r\n",
+					"    tableExists = False\r\n",
+					"    for item in items:\r\n",
+					"        if item.name == foldername:\r\n",
+					"            tableExists = True\r\n",
+					"    return tableExists\r\n",
+					"\r\n",
+					"#print(folderExists(stage1 + '/tutorial_01/activity/2021-06-10', 'TechActivity'))"
+				],
+				"execution_count": null
+			},
+			{
 				"cell_type": "markdown",
 				"metadata": {
 					"nteract": {
