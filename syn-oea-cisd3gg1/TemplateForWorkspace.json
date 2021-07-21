@@ -1467,7 +1467,7 @@
 							"file_path = '/M365/inbound/roster/2021-06-15T04-04-12'"
 						],
 						"outputs": [],
-						"execution_count": 4
+						"execution_count": 2
 					},
 					{
 						"cell_type": "code",
@@ -1690,11 +1690,10 @@
 						},
 						"source": [
 							"storage_account = 'stoeacisd3gg1'\r\n",
-							"instrumentation_key = 'InstrumentationKey=5a4a6026-f008-4e9e-a48a-96a412d250d6'\r\n",
-							"file_path = '/M365/inbound/roster/2021-06-15T04-04-12'"
+							"instrumentation_key = 'InstrumentationKey=5a4a6026-f008-4e9e-a48a-96a412d250d6'"
 						],
 						"outputs": [],
-						"execution_count": 24
+						"execution_count": 75
 					},
 					{
 						"cell_type": "code",
@@ -1713,16 +1712,24 @@
 						"source": [
 							"stage1 = 'abfss://stage1@' + storage_account + '.dfs.core.windows.net'\r\n",
 							"stage2 = 'abfss://stage2@' + storage_account + '.dfs.core.windows.net'\r\n",
-							"stage3 = 'abfss://stage3@' + storage_account + '.dfs.core.windows.net'"
+							"stage3 = 'abfss://stage3@' + storage_account + '.dfs.core.windows.net'\r\n",
+							"\r\n",
+							"from pyspark.sql import SparkSession\r\n",
+							"spark = SparkSession.builder.appName(\"OEA_M365_processing\").getOrCreate()\r\n",
+							"\r\n",
+							"from opencensus.ext.azure.log_exporter import AzureLogHandler, logging\r\n",
+							"logger = logging.getLogger(__name__)\r\n",
+							"logger.setLevel(logging.DEBUG) # https://docs.python.org/3/library/logging.html#logging-levels\r\n",
+							"logger.addHandler(AzureLogHandler(connection_string=instrumentation_key))"
 						],
 						"outputs": [],
-						"execution_count": 25
+						"execution_count": 83
 					},
 					{
 						"cell_type": "code",
 						"metadata": {
 							"jupyter": {
-								"source_hidden": false,
+								"source_hidden": true,
 								"outputs_hidden": false
 							},
 							"nteract": {
@@ -1736,12 +1743,15 @@
 							"from pyspark.sql.types import StructType, StructField, StringType, IntegerType, DoubleType, ArrayType, TimestampType, BooleanType\r\n",
 							"from pyspark.sql.utils import AnalysisException\r\n",
 							"\r\n",
-							"def s1_to_s2(source_path, schema, destination_path):\r\n",
+							"# Process data in s1 into s2\r\n",
+							"def s1_to_s2(source_path, schema, destination_path, mode='overwrite'):\r\n",
 							"    try:\r\n",
+							"        logger.debug(f\"[OEA] s1_to_s2: source_path={source_path}, destination_path={destination_path}\")\r\n",
 							"        df = spark.read.csv(source_path, header='false', schema=schema)\r\n",
-							"        df.write.format('delta').mode('overwrite').option(\"mergeSchema\", \"true\").save(destination_path)\r\n",
+							"        df.write.format('delta').mode(mode).option(\"mergeSchema\", \"true\").save(destination_path)\r\n",
 							"    except (AnalysisException) as error:\r\n",
-							"        logger.exception(\"[OEA] Exception occurred when processing: \" + source_path, error)\r\n",
+							"        logger.exception(\"[OEA] \" + str(error))\r\n",
+							"        logger.warning(\"[OEA] Warning: \" + str(error))\r\n",
 							"        return \"\"\r\n",
 							"\r\n",
 							"def process_M365_roster(file_path):\r\n",
@@ -1816,10 +1826,225 @@
 							"    s1_to_s2(file_path + '/Session', schema, stage2 + '/M365/Session')\r\n",
 							"    #SourceSystem\r\n",
 							"    schema = StructType([StructField('Id', StringType()),StructField('FirstSeenDateTime', TimestampType()),StructField('LastSeenDateTime', TimestampType()),StructField('Name', StringType())])\r\n",
-							"    s1_to_s2(file_path + '/SourceSystem', schema, stage2 + '/M365/SourceSystem')"
+							"    s1_to_s2(file_path + '/SourceSystem', schema, stage2 + '/M365/SourceSystem')\r\n",
+							"\r\n",
+							"# Process M365 Activity data"
 						],
 						"outputs": [],
-						"execution_count": 30
+						"execution_count": 80
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"jupyter": {
+								"source_hidden": false,
+								"outputs_hidden": false
+							},
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							},
+							"collapsed": true
+						},
+						"source": [
+							"# Process M365 Activity data\r\n",
+							"from pyspark.sql.types import StructType, StructField, StringType, IntegerType, DoubleType, ArrayType, TimestampType, BooleanType\r\n",
+							"from delta.tables import *\r\n",
+							"\r\n",
+							"def activity_s1_to_s2:\r\n",
+							"    deltaTable = DeltaTable.forPath(spark, \"/data/events/\")\r\n",
+							"\r\n",
+							"    deltaTable.alias(\"events\").merge(\r\n",
+							"        updatesDF.alias(\"updates\"),\r\n",
+							"        \"events.eventId = updates.eventId\") \\\r\n",
+							"      .whenMatchedUpdate(set = { \"data\" : \"updates.data\" } ) \\\r\n",
+							"      .whenNotMatchedInsert(values =\r\n",
+							"        {\r\n",
+							"          \"date\": \"updates.date\",\r\n",
+							"          \"eventId\": \"updates.eventId\",\r\n",
+							"          \"data\": \"updates.data\"\r\n",
+							"        }\r\n",
+							"      ) \\\r\n",
+							"      .execute()\r\n",
+							"\r\n",
+							"def process_M365_roster(file_path):\r\n",
+							"    schema = StructType([StructField('SignalType', StringType()),StructField('StartTime', TimestampType()),StructField('UserAgent', StringType()),StructField('SignalId', StringType()),StructField('SisClassId', StringType()),StructField('ClassId', StringType()),StructField('ChannelId', StringType()),StructField('AppName', StringType()),StructField('ActorId', StringType()),StructField('ActorRole', StringType()),StructField('SchemaVersion', StringType()),StructField('AssignmentId', StringType()),StructField('SubmissionId', StringType()),StructField('Action', StringType()),StructField('DueDate', TimestampType()),StructField('ClassCreationDate', TimestampType()),StructField('Grade', StringType()),StructField('SourceFileExtension', StringType()),StructField('MeetingDuration', IntegerType())])\r\n",
+							"    s1_to_s2(file_path + '/ApplicationUsage', schema, stage2 + '/M365/TechActivity')\r\n",
+							"\r\n",
+							"\r\n",
+							"        logger.debug(f\"[OEA] s1_to_s2: source_path={source_path}, destination_path={destination_path}\")\r\n",
+							"        df = spark.read.csv(source_path, header='false', schema=schema)\r\n",
+							"        df.write.format('delta').mode('overwrite').option(\"mergeSchema\", \"true\").save(destination_path)\r\n",
+							"\r\n",
+							"df = spark.read.csv(stage1 + '/M365/activity/2021-06-10/*.csv', header='false', schema=schema)\r\n",
+							"df.write.format('delta').mode('append').save(stage2 + '/M365/TechActivity')\r\n",
+							""
+						],
+						"outputs": [],
+						"execution_count": null
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"jupyter": {
+								"source_hidden": false,
+								"outputs_hidden": false
+							},
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							},
+							"collapsed": true
+						},
+						"source": [
+							"from pyspark.sql.types import StructType, StructField, StringType, IntegerType, DoubleType, ArrayType, TimestampType, BooleanType\r\n",
+							"from delta.tables import *\r\n",
+							"\r\n",
+							"\r\n",
+							"inbound_path = stage1 + '/tutorial_01/activity/2021-06-10'\r\n",
+							"dest_path = stage2 + '/tutorial_01/TechActivity'\r\n",
+							"schema = StructType([StructField('SignalType', StringType()),StructField('StartTime', TimestampType()),StructField('UserAgent', StringType()),StructField('SignalId', StringType()),StructField('SisClassId', StringType()),StructField('ClassId', StringType()),StructField('ChannelId', StringType()),StructField('AppName', StringType()),StructField('ActorId', StringType()),StructField('ActorRole', StringType()),StructField('SchemaVersion', StringType()),StructField('AssignmentId', StringType()),StructField('SubmissionId', StringType()),StructField('Action', StringType()),StructField('DueDate', TimestampType()),StructField('ClassCreationDate', TimestampType()),StructField('Grade', StringType()),StructField('SourceFileExtension', StringType()),StructField('MeetingDuration', IntegerType())])\r\n",
+							"\r\n",
+							"logger.info(\"[OEA] Processing M365 roster data from: \" + inbound_path)\r\n",
+							"\r\n",
+							"if not DeltaTable.isDeltaTable(spark, dest_path):\r\n",
+							"    emptyDF = spark.createDataFrame(spark.sparkContext.emptyRDD(), schema)\r\n",
+							"    emptyDF.write.format('delta').mode('overwrite').save(dest_path)\r\n",
+							"\r\n",
+							"updatesDF = spark.read.csv(inbound_path, header='false', schema=schema)\r\n",
+							"\r\n",
+							"#display(updatesDF)\r\n",
+							"deltaTable = DeltaTable.forPath(spark, dest_path)\r\n",
+							"\r\n",
+							"deltaTable.alias(\"TechActivity\").merge(updatesDF.alias(\"updates\"), \"TechActivity.SignalId = updates.SignalId\") \\\r\n",
+							"    .whenNotMatchedInsertAll() \\\r\n",
+							"    .execute()\r\n",
+							"\r\n",
+							"    "
+						],
+						"outputs": [],
+						"execution_count": 79
+					},
+					{
+						"cell_type": "markdown",
+						"metadata": {
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							}
+						},
+						"source": [
+							"# Streaming activity data"
+						]
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"jupyter": {
+								"source_hidden": false,
+								"outputs_hidden": false
+							},
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							},
+							"collapsed": true
+						},
+						"source": [
+							"from pyspark.sql.types import StructType, StructField, StringType, IntegerType, DoubleType, ArrayType, TimestampType, BooleanType\r\n",
+							"from delta.tables import *\r\n",
+							"\r\n",
+							"inbound_path = stage1 + '/tutorial_01/activity'\r\n",
+							"dest_path = stage2 + '/tutorial_01/TechActivity'\r\n",
+							"\r\n",
+							"schema = StructType([StructField('SignalType', StringType()),StructField('StartTime', TimestampType()),StructField('UserAgent', StringType()),StructField('SignalId', StringType()),StructField('SisClassId', StringType()),StructField('ClassId', StringType()),StructField('ChannelId', StringType()),StructField('AppName', StringType()),StructField('ActorId', StringType()),StructField('ActorRole', StringType()),StructField('SchemaVersion', StringType()),StructField('AssignmentId', StringType()),StructField('SubmissionId', StringType()),StructField('Action', StringType()),StructField('DueDate', TimestampType()),StructField('ClassCreationDate', TimestampType()),StructField('Grade', StringType()),StructField('SourceFileExtension', StringType()),StructField('MeetingDuration', IntegerType())])\r\n",
+							"\r\n",
+							"#if not DeltaTable.isDeltaTable(spark, dest_path):\r\n",
+							"#    emptyDF = spark.createDataFrame(spark.sparkContext.emptyRDD(), schema)\r\n",
+							"#    emptyDF.write.format('delta').mode('overwrite').save(dest_path)\r\n",
+							"\r\n",
+							"csvDF = spark.readStream.csv(inbound_path + '/*/*.csv', header='false', schema=schema)\r\n",
+							"\r\n",
+							"#print(csvDF.isStreaming)\r\n",
+							"\r\n",
+							"#display(csvDF)\r\n",
+							"\r\n",
+							"#https://docs.delta.io/latest/delta-streaming.html#delta-table-as-a-sink\r\n",
+							"query = csvDF.writeStream \\\r\n",
+							"  .format(\"delta\") \\\r\n",
+							"  .outputMode(\"append\") \\\r\n",
+							"  .trigger(once=True) \\\r\n",
+							"  .option(\"checkpointLocation\", inbound_path + '/_checkpoints') \\\r\n",
+							"  .start(dest_path)\r\n",
+							"\r\n",
+							"#deltaTable = DeltaTable.forPath(spark, dest_path)\r\n",
+							"#deltaTable.alias(\"TechActivity\").merge(updatesDF.alias(\"updates\"), \"TechActivity.SignalId = updates.SignalId\") \\\r\n",
+							"#    .whenNotMatchedInsertAll() \\\r\n",
+							"#    .execute()"
+						],
+						"outputs": [],
+						"execution_count": 104
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"jupyter": {
+								"source_hidden": false,
+								"outputs_hidden": false
+							},
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							},
+							"collapsed": true
+						},
+						"source": [
+							"query.stop()\r\n",
+							"print(query.id)\r\n",
+							"print(query.explain())\r\n",
+							"print(spark.streams.active)"
+						],
+						"outputs": [],
+						"execution_count": 109
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"jupyter": {
+								"source_hidden": false,
+								"outputs_hidden": false
+							},
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							},
+							"collapsed": false
+						},
+						"source": [
+							"df = spark.read.load('abfss://stage2@stoeacisd3gg1.dfs.core.windows.net/tutorial_01/TechActivity', format='delta')\r\n",
+							"display(df)"
+						],
+						"outputs": [],
+						"execution_count": 86
+					},
+					{
+						"cell_type": "markdown",
+						"metadata": {
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							}
+						},
+						"source": [
+							"# Process M365 data"
+						]
 					},
 					{
 						"cell_type": "code",
@@ -1838,21 +2063,20 @@
 						"source": [
 							"from opencensus.ext.azure.log_exporter import AzureLogHandler, logging\r\n",
 							"\r\n",
-							"logger = logging.getLogger(__name__)\r\n",
-							"logger.setLevel(logging.INFO) # https://docs.python.org/3/library/logging.html#logging-levels\r\n",
-							"logger.addHandler(AzureLogHandler(connection_string=instrumentation_key))\r\n",
+							"inbound_path = stage1 + '/M365/inbound/roster'\r\n",
+							"processed_path = stage1 + '/M365/processed/roster'\r\n",
 							"\r\n",
-							"logger.info(\"[OEA] Processing M365 data.\")\r\n",
+							"logger.info(\"[OEA] Processing M365 roster data from: \" + inbound_path)\r\n",
 							"\r\n",
-							"items = mssparkutils.fs.ls(stage1 + '/M365/inbound/roster')\r\n",
+							"items = mssparkutils.fs.ls(inbound_path)\r\n",
 							"for item in items:\r\n",
 							"    if item.isDir:\r\n",
-							"        logger.info(\"[OEA]: processing M365 raw data from: \" + item.path)\r\n",
 							"        process_M365_roster(item.path)\r\n",
-							"        mssparkutils.fs.mv(item.path, stage1 + '/M365/processed/roster', True)"
+							"        mssparkutils.fs.mv(item.path, processed_path, True)\r\n",
+							""
 						],
 						"outputs": [],
-						"execution_count": 32
+						"execution_count": 31
 					},
 					{
 						"cell_type": "markdown",
@@ -1897,7 +2121,7 @@
 							""
 						],
 						"outputs": [],
-						"execution_count": 31
+						"execution_count": 30
 					}
 				]
 			},
@@ -2541,8 +2765,7 @@
 					},
 					"language_info": {
 						"name": "python"
-					},
-					"sessionKeepAliveTimeout": 30
+					}
 				},
 				"cells": [
 					{
@@ -2639,6 +2862,93 @@
 						"execution_count": null
 					},
 					{
+						"cell_type": "code",
+						"metadata": {
+							"jupyter": {
+								"source_hidden": false,
+								"outputs_hidden": false
+							},
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							},
+							"collapsed": true
+						},
+						"source": [
+							"# Check on existence of a folder in the data lake.\r\n",
+							"\r\n",
+							"from notebookutils import mssparkutils\r\n",
+							"\r\n",
+							"def folderExists(path, foldername):\r\n",
+							"    items = mssparkutils.fs.ls(path)\r\n",
+							"    tableExists = False\r\n",
+							"    for item in items:\r\n",
+							"        if item.name == foldername:\r\n",
+							"            tableExists = True\r\n",
+							"    return tableExists\r\n",
+							"\r\n",
+							"#print(folderExists(stage1 + '/tutorial_01/activity/2021-06-10', 'TechActivity'))"
+						],
+						"outputs": [],
+						"execution_count": null
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"jupyter": {
+								"source_hidden": false,
+								"outputs_hidden": false
+							},
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							},
+							"collapsed": true
+						},
+						"source": [
+							"# Create an empty delta table if one doesn't yet exist\r\n",
+							"from pyspark.sql.types import StructType, StructField, StringType, IntegerType, DoubleType, ArrayType, TimestampType, BooleanType\r\n",
+							"from delta.tables import *\r\n",
+							"\r\n",
+							"schema = StructType([StructField('SignalType', StringType()),StructField('StartTime', TimestampType()),StructField('UserAgent', StringType()),StructField('SignalId', StringType()),StructField('SisClassId', StringType()),StructField('ClassId', StringType()),StructField('ChannelId', StringType()),StructField('AppName', StringType()),StructField('ActorId', StringType()),StructField('ActorRole', StringType()),StructField('SchemaVersion', StringType()),StructField('AssignmentId', StringType()),StructField('SubmissionId', StringType()),StructField('Action', StringType()),StructField('DueDate', TimestampType()),StructField('ClassCreationDate', TimestampType()),StructField('Grade', StringType()),StructField('SourceFileExtension', StringType()),StructField('MeetingDuration', IntegerType())])\r\n",
+							"\r\n",
+							"if not DeltaTable.isDeltaTable(spark, stage2 + '/tutorial_01/TechActivity'):\r\n",
+							"    emptyDF = spark.createDataFrame(spark.sparkContext.emptyRDD(), schema)\r\n",
+							"    emptyDF.write.format('delta').mode('overwrite').save(stage2 + '/tutorial_01/TechActivity')"
+						],
+						"outputs": [],
+						"execution_count": null
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"jupyter": {
+								"source_hidden": false,
+								"outputs_hidden": false
+							},
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							},
+							"collapsed": true
+						},
+						"source": [
+							"from pyspark.sql.types import StructType, StructField, StringType, TimestampType\r\n",
+							"from delta.tables import *\r\n",
+							"\r\n",
+							"schema = StructType([StructField('SignalType', StringType()),StructField('StartTime', TimestampType())])\r\n",
+							"\r\n",
+							"if not DeltaTable.isDeltaTable(spark, stage2 + '/tutorial_01/test'):\r\n",
+							"    emptyDF = spark.createDataFrame(spark.sparkContext.emptyRDD(), schema)\r\n",
+							"    emptyDF.write.format('delta').mode('overwrite').save(stage2 + '/tutorial_01/test')"
+						],
+						"outputs": [],
+						"execution_count": null
+					},
+					{
 						"cell_type": "markdown",
 						"metadata": {
 							"nteract": {
@@ -2712,14 +3022,16 @@
 				},
 				"metadata": {
 					"saveOutput": true,
+					"synapse_widget": {
+						"version": "0.1"
+					},
 					"kernelspec": {
 						"name": "synapse_pyspark",
 						"display_name": "python"
 					},
 					"language_info": {
 						"name": "python"
-					},
-					"sessionKeepAliveTimeout": 30
+					}
 				},
 				"cells": [
 					{
@@ -2734,7 +3046,8 @@
 						"source": [
 							"# Microsoft Spark Utilities\r\n",
 							"[Intro to Microsoft Spark Utilities](https://docs.microsoft.com/en-us/azure/synapse-analytics/spark/microsoft-spark-utilities?pivots=programming-language-python)"
-						]
+						],
+						"attachments": null
 					},
 					{
 						"cell_type": "code",
@@ -2758,8 +3071,113 @@
 							"# an example of deleting a directory (and everything within it)\r\n",
 							"mssparkutils.fs.rm('abfss://stage1@stoeacisd3gg1.dfs.core.windows.net/tutorial_01', True)"
 						],
+						"attachments": null,
 						"outputs": [],
 						"execution_count": null
+					}
+				]
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('workspaceName'), '/stream_tutorial')]",
+			"type": "Microsoft.Synapse/workspaces/notebooks",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"folder": {
+					"name": "s1_to_s2"
+				},
+				"nbformat": 4,
+				"nbformat_minor": 2,
+				"bigDataPool": {
+					"referenceName": "spark2v3",
+					"type": "BigDataPoolReference"
+				},
+				"sessionProperties": {
+					"driverMemory": "28g",
+					"driverCores": 4,
+					"executorMemory": "28g",
+					"executorCores": 4,
+					"numExecutors": 2,
+					"conf": {
+						"spark.dynamicAllocation.enabled": "false",
+						"spark.dynamicAllocation.minExecutors": "2",
+						"spark.dynamicAllocation.maxExecutors": "2"
+					}
+				},
+				"metadata": {
+					"saveOutput": true,
+					"kernelspec": {
+						"name": "synapse_pyspark",
+						"display_name": "Synapse PySpark"
+					},
+					"language_info": {
+						"name": "python"
+					},
+					"a365ComputeOptions": {
+						"id": "/subscriptions/7b9a4896-4541-483f-bdc7-d8f4ec6be3ee/resourceGroups/rg-oea-CISD3GG1/providers/Microsoft.Synapse/workspaces/syn-oea-cisd3gg1/bigDataPools/spark2v3",
+						"name": "spark2v3",
+						"type": "Spark",
+						"endpoint": "https://syn-oea-cisd3gg1.dev.azuresynapse.net/livyApi/versions/2019-11-01-preview/sparkPools/spark2v3",
+						"auth": {
+							"type": "AAD",
+							"authResource": "https://dev.azuresynapse.net"
+						},
+						"sparkVersion": "3.0",
+						"nodeCount": 10,
+						"cores": 4,
+						"memory": 28
+					}
+				},
+				"cells": [
+					{
+						"cell_type": "markdown",
+						"metadata": {
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							}
+						},
+						"source": [
+							"# Structured streaming tutorial"
+						]
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"tags": [
+								"parameters"
+							]
+						},
+						"source": [
+							"storage_account = 'stoeacisd3gg1'\r\n",
+							"file_path = '/M365/inbound/roster/2021-06-15T04-04-12'"
+						],
+						"outputs": [],
+						"execution_count": 1
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"jupyter": {
+								"source_hidden": false,
+								"outputs_hidden": false
+							},
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							},
+							"collapsed": true
+						},
+						"source": [
+							"stage1 = 'abfss://stage1@' + storage_account + '.dfs.core.windows.net'\r\n",
+							"stage2 = 'abfss://stage2@' + storage_account + '.dfs.core.windows.net'\r\n",
+							"stage3 = 'abfss://stage3@' + storage_account + '.dfs.core.windows.net'"
+						],
+						"outputs": [],
+						"execution_count": 25
 					}
 				]
 			},
@@ -2812,10 +3230,8 @@
 						"sparkVersion": "3.0",
 						"nodeCount": 10,
 						"cores": 4,
-						"memory": 28,
-						"automaticScaleJobs": false
-					},
-					"sessionKeepAliveTimeout": 30
+						"memory": 28
+					}
 				},
 				"cells": [
 					{
@@ -2914,6 +3330,7 @@
 						"source": [
 							"# step 3 - update table with delta data (upsert)\r\n",
 							"# Ingest delta data consisting of a new student \"Sheldon Bergeron\", and an update to \"Shelby Berger\" (lastnamt changed to \"Bergeron\")\r\n",
+							"# https://docs.delta.io/latest/api/python/index.html?highlight=whenmatchedupdateall#delta.tables.DeltaTable.merge\r\n",
 							"from delta.tables import *\r\n",
 							"\r\n",
 							"updatesDF = spark.read.csv(stage1 + '/tutorial_01/roster/2021-06-11/Person', header='false')\r\n",
@@ -3157,112 +3574,6 @@
 						],
 						"outputs": [],
 						"execution_count": 2
-					}
-				]
-			},
-			"dependsOn": []
-		},
-		{
-			"name": "[concat(parameters('workspaceName'), '/stream_tutorial')]",
-			"type": "Microsoft.Synapse/workspaces/notebooks",
-			"apiVersion": "2019-06-01-preview",
-			"properties": {
-				"folder": {
-					"name": "s1_to_s2"
-				},
-				"nbformat": 4,
-				"nbformat_minor": 2,
-				"bigDataPool": {
-					"referenceName": "spark2v3",
-					"type": "BigDataPoolReference"
-				},
-				"sessionProperties": {
-					"driverMemory": "28g",
-					"driverCores": 4,
-					"executorMemory": "28g",
-					"executorCores": 4,
-					"numExecutors": 2,
-					"conf": {
-						"spark.dynamicAllocation.enabled": "false",
-						"spark.dynamicAllocation.minExecutors": "2",
-						"spark.dynamicAllocation.maxExecutors": "2"
-					}
-				},
-				"metadata": {
-					"saveOutput": true,
-					"kernelspec": {
-						"name": "synapse_pyspark",
-						"display_name": "Synapse PySpark"
-					},
-					"language_info": {
-						"name": "python"
-					},
-					"a365ComputeOptions": {
-						"id": "/subscriptions/7b9a4896-4541-483f-bdc7-d8f4ec6be3ee/resourceGroups/rg-oea-CISD3GG1/providers/Microsoft.Synapse/workspaces/syn-oea-cisd3gg1/bigDataPools/spark2v3",
-						"name": "spark2v3",
-						"type": "Spark",
-						"endpoint": "https://syn-oea-cisd3gg1.dev.azuresynapse.net/livyApi/versions/2019-11-01-preview/sparkPools/spark2v3",
-						"auth": {
-							"type": "AAD",
-							"authResource": "https://dev.azuresynapse.net"
-						},
-						"sparkVersion": "3.0",
-						"nodeCount": 10,
-						"cores": 4,
-						"memory": 28,
-						"automaticScaleJobs": false
-					},
-					"sessionKeepAliveTimeout": 30
-				},
-				"cells": [
-					{
-						"cell_type": "markdown",
-						"metadata": {
-							"nteract": {
-								"transient": {
-									"deleting": false
-								}
-							}
-						},
-						"source": [
-							"# Structured streaming tutorial"
-						]
-					},
-					{
-						"cell_type": "code",
-						"metadata": {
-							"tags": [
-								"parameters"
-							]
-						},
-						"source": [
-							"storage_account = 'stoeacisd3gg1'\r\n",
-							"file_path = '/M365/inbound/roster/2021-06-15T04-04-12'"
-						],
-						"outputs": [],
-						"execution_count": 1
-					},
-					{
-						"cell_type": "code",
-						"metadata": {
-							"jupyter": {
-								"source_hidden": false,
-								"outputs_hidden": false
-							},
-							"nteract": {
-								"transient": {
-									"deleting": false
-								}
-							},
-							"collapsed": true
-						},
-						"source": [
-							"stage1 = 'abfss://stage1@' + storage_account + '.dfs.core.windows.net'\r\n",
-							"stage2 = 'abfss://stage2@' + storage_account + '.dfs.core.windows.net'\r\n",
-							"stage3 = 'abfss://stage3@' + storage_account + '.dfs.core.windows.net'"
-						],
-						"outputs": [],
-						"execution_count": 25
 					}
 				]
 			},
