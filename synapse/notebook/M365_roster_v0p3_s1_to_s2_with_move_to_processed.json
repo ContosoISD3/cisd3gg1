@@ -233,14 +233,10 @@
 				},
 				"source": [
 					"from opencensus.ext.azure.log_exporter import AzureLogHandler, logging\r\n",
-					"from opencensus.trace.tracer import Tracer\r\n",
-					"from opencensus.trace.samplers import AlwaysOnSampler\r\n",
 					"\r\n",
 					"logger = logging.getLogger(__name__)\r\n",
 					"logger.setLevel(logging.DEBUG) # https://docs.python.org/3/library/logging.html#logging-levels\r\n",
 					"logger.addHandler(AzureLogHandler(connection_string=instrumentation_key))\r\n",
-					"tracer = Tracer(sampler=AlwaysOnSampler())\r\n",
-					"\r\n",
 					"\r\n",
 					"inbound_path = stage1 + '/M365/inbound/roster'\r\n",
 					"processed_path = stage1 + '/M365/processed/roster'\r\n",
@@ -250,11 +246,9 @@
 					"items = mssparkutils.fs.ls(inbound_path)\r\n",
 					"for item in items:\r\n",
 					"    if item.isDir:\r\n",
-					"        tracer.start_span(name=item.path)\r\n",
 					"        process_M365_roster(item.path)\r\n",
 					"        mssparkutils.fs.mv(item.path, processed_path, True)\r\n",
-					"        tracer.end_span()\r\n",
-					"        #logger.debug(\"[OEA] \" + tmp2)"
+					""
 				],
 				"execution_count": 31
 			},
