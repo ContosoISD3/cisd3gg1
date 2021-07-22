@@ -1,11 +1,15 @@
 {
-	"name": "Notebook 2",
+	"name": "Notebook2",
 	"properties": {
 		"folder": {
 			"name": "testing"
 		},
 		"nbformat": 4,
 		"nbformat_minor": 2,
+		"bigDataPool": {
+			"referenceName": "spark3v3",
+			"type": "BigDataPoolReference"
+		},
 		"sessionProperties": {
 			"driverMemory": "28g",
 			"driverCores": 4,
@@ -22,10 +26,25 @@
 			"saveOutput": true,
 			"kernelspec": {
 				"name": "synapse_pyspark",
-				"display_name": "python"
+				"display_name": "Synapse PySpark"
 			},
 			"language_info": {
 				"name": "python"
+			},
+			"a365ComputeOptions": {
+				"id": "/subscriptions/7b9a4896-4541-483f-bdc7-d8f4ec6be3ee/resourceGroups/rg-oea-CISD3GG1/providers/Microsoft.Synapse/workspaces/syn-oea-cisd3gg1/bigDataPools/spark3v3",
+				"name": "spark3v3",
+				"type": "Spark",
+				"endpoint": "https://syn-oea-cisd3gg1.dev.azuresynapse.net/livyApi/versions/2019-11-01-preview/sparkPools/spark3v3",
+				"auth": {
+					"type": "AAD",
+					"authResource": "https://dev.azuresynapse.net"
+				},
+				"sparkVersion": "3.0",
+				"nodeCount": 3,
+				"cores": 4,
+				"memory": 28,
+				"automaticScaleJobs": false
 			},
 			"sessionKeepAliveTimeout": 30
 		},
@@ -48,7 +67,7 @@
 					"from pyspark.sql.functions import *\r\n",
 					"import pytest"
 				],
-				"execution_count": null
+				"execution_count": 2
 			},
 			{
 				"cell_type": "code",
@@ -67,7 +86,7 @@
 				"source": [
 					"orders_schema = [\"OrderId\",\"OrderDate\", \"Region\", \"City\", \"Category\",\"Product\",\"Quantity\",\"UnitPrice\",\"TotalPrice\"]"
 				],
-				"execution_count": null
+				"execution_count": 3
 			},
 			{
 				"cell_type": "code",
@@ -100,7 +119,7 @@
 					"    )\r\n",
 					"    return df"
 				],
-				"execution_count": null
+				"execution_count": 4
 			},
 			{
 				"cell_type": "code",
@@ -123,7 +142,7 @@
 					"    #return df.distinct()\r\n",
 					"    return df.dropDuplicates([\"OrderId\"])"
 				],
-				"execution_count": null
+				"execution_count": 5
 			},
 			{
 				"cell_type": "markdown",
@@ -154,9 +173,15 @@
 					"collapsed": true
 				},
 				"source": [
-					"df = load_data()"
+					"def mytest():\r\n",
+					"    df = load_data()\r\n",
+					"    df = remove_duplicate_orders(df)\r\n",
+					"    #Assert\r\n",
+					"    expected_orders = 6\r\n",
+					"    number_of_orders = df.count()\r\n",
+					"    assert number_of_orders == 6, f'Expected {expected_orders} order after remove_duplicate_orders() but {number_of_orders} returned.'"
 				],
-				"execution_count": null
+				"execution_count": 10
 			}
 		]
 	}
