@@ -109,7 +109,7 @@
 				"cell_type": "code",
 				"metadata": {
 					"jupyter": {
-						"source_hidden": true,
+						"source_hidden": false,
 						"outputs_hidden": false
 					},
 					"nteract": {
@@ -335,6 +335,7 @@
 					"# Process M365 activity data\r\n",
 					"from pyspark.sql.types import StructType, StructField, StringType, IntegerType, DoubleType, ArrayType, TimestampType, BooleanType\r\n",
 					"from delta.tables import DeltaTable\r\n",
+					"from pyspark.sql.functions import year, month\r\n",
 					"\r\n",
 					"inbound_path = stage1 + '/tutorial_01/activity'\r\n",
 					"dest_path = stage2 + '/tutorial_01/TechActivity'\r\n",
@@ -342,11 +343,24 @@
 					"csvDF = spark.readStream.csv(inbound_path + '/*/*.csv', header='false', schema=schema)\r\n",
 					"csvDF = csvDF.dropDuplicates(['SignalId'])\r\n",
 					"csvDF = csvDF.withColumn('year', year(col('StartTime'))).withColumn('month', month(col('StartTime')))\r\n",
-					"#https://docs.delta.io/latest/delta-streaming.html#delta-table-as-a-sink\r\n",
+					"\r\n",
 					"query = csvDF.writeStream.format(\"delta\").outputMode(\"append\").trigger(once=True).option(\"checkpointLocation\", inbound_path + '/_checkpoints').partitionBy('year', 'month')\r\n",
 					"query.start(dest_path)"
 				],
 				"execution_count": 48
+			},
+			{
+				"cell_type": "markdown",
+				"metadata": {
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					"# Streaming roster data"
+				]
 			},
 			{
 				"cell_type": "code",
@@ -360,7 +374,7 @@
 							"deleting": false
 						}
 					},
-					"collapsed": false
+					"collapsed": true
 				},
 				"source": [
 					"from pyspark.sql.types import StructType, StructField, StringType, IntegerType, DoubleType, ArrayType, TimestampType, BooleanType\r\n",
@@ -370,11 +384,50 @@
 					"inbound_path = stage1 + '/tutorial_01/activity'\r\n",
 					"dest_path = stage2 + '/tutorial_01/TechActivity'\r\n",
 					"schema = StructType([StructField('SignalType', StringType()),StructField('StartTime', TimestampType()),StructField('UserAgent', StringType()),StructField('SignalId', StringType()),StructField('SisClassId', StringType()),StructField('ClassId', StringType()),StructField('ChannelId', StringType()),StructField('AppName', StringType()),StructField('ActorId', StringType()),StructField('ActorRole', StringType()),StructField('SchemaVersion', StringType()),StructField('AssignmentId', StringType()),StructField('SubmissionId', StringType()),StructField('Action', StringType()),StructField('DueDate', TimestampType()),StructField('ClassCreationDate', TimestampType()),StructField('Grade', StringType()),StructField('SourceFileExtension', StringType()),StructField('MeetingDuration', IntegerType())])\r\n",
-					"csvDF = spark.read.csv(inbound_path + '/*/*.csv', header='false', schema=schema).withColumn('year', year(col('StartTime'))).withColumn('month', month(col('StartTime')))\r\n",
+					"csvDF = spark.readStream.csv(inbound_path + '/*/*.csv', header='false', schema=schema)\r\n",
+					"csvDF = csvDF.dropDuplicates(['SignalId'])\r\n",
+					"csvDF = csvDF.withColumn('year', year(col('StartTime'))).withColumn('month', month(col('StartTime')))\r\n",
 					"\r\n",
-					"display(csvDF)"
+					"query = csvDF.writeStream.format(\"delta\").outputMode(\"append\").trigger(once=True).option(\"checkpointLocation\", inbound_path + '/_checkpoints').partitionBy('year', 'month')\r\n",
+					"query.start(dest_path)"
 				],
-				"execution_count": 43
+				"execution_count": null
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					},
+					"collapsed": true
+				},
+				"source": [
+					"from pyspark.sql.types import StructType, StructField, StringType, IntegerType, DoubleType, ArrayType, TimestampType, BooleanType\r\n",
+					"from pyspark.sql.utils import AnalysisException\r\n",
+					"\r\n",
+					"# Process data in s1 into s2\r\n",
+					"def s1_to_s2(source_path, schema, destination_path, mode='overwrite'):\r\n",
+					"    try:\r\n",
+					"        logger.debug(f\"[OEA] s1_to_s2: source_path={source_path}, destination_path={destination_path}\")\r\n",
+					"        df = spark.read.csv(source_path, header='false', schema=schema)\r\n",
+					"        df.write.format('delta').mode(mode).option(\"mergeSchema\", \"true\").save(destination_path)\r\n",
+					"    except (AnalysisException) as error:\r\n",
+					"        logger.exception(\"[OEA] \" + str(error))\r\n",
+					"        logger.warning(\"[OEA] Warning: \" + str(error))\r\n",
+					"        return \"\"\r\n",
+					"\r\n",
+					"def process_M365_roster(file_path):\r\n",
+					"    #AadUser\r\n",
+					"    schema = StructType([StructField('ObjectId', StringType()),StructField('AnchorId', StringType()),StructField('DisplayName', StringType()),StructField('FirstSeenDateTime', TimestampType()),StructField('GivenName', StringType()),StructField('LastSeenDateTime', TimestampType()),StructField('Mail', StringType()),StructField('MailNickname', StringType()),StructField('Role', StringType()),StructField('Surname', StringType()),StructField('UserPrincipalName', StringType()),StructField('StudentId', StringType()),StructField('TeacherId', StringType())])\r\n",
+					"    s1_to_s2(file_path + '/AadUser', schema, stage2 + '/M365/AadUser')"
+				],
+				"execution_count": null
 			},
 			{
 				"cell_type": "markdown",
@@ -462,7 +515,7 @@
 					"    mssparkutils.fs.mv(file.path, stage1 + '/M365/inbound/roster', True)\r\n",
 					""
 				],
-				"execution_count": 30
+				"execution_count": 49
 			}
 		]
 	}
