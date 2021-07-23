@@ -2,7 +2,7 @@
 	"name": "M365_process",
 	"properties": {
 		"folder": {
-			"name": "Source_Systems/M365"
+			"name": "1) Ingestion and Prep/M365"
 		},
 		"nbformat": 4,
 		"nbformat_minor": 2,

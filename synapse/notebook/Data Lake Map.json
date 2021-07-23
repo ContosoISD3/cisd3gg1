@@ -37,9 +37,70 @@
 					}
 				},
 				"source": [
+					"<img height=\"30\" src=\"https://microsoft.github.io/OpenEduAnalytics/assets/images/oea-logo-nobg.png\">\r\n",
+					"\r\n",
 					"# Data Lake Map\r\n",
-					""
+					"---\r\n",
+					"This notebook provides documentation on the structure of the data lake and details on what data is brought in and how it's processed.\r\n",
+					"\r\n",
+					"# M365\r\n",
+					"\r\n",
+					"M365 data is ingested through the Insights Premium product, and setup via the SDS admin pages."
 				]
+			},
+			{
+				"cell_type": "markdown",
+				"metadata": {
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					"## Rostertest data\r\n",
+					"This is info about how roster data is received and processed."
+				]
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					},
+					"collapsed": true
+				},
+				"source": [
+					"## Activitytest data\r\n",
+					"This is info about how roster data is received and processed."
+				],
+				"execution_count": null
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					},
+					"collapsed": true
+				},
+				"source": [
+					"### this is a test\r\n",
+					"testing"
+				],
+				"execution_count": null
 			}
 		]
 	}
