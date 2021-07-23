@@ -1,8 +1,8 @@
 {
-	"name": "M365_activity",
+	"name": "M365_lib",
 	"properties": {
 		"folder": {
-			"name": "archive"
+			"name": "M365"
 		},
 		"nbformat": 4,
 		"nbformat_minor": 2,
@@ -62,48 +62,6 @@
 					"# Process all roster data from stage1/M365/inbound/roster into stage 2 in delta lake format.\r\n",
 					"(overwrites previously loaded data with the latest snapshot data)"
 				]
-			},
-			{
-				"cell_type": "code",
-				"metadata": {
-					"tags": [
-						"parameters"
-					]
-				},
-				"source": [
-					"storage_account = 'stoeacisd3gg1'\r\n",
-					"instrumentation_key = 'InstrumentationKey=5a4a6026-f008-4e9e-a48a-96a412d250d6'"
-				],
-				"execution_count": 3
-			},
-			{
-				"cell_type": "code",
-				"metadata": {
-					"jupyter": {
-						"source_hidden": false,
-						"outputs_hidden": false
-					},
-					"nteract": {
-						"transient": {
-							"deleting": false
-						}
-					},
-					"collapsed": true
-				},
-				"source": [
-					"stage1 = 'abfss://stage1@' + storage_account + '.dfs.core.windows.net'\r\n",
-					"stage2 = 'abfss://stage2@' + storage_account + '.dfs.core.windows.net'\r\n",
-					"stage3 = 'abfss://stage3@' + storage_account + '.dfs.core.windows.net'\r\n",
-					"\r\n",
-					"from pyspark.sql import SparkSession\r\n",
-					"spark = SparkSession.builder.appName(\"OEA_M365_processing\").getOrCreate()\r\n",
-					"\r\n",
-					"from opencensus.ext.azure.log_exporter import AzureLogHandler, logging\r\n",
-					"logger = logging.getLogger(__name__)\r\n",
-					"logger.setLevel(logging.DEBUG) # https://docs.python.org/3/library/logging.html#logging-levels\r\n",
-					"logger.addHandler(AzureLogHandler(connection_string=instrumentation_key))"
-				],
-				"execution_count": null
 			},
 			{
 				"cell_type": "markdown",
@@ -223,7 +181,7 @@
 				"cell_type": "code",
 				"metadata": {
 					"jupyter": {
-						"source_hidden": false,
+						"source_hidden": true,
 						"outputs_hidden": false
 					},
 					"nteract": {
@@ -323,7 +281,7 @@
 					"    s1_to_s2(file_path + '/SourceSystem', schema, stage2 + '/M365/SourceSystem')\r\n",
 					""
 				],
-				"execution_count": 12
+				"execution_count": 2
 			},
 			{
 				"cell_type": "code",
@@ -399,6 +357,157 @@
 					""
 				],
 				"execution_count": 13
+			},
+			{
+				"cell_type": "markdown",
+				"metadata": {
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					"# Testing delta"
+				]
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					},
+					"collapsed": true
+				},
+				"source": [
+					"student_schema = [\"OrderId\",\"OrderDate\", \"Region\", \"City\", \"Category\",\"Product\",\"Quantity\",\"UnitPrice\",\"TotalPrice\"]\r\n",
+					"\r\n",
+					"def load_data():\r\n",
+					"    # N.B. this would actually be loading the real data from somewhere in the data lake, or elsewhere...\r\n",
+					"    df = spark.createDataFrame(\r\n",
+					"        [\r\n",
+					"            (1,\"01/01/2020\",\"East\",\"Boston\",\"Bars\",\"Carrot\",33,1.77,58.41),\r\n",
+					"            (2,\"04/01/2020\",\"East\",\"Boston\",\"Crackers\",\"Whole Wheat\",87,3.49,303.63),\r\n",
+					"            (3,\"07/01/2020\",\"West\",\"Los Angeles\",\"Cookies\",\"Chocolate Chip\",58,1.87,108.46),\r\n",
+					"            (3,\"07/01/2020\",\"West\",\"Los Angeles\",\"Cookies\",\"Chocolate Chip\",58,1.87,108.46),\r\n",
+					"            (11,\"31/01/2020\",\"East\",\"Boston\",\"Cookies\",\"Arrowroot\",36,2.18,78.48),\r\n",
+					"            (12,\"03/02/2020\",\"East\",\"Boston\",\"Cookies\",\"Chocolate Chip\",31,1.87,57.97),\r\n",
+					"            (13,\"06/02/2020\",\"East\",\"Boston\",\"Crackers\",\"Whole Wheat\",28,3.49,97.72)      \r\n",
+					"        ],\r\n",
+					"        orders_schema \r\n",
+					"    )\r\n",
+					"    return df"
+				],
+				"execution_count": null
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					},
+					"collapsed": false
+				},
+				"source": [
+					"students_schema = StructType([ \\\r\n",
+					"    StructField(\"firstname\",StringType(),True), \\\r\n",
+					"    StructField(\"lastname\",StringType(),True), \\\r\n",
+					"    StructField(\"id\", IntegerType(), True), \\\r\n",
+					"    StructField(\"gender\", StringType(), True), \\\r\n",
+					"  ])\r\n",
+					"\r\n",
+					"df1 = spark.createDataFrame(\r\n",
+					"    [\r\n",
+					"        ('John', 'Smith', 1, 'M'),\r\n",
+					"        ('Jacob', 'Jones', 2, 'M'),\r\n",
+					"        ('Jane', 'Johnson', 3, 'F'),\r\n",
+					"        ('Jill', 'Jackson', 4, 'F')\r\n",
+					"    ],\r\n",
+					"    students_schema\r\n",
+					")\r\n",
+					"\r\n",
+					"df2 = spark.createDataFrame(\r\n",
+					"    [\r\n",
+					"        ('John', 'Smith', 1, 'M'),\r\n",
+					"        ('Jacob', 'Jones', 2, 'M'),\r\n",
+					"        ('Jane', 'Johnson', 3, 'F')\r\n",
+					"    ],\r\n",
+					"    students_schema\r\n",
+					")\r\n",
+					"\r\n",
+					"display(df2)"
+				],
+				"execution_count": 8
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					},
+					"collapsed": true
+				},
+				"source": [
+					"students_schema = StructType([ \\\r\n",
+					"    StructField(\"firstname\",StringType(),True), \\\r\n",
+					"    StructField(\"lastname\",StringType(),True), \\\r\n",
+					"    StructField(\"id\", IntegerType(), True), \\\r\n",
+					"    StructField(\"gender\", StringType(), True), \\\r\n",
+					"  ])\r\n",
+					"\r\n",
+					"def load_data():\r\n",
+					"    df = spark.createDataFrame(\r\n",
+					"        [\r\n",
+					"            ('John', 'Smith', 1, 'M'),\r\n",
+					"            ('Jacob', 'Jones', 2, 'M'),\r\n",
+					"            ('Jane', 'Johnson', 3, 'F'),\r\n",
+					"            ('Jill', 'Jackson', 4, 'F')                      \r\n",
+					"        ],\r\n",
+					"        students_schema\r\n",
+					"    )\r\n",
+					"    return df\r\n",
+					"\r\n",
+					"df = load_data()\r\n",
+					"display(df)"
+				],
+				"execution_count": 4
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					},
+					"collapsed": true
+				},
+				"source": [
+					""
+				],
+				"execution_count": null
 			}
 		]
 	}

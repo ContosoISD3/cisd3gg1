@@ -64,9 +64,29 @@
 					"collapsed": true
 				},
 				"source": [
-					"#run /testing/Notebook2"
+					"%run /testing/Notebook2"
 				],
-				"execution_count": null
+				"execution_count": 10
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					},
+					"collapsed": false
+				},
+				"source": [
+					"df = load_data()\r\n",
+					"display(df)"
+				],
+				"execution_count": 13
 			},
 			{
 				"cell_type": "code",
@@ -83,10 +103,13 @@
 					"collapsed": true
 				},
 				"source": [
+					"#mssparkutils.notebook.run(\"notebook path\", <timeoutSeconds>, <parameterMap>)\r\n",
+					"#mssparkutils.notebook.run(\"folder/Sample1\", 90, {\"input\": 20 })\r\n",
+					"mssparkutils.notebook.run(\"Notebook2\")\r\n",
 					"df = load_data()\r\n",
 					"display(df)"
 				],
-				"execution_count": null
+				"execution_count": 12
 			}
 		]
 	}

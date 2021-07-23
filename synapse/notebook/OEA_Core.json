@@ -1,5 +1,5 @@
 {
-	"name": "Reference",
+	"name": "OEA_Core",
 	"properties": {
 		"folder": {
 			"name": "OEA"
@@ -31,38 +31,10 @@
 		},
 		"cells": [
 			{
-				"cell_type": "markdown",
-				"metadata": {
-					"nteract": {
-						"transient": {
-							"deleting": false
-						}
-					}
-				},
-				"source": [
-					"# Run a notebook from a notebook\r\n",
-					"this allows variables to be set and functions to be defined\r\n",
-					"\r\n",
-					"https://docs.microsoft.com/en-us/azure/synapse-analytics/synapse-notebook-activity?tabs=classical#run-another-synapse-notebook\r\n",
-					""
-				]
-			},
-			{
 				"cell_type": "code",
-				"metadata": {
-					"jupyter": {
-						"source_hidden": false,
-						"outputs_hidden": false
-					},
-					"nteract": {
-						"transient": {
-							"deleting": false
-						}
-					},
-					"collapsed": true
-				},
 				"source": [
-					"%run /testing/Notebook2"
+					"storage_account = 'stoeacisd3gg1'\r\n",
+					"instrumentation_key = 'InstrumentationKey=5a4a6026-f008-4e9e-a48a-96a412d250d6'"
 				],
 				"execution_count": null
 			},
@@ -81,7 +53,17 @@
 					"collapsed": true
 				},
 				"source": [
-					""
+					"stage1 = 'abfss://stage1@' + storage_account + '.dfs.core.windows.net'\r\n",
+					"stage2 = 'abfss://stage2@' + storage_account + '.dfs.core.windows.net'\r\n",
+					"stage3 = 'abfss://stage3@' + storage_account + '.dfs.core.windows.net'\r\n",
+					"\r\n",
+					"from pyspark.sql import SparkSession\r\n",
+					"spark = SparkSession.builder.appName(\"OEA_M365_processing\").getOrCreate()\r\n",
+					"\r\n",
+					"from opencensus.ext.azure.log_exporter import AzureLogHandler, logging\r\n",
+					"logger = logging.getLogger(__name__)\r\n",
+					"logger.setLevel(logging.DEBUG) # https://docs.python.org/3/library/logging.html#logging-levels\r\n",
+					"logger.addHandler(AzureLogHandler(connection_string=instrumentation_key))"
 				],
 				"execution_count": null
 			}
