@@ -1,8 +1,8 @@
 {
-	"name": "M365_test",
+	"name": "OurSIS",
 	"properties": {
 		"folder": {
-			"name": "1) OEA Framework/Modules/M365"
+			"name": "2) Custom"
 		},
 		"nbformat": 4,
 		"nbformat_minor": 2,
@@ -26,7 +26,8 @@
 			},
 			"language_info": {
 				"name": "python"
-			}
+			},
+			"sessionKeepAliveTimeout": 30
 		},
 		"cells": [
 			{
