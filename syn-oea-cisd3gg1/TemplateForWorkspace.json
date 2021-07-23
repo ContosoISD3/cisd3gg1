@@ -3417,7 +3417,47 @@
 							"%run /2) OEA Framework/Modules/M365/M365_lib"
 						],
 						"outputs": [],
-						"execution_count": 4
+						"execution_count": 5
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"jupyter": {
+								"source_hidden": false,
+								"outputs_hidden": false
+							},
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							},
+							"collapsed": true
+						},
+						"source": [
+							"%run /Data Lake Map"
+						],
+						"outputs": [],
+						"execution_count": 6
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"jupyter": {
+								"source_hidden": false,
+								"outputs_hidden": false
+							},
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							},
+							"collapsed": true
+						},
+						"source": [
+							"%run /2) OEA Framework/OEA_Core"
+						],
+						"outputs": [],
+						"execution_count": 8
 					},
 					{
 						"cell_type": "code",
@@ -4586,7 +4626,7 @@
 			"apiVersion": "2019-06-01-preview",
 			"properties": {
 				"folder": {
-					"name": "2) OEA Framework"
+					"name": "2) OEA Framework/Modules"
 				},
 				"nbformat": 4,
 				"nbformat_minor": 2,
