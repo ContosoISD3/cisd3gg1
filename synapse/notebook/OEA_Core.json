@@ -34,7 +34,8 @@
 				"cell_type": "code",
 				"source": [
 					"storage_account = 'stoeacisd3gg1'\r\n",
-					"instrumentation_key = 'InstrumentationKey=5a4a6026-f008-4e9e-a48a-96a412d250d6'"
+					"instrumentation_key = 'InstrumentationKey=5a4a6026-f008-4e9e-a48a-96a412d250d6'\r\n",
+					""
 				],
 				"execution_count": null
 			},
@@ -56,6 +57,7 @@
 					"stage1 = 'abfss://stage1@' + storage_account + '.dfs.core.windows.net'\r\n",
 					"stage2 = 'abfss://stage2@' + storage_account + '.dfs.core.windows.net'\r\n",
 					"stage3 = 'abfss://stage3@' + storage_account + '.dfs.core.windows.net'\r\n",
+					"oea_path = 'abfss://oea-framework@' + storage_account + '.dfs.core.windows.net'\r\n",
 					"\r\n",
 					"from pyspark.sql import SparkSession\r\n",
 					"spark = SparkSession.builder.appName(\"OEA_M365_processing\").getOrCreate()\r\n",
