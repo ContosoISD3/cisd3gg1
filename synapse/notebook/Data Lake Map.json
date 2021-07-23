@@ -56,10 +56,13 @@
 					}
 				},
 				"source": [
-					"<img height=\"30\" src=\"https://microsoft.github.io/OpenEduAnalytics/assets/images/oea-logo-nobg.png\">\r\n",
+					"<img align=\"right\" height=\"50\" src=\"https://microsoft.github.io/OpenEduAnalytics/assets/images/oea-logo-nobg.png\">\r\n",
+					"&nbsp\r\n",
+					"&nbsp\r\n",
+					"\r\n",
+					"---\r\n",
 					"\r\n",
 					"# Data Lake Map\r\n",
-					"---\r\n",
 					"This notebook provides documentation on the structure of the data lake and details on what data is brought in and how it's processed.\r\n",
 					"\r\n",
 					""
