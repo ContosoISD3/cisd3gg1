@@ -3343,7 +3343,7 @@
 			"apiVersion": "2019-06-01-preview",
 			"properties": {
 				"folder": {
-					"name": "OEA_Framework"
+					"name": "2) OEA Framework/Modules/M365"
 				},
 				"nbformat": 4,
 				"nbformat_minor": 2,
@@ -3394,10 +3394,10 @@
 						"cell_type": "code",
 						"metadata": {},
 						"source": [
-							"%run /tmp/OEA_Core"
+							"%run /2) OEA Framework/OEA_Core"
 						],
 						"outputs": [],
-						"execution_count": 4
+						"execution_count": 3
 					},
 					{
 						"cell_type": "code",
