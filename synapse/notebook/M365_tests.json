@@ -64,9 +64,9 @@
 					"collapsed": true
 				},
 				"source": [
-					"%run /2) OEA Framework/Modules/mytest/OEA_Core"
+					"%run /2) OEA Framework/Modules/M365/M365_lib"
 				],
-				"execution_count": 2
+				"execution_count": 3
 			},
 			{
 				"cell_type": "code",
@@ -83,9 +83,10 @@
 					"collapsed": true
 				},
 				"source": [
-					"%run /2) OEA Framework/Modules/M365/M65_lib"
+					"df = get_sample_activity_data()\r\n",
+					"df.show()"
 				],
-				"execution_count": 5
+				"execution_count": 7
 			}
 		]
 	}
