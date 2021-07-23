@@ -2,7 +2,7 @@
 	"name": "M365_test",
 	"properties": {
 		"folder": {
-			"name": "2) OEA Framework/Modules/M365"
+			"name": "OEA_Framework"
 		},
 		"nbformat": 4,
 		"nbformat_minor": 2,
@@ -52,9 +52,9 @@
 			{
 				"cell_type": "code",
 				"source": [
-					"%run /OEA_Framework/OEA_Core"
+					"%run /OEA_Frameworkasdfasdf/OEA_Core"
 				],
-				"execution_count": 8
+				"execution_count": 24
 			},
 			{
 				"cell_type": "code",
