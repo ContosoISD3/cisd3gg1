@@ -52,9 +52,9 @@
 			{
 				"cell_type": "code",
 				"source": [
-					"%run /2\\) OEA Framework/OEA_Core"
+					"%run /OEA_Framework/OEA_Core"
 				],
-				"execution_count": 6
+				"execution_count": 8
 			},
 			{
 				"cell_type": "code",
