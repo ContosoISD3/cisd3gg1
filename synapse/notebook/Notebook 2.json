@@ -1,8 +1,8 @@
 {
-	"name": "M365_process",
+	"name": "Notebook 2",
 	"properties": {
 		"folder": {
-			"name": "Source_Systems/M365"
+			"name": "sandbox"
 		},
 		"nbformat": 4,
 		"nbformat_minor": 2,
@@ -26,7 +26,8 @@
 			},
 			"language_info": {
 				"name": "python"
-			}
+			},
+			"sessionKeepAliveTimeout": 30
 		},
 		"cells": [
 			{

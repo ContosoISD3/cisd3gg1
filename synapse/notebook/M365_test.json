@@ -2,7 +2,7 @@
 	"name": "M365_test",
 	"properties": {
 		"folder": {
-			"name": "M365"
+			"name": "Source_Systems/M365"
 		},
 		"nbformat": 4,
 		"nbformat_minor": 2,
@@ -26,8 +26,7 @@
 			},
 			"language_info": {
 				"name": "python"
-			},
-			"sessionKeepAliveTimeout": 30
+			}
 		},
 		"cells": [
 			{

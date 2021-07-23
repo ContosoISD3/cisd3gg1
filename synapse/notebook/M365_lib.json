@@ -2,7 +2,7 @@
 	"name": "M365_lib",
 	"properties": {
 		"folder": {
-			"name": "M365"
+			"name": "Source_Systems/M365"
 		},
 		"nbformat": 4,
 		"nbformat_minor": 2,
