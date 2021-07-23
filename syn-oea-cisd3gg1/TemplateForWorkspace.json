@@ -1315,7 +1315,7 @@
 			"apiVersion": "2019-06-01-preview",
 			"properties": {
 				"folder": {
-					"name": "s1_to_s2"
+					"name": "3) archive/s1_to_s2"
 				},
 				"nbformat": 0,
 				"nbformat_minor": 0,
@@ -1430,6 +1430,10 @@
 			"properties": {
 				"nbformat": 4,
 				"nbformat_minor": 2,
+				"bigDataPool": {
+					"referenceName": "spark1",
+					"type": "BigDataPoolReference"
+				},
 				"sessionProperties": {
 					"driverMemory": "28g",
 					"driverCores": 4,
@@ -1451,6 +1455,21 @@
 					"language_info": {
 						"name": "python"
 					},
+					"a365ComputeOptions": {
+						"id": "/subscriptions/7b9a4896-4541-483f-bdc7-d8f4ec6be3ee/resourceGroups/rg-oea-CISD3GG1/providers/Microsoft.Synapse/workspaces/syn-oea-cisd3gg1/bigDataPools/spark1",
+						"name": "spark1",
+						"type": "Spark",
+						"endpoint": "https://syn-oea-cisd3gg1.dev.azuresynapse.net/livyApi/versions/2019-11-01-preview/sparkPools/spark1",
+						"auth": {
+							"type": "AAD",
+							"authResource": "https://dev.azuresynapse.net"
+						},
+						"sparkVersion": "2.4",
+						"nodeCount": 3,
+						"cores": 4,
+						"memory": 28,
+						"automaticScaleJobs": false
+					},
 					"sessionKeepAliveTimeout": 30
 				},
 				"cells": [
@@ -1464,8 +1483,37 @@
 							}
 						},
 						"source": [
+							"<img align=\"right\" height=\"50\" src=\"https://microsoft.github.io/OpenEduAnalytics/assets/images/oea-logo-nobg.png\">\r\n",
+							"&nbsp\r\n",
+							"&nbsp\r\n",
+							"\r\n",
+							"---\r\n",
+							"\r\n",
 							"# Data Lake Map\r\n",
+							"This notebook provides documentation on the structure of the data lake and details on what data is brought in and how it's processed.\r\n",
+							"\r\n",
 							""
+						]
+					},
+					{
+						"cell_type": "markdown",
+						"metadata": {
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							}
+						},
+						"source": [
+							"# M365\r\n",
+							"\r\n",
+							"M365 data is ingested through the Insights Premium product, and setup via the SDS admin pages.\r\n",
+							"\r\n",
+							"## Roster data\r\n",
+							"This is info about how roster data is received and processed.\r\n",
+							"\r\n",
+							"## Activity data\r\n",
+							"This is info about how roster data is received and processed."
 						]
 					}
 				]
@@ -1478,7 +1526,7 @@
 			"apiVersion": "2019-06-01-preview",
 			"properties": {
 				"folder": {
-					"name": "archive"
+					"name": "3) archive"
 				},
 				"nbformat": 4,
 				"nbformat_minor": 2,
@@ -1886,12 +1934,12 @@
 			"dependsOn": []
 		},
 		{
-			"name": "[concat(parameters('workspaceName'), '/M365_lib')]",
+			"name": "[concat(parameters('workspaceName'), '/M365_lib_backup')]",
 			"type": "Microsoft.Synapse/workspaces/notebooks",
 			"apiVersion": "2019-06-01-preview",
 			"properties": {
 				"folder": {
-					"name": "Source_Systems/M365"
+					"name": "2) OEA Framework/Modules/M365"
 				},
 				"nbformat": 4,
 				"nbformat_minor": 2,
@@ -1932,8 +1980,10 @@
 						"sparkVersion": "3.0",
 						"nodeCount": 10,
 						"cores": 4,
-						"memory": 28
-					}
+						"memory": 28,
+						"automaticScaleJobs": false
+					},
+					"sessionKeepAliveTimeout": 30
 				},
 				"cells": [
 					{
@@ -2415,7 +2465,7 @@
 			"apiVersion": "2019-06-01-preview",
 			"properties": {
 				"folder": {
-					"name": "Source_Systems/M365"
+					"name": "2) OEA Framework/Modules/M365"
 				},
 				"nbformat": 4,
 				"nbformat_minor": 2,
@@ -2439,11 +2489,13 @@
 					},
 					"language_info": {
 						"name": "python"
-					}
+					},
+					"sessionKeepAliveTimeout": 30
 				},
 				"cells": [
 					{
 						"cell_type": "code",
+						"metadata": {},
 						"source": [
 							""
 						],
@@ -2460,7 +2512,7 @@
 			"apiVersion": "2019-06-01-preview",
 			"properties": {
 				"folder": {
-					"name": "s1_to_s2"
+					"name": "3) archive/s1_to_s2"
 				},
 				"nbformat": 4,
 				"nbformat_minor": 2,
@@ -2684,7 +2736,7 @@
 			"apiVersion": "2019-06-01-preview",
 			"properties": {
 				"folder": {
-					"name": "s1_to_s2"
+					"name": "3) archive/s1_to_s2"
 				},
 				"nbformat": 4,
 				"nbformat_minor": 2,
@@ -3252,10 +3304,14 @@
 			"apiVersion": "2019-06-01-preview",
 			"properties": {
 				"folder": {
-					"name": "Source_Systems/M365"
+					"name": "OEA_Framework"
 				},
 				"nbformat": 4,
 				"nbformat_minor": 2,
+				"bigDataPool": {
+					"referenceName": "spark3v3",
+					"type": "BigDataPoolReference"
+				},
 				"sessionProperties": {
 					"driverMemory": "28g",
 					"driverCores": 4,
@@ -3272,17 +3328,55 @@
 					"saveOutput": true,
 					"kernelspec": {
 						"name": "synapse_pyspark",
-						"display_name": "python"
+						"display_name": "Synapse PySpark"
 					},
 					"language_info": {
 						"name": "python"
-					}
+					},
+					"a365ComputeOptions": {
+						"id": "/subscriptions/7b9a4896-4541-483f-bdc7-d8f4ec6be3ee/resourceGroups/rg-oea-CISD3GG1/providers/Microsoft.Synapse/workspaces/syn-oea-cisd3gg1/bigDataPools/spark3v3",
+						"name": "spark3v3",
+						"type": "Spark",
+						"endpoint": "https://syn-oea-cisd3gg1.dev.azuresynapse.net/livyApi/versions/2019-11-01-preview/sparkPools/spark3v3",
+						"auth": {
+							"type": "AAD",
+							"authResource": "https://dev.azuresynapse.net"
+						},
+						"sparkVersion": "3.0",
+						"nodeCount": 3,
+						"cores": 4,
+						"memory": 28,
+						"automaticScaleJobs": false
+					},
+					"sessionKeepAliveTimeout": 30
 				},
 				"cells": [
 					{
 						"cell_type": "code",
+						"metadata": {},
 						"source": [
-							""
+							"%run /OEA_Framework/OEA_Core"
+						],
+						"outputs": [],
+						"execution_count": 8
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"jupyter": {
+								"source_hidden": false,
+								"outputs_hidden": false
+							},
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							},
+							"collapsed": true
+						},
+						"source": [
+							"df = get_sample_activity_data()\r\n",
+							"display(df)"
 						],
 						"outputs": [],
 						"execution_count": null
@@ -3297,7 +3391,7 @@
 			"apiVersion": "2019-06-01-preview",
 			"properties": {
 				"folder": {
-					"name": "archive"
+					"name": "3) archive"
 				},
 				"nbformat": 4,
 				"nbformat_minor": 2,
@@ -3453,7 +3547,7 @@
 			"apiVersion": "2019-06-01-preview",
 			"properties": {
 				"folder": {
-					"name": "archive"
+					"name": "3) archive"
 				},
 				"nbformat": 4,
 				"nbformat_minor": 2,
@@ -3854,7 +3948,7 @@
 			"apiVersion": "2019-06-01-preview",
 			"properties": {
 				"folder": {
-					"name": "archive"
+					"name": "3) archive"
 				},
 				"nbformat": 4,
 				"nbformat_minor": 2,
@@ -3905,7 +3999,7 @@
 			"apiVersion": "2019-06-01-preview",
 			"properties": {
 				"folder": {
-					"name": "sandbox"
+					"name": "4) sandbox"
 				},
 				"nbformat": 4,
 				"nbformat_minor": 2,
@@ -3950,7 +4044,7 @@
 			"apiVersion": "2019-06-01-preview",
 			"properties": {
 				"folder": {
-					"name": "sandbox"
+					"name": "4) sandbox"
 				},
 				"nbformat": 4,
 				"nbformat_minor": 2,
@@ -4144,7 +4238,7 @@
 			"apiVersion": "2019-06-01-preview",
 			"properties": {
 				"folder": {
-					"name": "sandbox"
+					"name": "4) sandbox"
 				},
 				"nbformat": 4,
 				"nbformat_minor": 2,
@@ -4264,7 +4358,7 @@
 			"apiVersion": "2019-06-01-preview",
 			"properties": {
 				"folder": {
-					"name": "OEA"
+					"name": "OEA_Framework"
 				},
 				"nbformat": 4,
 				"nbformat_minor": 2,
@@ -4288,11 +4382,13 @@
 					},
 					"language_info": {
 						"name": "python"
-					}
+					},
+					"sessionKeepAliveTimeout": 30
 				},
 				"cells": [
 					{
 						"cell_type": "code",
+						"metadata": {},
 						"source": [
 							"storage_account = 'stoeacisd3gg1'\r\n",
 							"instrumentation_key = 'InstrumentationKey=5a4a6026-f008-4e9e-a48a-96a412d250d6'"
@@ -4340,7 +4436,7 @@
 			"apiVersion": "2019-06-01-preview",
 			"properties": {
 				"folder": {
-					"name": "OEA"
+					"name": "2) OEA Framework"
 				},
 				"nbformat": 4,
 				"nbformat_minor": 2,
@@ -4364,7 +4460,8 @@
 					},
 					"language_info": {
 						"name": "python"
-					}
+					},
+					"sessionKeepAliveTimeout": 30
 				},
 				"cells": [
 					{
@@ -4625,7 +4722,7 @@
 			"apiVersion": "2019-06-01-preview",
 			"properties": {
 				"folder": {
-					"name": "archive"
+					"name": "3) archive"
 				},
 				"nbformat": 4,
 				"nbformat_minor": 2,
@@ -4706,7 +4803,7 @@
 			"apiVersion": "2019-06-01-preview",
 			"properties": {
 				"folder": {
-					"name": "OEA"
+					"name": "2) OEA Framework/Docs"
 				},
 				"nbformat": 4,
 				"nbformat_minor": 2,
@@ -4730,7 +4827,8 @@
 					},
 					"language_info": {
 						"name": "python"
-					}
+					},
+					"sessionKeepAliveTimeout": 30
 				},
 				"cells": [
 					{
@@ -4800,7 +4898,7 @@
 			"apiVersion": "2019-06-01-preview",
 			"properties": {
 				"folder": {
-					"name": "s1_to_s2"
+					"name": "3) archive/s1_to_s2"
 				},
 				"nbformat": 4,
 				"nbformat_minor": 2,
@@ -5212,7 +5310,7 @@
 			"apiVersion": "2019-06-01-preview",
 			"properties": {
 				"folder": {
-					"name": "s1_to_s2"
+					"name": "3) archive/s1_to_s2"
 				},
 				"nbformat": 4,
 				"nbformat_minor": 2,
@@ -5316,7 +5414,7 @@
 			"apiVersion": "2019-06-01-preview",
 			"properties": {
 				"folder": {
-					"name": "archive"
+					"name": "3) archive"
 				},
 				"nbformat": 4,
 				"nbformat_minor": 2,
@@ -5707,6 +5805,253 @@
 						],
 						"outputs": [],
 						"execution_count": 2
+					}
+				]
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('workspaceName'), '/Contoso ISD')]",
+			"type": "Microsoft.Synapse/workspaces/notebooks",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"folder": {
+					"name": "2) OEA Framework/Packages"
+				},
+				"nbformat": 4,
+				"nbformat_minor": 2,
+				"sessionProperties": {
+					"driverMemory": "28g",
+					"driverCores": 4,
+					"executorMemory": "28g",
+					"executorCores": 4,
+					"numExecutors": 2,
+					"conf": {
+						"spark.dynamicAllocation.enabled": "false",
+						"spark.dynamicAllocation.minExecutors": "2",
+						"spark.dynamicAllocation.maxExecutors": "2"
+					}
+				},
+				"metadata": {
+					"saveOutput": true,
+					"kernelspec": {
+						"name": "synapse_pyspark",
+						"display_name": "python"
+					},
+					"language_info": {
+						"name": "python"
+					},
+					"sessionKeepAliveTimeout": 30
+				},
+				"cells": [
+					{
+						"cell_type": "code",
+						"metadata": {},
+						"source": [
+							""
+						],
+						"outputs": [],
+						"execution_count": null
+					}
+				]
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('workspaceName'), '/OurSIS')]",
+			"type": "Microsoft.Synapse/workspaces/notebooks",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"folder": {
+					"name": "1) Implementation/Custom_Modules"
+				},
+				"nbformat": 4,
+				"nbformat_minor": 2,
+				"sessionProperties": {
+					"driverMemory": "28g",
+					"driverCores": 4,
+					"executorMemory": "28g",
+					"executorCores": 4,
+					"numExecutors": 2,
+					"conf": {
+						"spark.dynamicAllocation.enabled": "false",
+						"spark.dynamicAllocation.minExecutors": "2",
+						"spark.dynamicAllocation.maxExecutors": "2"
+					}
+				},
+				"metadata": {
+					"saveOutput": true,
+					"kernelspec": {
+						"name": "synapse_pyspark",
+						"display_name": "python"
+					},
+					"language_info": {
+						"name": "python"
+					},
+					"sessionKeepAliveTimeout": 30
+				},
+				"cells": [
+					{
+						"cell_type": "code",
+						"metadata": {},
+						"source": [
+							""
+						],
+						"outputs": [],
+						"execution_count": null
+					}
+				]
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('workspaceName'), '/Main')]",
+			"type": "Microsoft.Synapse/workspaces/notebooks",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"folder": {
+					"name": "1) Implementation"
+				},
+				"nbformat": 4,
+				"nbformat_minor": 2,
+				"sessionProperties": {
+					"driverMemory": "28g",
+					"driverCores": 4,
+					"executorMemory": "28g",
+					"executorCores": 4,
+					"numExecutors": 2,
+					"conf": {
+						"spark.dynamicAllocation.enabled": "false",
+						"spark.dynamicAllocation.minExecutors": "2",
+						"spark.dynamicAllocation.maxExecutors": "2"
+					}
+				},
+				"metadata": {
+					"saveOutput": true,
+					"kernelspec": {
+						"name": "synapse_pyspark",
+						"display_name": "python"
+					},
+					"language_info": {
+						"name": "python"
+					},
+					"sessionKeepAliveTimeout": 30
+				},
+				"cells": [
+					{
+						"cell_type": "code",
+						"metadata": {},
+						"source": [
+							""
+						],
+						"outputs": [],
+						"execution_count": null
+					}
+				]
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('workspaceName'), '/M65_lib')]",
+			"type": "Microsoft.Synapse/workspaces/notebooks",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"folder": {
+					"name": "2) OEA Framework/Modules/M365"
+				},
+				"nbformat": 4,
+				"nbformat_minor": 2,
+				"sessionProperties": {
+					"driverMemory": "28g",
+					"driverCores": 4,
+					"executorMemory": "28g",
+					"executorCores": 4,
+					"numExecutors": 2,
+					"conf": {
+						"spark.dynamicAllocation.enabled": "false",
+						"spark.dynamicAllocation.minExecutors": "2",
+						"spark.dynamicAllocation.maxExecutors": "2"
+					}
+				},
+				"metadata": {
+					"saveOutput": true,
+					"kernelspec": {
+						"name": "synapse_pyspark",
+						"display_name": "python"
+					},
+					"language_info": {
+						"name": "python"
+					},
+					"sessionKeepAliveTimeout": 30
+				},
+				"cells": [
+					{
+						"cell_type": "markdown",
+						"metadata": {
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							}
+						},
+						"source": [
+							"# Define schemas"
+						]
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"jupyter": {
+								"source_hidden": false,
+								"outputs_hidden": false
+							},
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							},
+							"collapsed": true
+						},
+						"source": [
+							"#TechActivity\r\n",
+							"schema_for_activity = StructType([StructField('SignalType', StringType()),StructField('StartTime', TimestampType()),StructField('UserAgent', StringType()),StructField('SignalId', StringType()),StructField('SisClassId', StringType()),StructField('ClassId', StringType()),StructField('ChannelId', StringType()),StructField('AppName', StringType()),StructField('ActorId', StringType()),StructField('ActorRole', StringType()),StructField('SchemaVersion', StringType()),StructField('AssignmentId', StringType()),StructField('SubmissionId', StringType()),StructField('Action', StringType()),StructField('DueDate', TimestampType()),StructField('ClassCreationDate', TimestampType()),StructField('Grade', StringType()),StructField('SourceFileExtension', StringType()),StructField('MeetingDuration', IntegerType())])\r\n",
+							"#Person\r\n",
+							"schema_for_person = StructType([StructField('Id', StringType()),StructField('FirstSeenDateTime', TimestampType()),StructField('LastSeenDateTime', TimestampType()),StructField('GivenName', StringType()),StructField('MiddleName', StringType()),StructField('PreferredGivenName', StringType()),StructField('PreferredMiddleName', StringType()),StructField('PreferredSurname', StringType()),StructField('Surname', StringType())])\r\n",
+							""
+						],
+						"outputs": [],
+						"execution_count": null
+					},
+					{
+						"cell_type": "markdown",
+						"metadata": {
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							}
+						},
+						"source": [
+							"# Utilities"
+						]
+					},
+					{
+						"cell_type": "code",
+						"metadata": {},
+						"source": [
+							"def get_sample_activity_data():\r\n",
+							"    df = spark.createDataFrame(\r\n",
+							"        [\r\n",
+							"            (\"PostChannelMessage\",\"2021-06-02 14:48:11.0000000\",\"\",\"AAMkAGRlM2ViNzg5LWMzOGEtNGYyMC05MTFhLWE5MzAxNTk3NjMzNwBGAAAAAAD6n_vRPyLsQ4uBYtj1MoVQBwBONi1figD3Spv1d4sN1luqAAAAAGZ3AABONi1figD3Spv1d4sN1luqAADDKaaJAAA=\",\"\",\"9ab188a9-815d-411d-83a3-a98b56a6c614\",\"19:20990825150f4da78ffdcd6a05cfa2e2@thread.tacv2\",\"Teams\",\"5ddbce29-3ab9-405d-9350-05945a8a8542\",\"Student\",\"1.1\",\"\",\"\",\"\",\"\",\"\",\"\",\"\",\"\"),\r\n",
+							"            (\"ReplyChannelMessage\",\"2021-06-02 16:36:46.0000000\",\"\",\"AAMkAGRlM2ViNzg5LWMzOGEtNGYyMC05MTFhLWE5MzAxNTk3NjMzNwBGAAAAAAD6n_vRPyLsQ4uBYtj1MoVQBwBONi1figD3Spv1d4sN1luqAAAAAGZ3AABONi1figD3Spv1d4sN1luqAADDKaaRAAA=\",\"\",\"9ab188a9-815d-411d-83a3-a98b56a6c614\",\"19:20990825150f4da78ffdcd6a05cfa2e2@thread.tacv2\",\"Teams\",\"5ddbce29-3ab9-405d-9350-05945a8a8542\",\"Student\",\"1.1\",\"\",\"\",\"\",\"\",\"\",\"\",\"\",\"\"),\r\n",
+							"            (\"PostChannelMessage\",\"2021-06-02 14:45:34.0000000\",\"\",\"AAMkADg2NDk3MmIwLTM5NDUtNGQwZS04NDQzLTM5MjViMjZiYzFiNABGAAAAAAAEYRCcXVmaTYyFMuIJ9RetBwDPLnXMbt9HQaxJaYXomUUhAAAAAAEnAADPLnXMbt9HQaxJaYXomUUhAADC-nCbAAA=\",\"\",\"5e0407f7-c973-4f25-9cef-302117b080c6\",\"19:1500af388f6647739e2300bdc1db53a2@thread.tacv2\",\"Teams\",\"7951c64a-b45d-4adb-8842-5e7ab60d17e1\",\"\",\"1.1\",\"\",\"\",\"\",\"\",\"\",\"\",\"\",\"\")  \r\n",
+							"        ],\r\n",
+							"        schema_for_activity \r\n",
+							"    )\r\n",
+							"    return df"
+						],
+						"outputs": [],
+						"execution_count": null
 					}
 				]
 			},
