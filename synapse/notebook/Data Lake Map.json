@@ -85,19 +85,6 @@
 					"## Activity data\r\n",
 					"This is info about how roster data is received and processed."
 				]
-			},
-			{
-				"cell_type": "markdown",
-				"metadata": {
-					"nteract": {
-						"transient": {
-							"deleting": false
-						}
-					}
-				},
-				"source": [
-					"[my test]('notebooks/OEA_Core?workspace=%2Fsubscriptions%2F7b9a4896-4541-483f-bdc7-d8f4ec6be3ee%2FresourceGroups%2Frg-oea-CISD3GG1%2Fproviders%2FMicrosoft.Synapse%2Fworkspaces%2Fsyn-oea-cisd3gg1)"
-				]
 			}
 		]
 	}
