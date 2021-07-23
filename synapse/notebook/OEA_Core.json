@@ -2,7 +2,7 @@
 	"name": "OEA_Core",
 	"properties": {
 		"folder": {
-			"name": "2) OEA Framework"
+			"name": "OEA_Framework"
 		},
 		"nbformat": 4,
 		"nbformat_minor": 2,
