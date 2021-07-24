@@ -64,72 +64,8 @@
 					"collapsed": true
 				},
 				"source": [
-					"%run /2) OEA Framework/OEA_Core"
-				],
-				"execution_count": 3
-			},
-			{
-				"cell_type": "code",
-				"metadata": {
-					"jupyter": {
-						"source_hidden": false,
-						"outputs_hidden": false
-					},
-					"nteract": {
-						"transient": {
-							"deleting": false
-						}
-					},
-					"collapsed": true
-				},
-				"source": [
-					"%run /2) OEA Framework/Modules/M365/M365_lib"
-				],
-				"execution_count": 2
-			},
-			{
-				"cell_type": "code",
-				"metadata": {
-					"jupyter": {
-						"source_hidden": false,
-						"outputs_hidden": false
-					},
-					"nteract": {
-						"transient": {
-							"deleting": false
-						}
-					},
-					"collapsed": true
-				},
-				"source": [
-					"tmp = 'hi'"
-				],
-				"execution_count": 1
-			},
-			{
-				"cell_type": "code",
-				"metadata": {
-					"jupyter": {
-						"source_hidden": false,
-						"outputs_hidden": false
-					},
-					"nteract": {
-						"transient": {
-							"deleting": false
-						}
-					},
-					"collapsed": true
-				},
-				"source": [
-					"from io import StringIO\r\n",
-					"#TechActivity\r\n",
-					"schema_for_activity = StructType([StructField('SignalType', StringType()),StructField('StartTime', StringType()),StructField('UserAgent', StringType()),StructField('SignalId', StringType()),StructField('SisClassId', StringType()),StructField('ClassId', StringType()),StructField('ChannelId', StringType()),StructField('AppName', StringType()),StructField('ActorId', StringType()),StructField('ActorRole', StringType()),StructField('SchemaVersion', StringType()),StructField('AssignmentId', StringType()),StructField('SubmissionId', StringType()),StructField('Action', StringType()),StructField('DueDate', StringType()),StructField('ClassCreationDate', StringType()),StructField('Grade', StringType()),StructField('SourceFileExtension', StringType()),StructField('MeetingDuration', IntegerType())])\r\n",
-					"\r\n",
-					"data = '\"PostChannelMessage\",\"2021-06-02 14:48:11.0000000\",\"\",\"AAMkAGRlM2ViNzg5LWMzOGEtNGYyMC05MTFhLWE5MzAxNTk3NjMzNwBGAAAAAAD6n_vRPyLsQ4uBYtj1MoVQBwBONi1figD3Spv1d4sN1luqAAAAAGZ3AABONi1figD3Spv1d4sN1luqAADDKaaJAAA=\",\"\",\"9ab188a9-815d-411d-83a3-a98b56a6c614\",\"19:20990825150f4da78ffdcd6a05cfa2e2@thread.tacv2\",\"Teams\",\"5ddbce29-3ab9-405d-9350-05945a8a8542\",\"Student\",\"1.1\",\"\",\"\",\"\",\"\",\"\",\"\",\"\",\"\"'\r\n",
-					"f = StringIO(data)\r\n",
-					"\r\n",
-					"df = spark.read(f, header='false', schema=schema_for_activity)\r\n",
-					"print(df)"
+					"%run /2) OEA Framework/OEA_Core\r\n",
+					""
 				],
 				"execution_count": 28
 			},
@@ -148,16 +84,25 @@
 					"collapsed": true
 				},
 				"source": [
-					"tmp = spark.sparkContext.parallelize(\r\n",
-					"  \"\"\"\r\n",
-					"    |id, date, timedump\r\n",
-					"    |1, \"2014/01/01 23:00:01\",1499959917383\r\n",
-					"    |2, \"2014/11/31 12:40:32\",1198138008843\r\n",
-					"  \"\"\".splitlines())\r\n",
-					"\r\n",
-					"print(tmp)"
+					"# Move this to OEA_core\r\n",
+					"from pyspark.sql.types import StructType, StructField, StringType, IntegerType, DoubleType, ArrayType, TimestampType, BooleanType\r\n",
+					"from delta.tables import DeltaTable\r\n",
+					"from pyspark.sql.functions import year, month, col"
 				],
-				"execution_count": 17
+				"execution_count": 29
+			},
+			{
+				"cell_type": "markdown",
+				"metadata": {
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					"# Move this to M365_lib once developed"
+				]
 			},
 			{
 				"cell_type": "code",
@@ -174,43 +119,49 @@
 					"collapsed": true
 				},
 				"source": [
-					"#TechActivity\r\n",
-					"schema_for_activity = StructType([StructField('SignalType', StringType()),StructField('StartTime', StringType()),StructField('UserAgent', StringType()),StructField('SignalId', StringType()),StructField('SisClassId', StringType()),StructField('ClassId', StringType()),StructField('ChannelId', StringType()),StructField('AppName', StringType()),StructField('ActorId', StringType()),StructField('ActorRole', StringType()),StructField('SchemaVersion', StringType()),StructField('AssignmentId', StringType()),StructField('SubmissionId', StringType()),StructField('Action', StringType()),StructField('DueDate', StringType()),StructField('ClassCreationDate', StringType()),StructField('Grade', StringType()),StructField('SourceFileExtension', StringType()),StructField('MeetingDuration', IntegerType())])\r\n",
+					"s1_M365 = stage1 + '/M365'\r\n",
+					"s2_M365 = stage2 + '/M365'\r\n",
+					"s3_M365 = stage3 + '/M365'\r\n",
 					"\r\n",
-					"data = '\"PostChannelMessage\",\"2021-06-02 14:48:11.0000000\",\"\",\"AAMkAGRlM2ViNzg5LWMzOGEtNGYyMC05MTFhLWE5MzAxNTk3NjMzNwBGAAAAAAD6n_vRPyLsQ4uBYtj1MoVQBwBONi1figD3Spv1d4sN1luqAAAAAGZ3AABONi1figD3Spv1d4sN1luqAADDKaaJAAA=\",\"\",\"9ab188a9-815d-411d-83a3-a98b56a6c614\",\"19:20990825150f4da78ffdcd6a05cfa2e2@thread.tacv2\",\"Teams\",\"5ddbce29-3ab9-405d-9350-05945a8a8542\",\"Student\",\"1.1\",\"\",\"\",\"\",\"\",\"\",\"\",\"\",\"\"'\r\n",
-					"tmp = spark.sparkContext.parallelize(data.splitlines())\r\n",
-					"print(tmp)\r\n",
+					"M365_module_path = oea_path + '/modules/M365'\r\n",
+					"s1_M365_activity = s1_M365 + '/activity'\r\n",
+					"s1_M365_roster = s1_M365 + '/roster'\r\n",
 					"\r\n",
-					"df = spark.createDataFrame(tmp, schema_for_activity)\r\n",
-					"display(df)"
-				],
-				"execution_count": 21
-			},
-			{
-				"cell_type": "code",
-				"metadata": {
-					"jupyter": {
-						"source_hidden": false,
-						"outputs_hidden": false
-					},
-					"nteract": {
-						"transient": {
-							"deleting": false
-						}
-					},
-					"collapsed": true
-				},
-				"source": [
-					"tmp = spark.sparkContext.parallelize(\r\n",
-					"  \"\"\"\r\n",
-					"    |id, date, timedump\r\n",
-					"    |1, \"2014/01/01 23:00:01\",1499959917383\r\n",
-					"    |2, \"2014/11/31 12:40:32\",1198138008843\r\n",
-					"  \"\"\".splitlines().toList).toDS()\r\n",
 					"\r\n",
+					"# Schema definitions\r\n",
+					"M365_schemas = {}\r\n",
+					"M365_schemas['TechActivity'] = StructType([StructField('SignalType', StringType()),StructField('StartTime', TimestampType()),StructField('UserAgent', StringType()),StructField('SignalId', StringType()),StructField('SisClassId', StringType()),StructField('ClassId', StringType()),StructField('ChannelId', StringType()),StructField('AppName', StringType()),StructField('ActorId', StringType()),StructField('ActorRole', StringType()),StructField('SchemaVersion', StringType()),StructField('AssignmentId', StringType()),StructField('SubmissionId', StringType()),StructField('Action', StringType()),StructField('DueDate', TimestampType()),StructField('ClassCreationDate', TimestampType()),StructField('Grade', StringType()),StructField('SourceFileExtension', StringType()),StructField('MeetingDuration', IntegerType())])\r\n",
+					"M365_schemas['AadUser'] = StructType([StructField('ObjectId', StringType()),StructField('AnchorId', StringType()),StructField('DisplayName', StringType()),StructField('FirstSeenDateTime', TimestampType()),StructField('GivenName', StringType()),StructField('LastSeenDateTime', TimestampType()),StructField('Mail', StringType()),StructField('MailNickname', StringType()),StructField('Role', StringType()),StructField('Surname', StringType()),StructField('UserPrincipalName', StringType()),StructField('StudentId', StringType()),StructField('TeacherId', StringType())])\r\n",
+					"M365_schemas['AadUserPersonMapping'] = StructType([StructField('ObjectId', StringType()),StructField('FirstSeenDateTime', TimestampType()),StructField('LastSeenDateTime', TimestampType()),StructField('PersonId', StringType())])\r\n",
+					"M365_schemas['Course'] = StructType([StructField('Id', StringType()),StructField('AcademicYearSessionId', StringType()),StructField('ExternalId', StringType()),StructField('FirstSeenDateTime', TimestampType()),StructField('IsActiveInSession', BooleanType()),StructField('LastSeenDateTime', TimestampType()),StructField('Name', StringType()),StructField('OrganizationId', StringType()),StructField('SourceSystemId', StringType()),StructField('Code', StringType())])\r\n",
+					"M365_schemas['CourseGradeLevel'] = StructType([StructField('Id', StringType()),StructField('CourseId', StringType()),StructField('FirstSeenDateTime', TimestampType()),StructField('RefGradeLevelId', StringType())])\r\n",
+					"M365_schemas['CourseSubject'] = StructType([StructField('Id', StringType()),StructField('CourseId', StringType()),StructField('FirstSeenDateTime', TimestampType()),StructField('RefAcademicSubjectId', StringType())])\r\n",
+					"M365_schemas['Enrollment'] = StructType([StructField('Id', StringType()),StructField('ExternalId', StringType()),StructField('FirstSeenDateTime', TimestampType()),StructField('IsActiveInSession', BooleanType()),StructField('LastSeenDateTime', TimestampType()),StructField('PersonId', StringType()),StructField('RefSectionRoleId', StringType()),StructField('SectionId', StringType()),StructField('SourceSystemId', StringType()),StructField('EntryDate', StringType()),StructField('ExitDate', StringType()),StructField('IsPrimaryStaffForSection', BooleanType())])\r\n",
+					"M365_schemas['Organization'] = StructType([StructField('Id', StringType()),StructField('ExternalId', StringType()),StructField('FirstSeenDateTime', TimestampType()),StructField('LastSeenDateTime', TimestampType()),StructField('Name', StringType()),StructField('RefOrganizationTypeId', StringType()),StructField('SourceSystemId', StringType()),StructField('Identifier', StringType()),StructField('ParentOrganizationId', StringType())])\r\n",
+					"M365_schemas['Person'] = StructType([StructField('Id', StringType()),StructField('FirstSeenDateTime', TimestampType()),StructField('LastSeenDateTime', TimestampType()),StructField('GivenName', StringType()),StructField('MiddleName', StringType()),StructField('PreferredGivenName', StringType()),StructField('PreferredMiddleName', StringType()),StructField('PreferredSurname', StringType()),StructField('Surname', StringType())])\r\n",
+					"M365_schemas['PersonDemographic'] = StructType([StructField('PersonId', StringType()),StructField('FirstSeenDateTime', TimestampType()),StructField('BirthCity', StringType()),StructField('BirthCountryCode', StringType()),StructField('BirthDate', StringType()),StructField('BirthState', StringType()),StructField('RefSexId', StringType())])\r\n",
+					"M365_schemas['PersonDemographicEthnicity'] = StructType([StructField('Id', StringType()),StructField('FirstSeenDateTime', TimestampType()),StructField('PersonId', StringType()),StructField('RefEthnicityId', StringType())])\r\n",
+					"M365_schemas['PersonDemographicPersonFlag'] = StructType([StructField('Id', StringType()),StructField('FirstSeenDateTime', TimestampType()),StructField('PersonId', StringType()),StructField('RefPersonFlagId', StringType())])\r\n",
+					"M365_schemas['PersonDemographicRace'] = StructType([StructField('Id', StringType()),StructField('FirstSeenDateTime', TimestampType()),StructField('PersonId', StringType()),StructField('RefRaceId', StringType())])\r\n",
+					"M365_schemas['PersonEmailAddress'] = StructType([StructField('Id', StringType()),StructField('EmailAddress', StringType()),StructField('FirstSeenDateTime', TimestampType()),StructField('PersonId', StringType()),StructField('PriorityOrder', IntegerType()),StructField('RefEmailAddressTypeId', StringType())])\r\n",
+					"M365_schemas['PersonIdentifier'] = StructType([StructField('Id', StringType()),StructField('FirstSeenDateTime', TimestampType()),StructField('Identifier', StringType()),StructField('IsPresentInSource', BooleanType()),StructField('PersonId', StringType()),StructField('RefIdentifierTypeId', StringType()),StructField('SourceSystemId', StringType())])\r\n",
+					"M365_schemas['PersonOrganizationRole'] = StructType([StructField('Id', StringType()),StructField('ExternalId', StringType()),StructField('FirstSeenDateTime', TimestampType()),StructField('IsActiveInSession', BooleanType()),StructField('LastSeenDateTime', TimestampType()),StructField('OrganizationId', StringType()),StructField('PersonId', StringType()),StructField('RefRoleId', StringType()),StructField('SessionId', StringType()),StructField('SourceSystemId', StringType()),StructField('IsPrimary', BooleanType()),StructField('RefGradeLevelId', StringType()),StructField('RoleEndDate', StringType()),StructField('RoleStartDate', StringType())])\r\n",
+					"M365_schemas['PersonPhoneNumber'] = StructType([StructField('Id', StringType()),StructField('FirstSeenDateTime', TimestampType()),StructField('PersonId', StringType()),StructField('PhoneNumber', StringType()),StructField('PriorityOrder', IntegerType()),StructField('RefPhoneNumberTypeId', StringType())])\r\n",
+					"M365_schemas['PersonRelationship'] = StructType([StructField('Id', StringType()),StructField('FirstSeenDateTime', TimestampType()),StructField('PersonId', StringType()),StructField('RefPersonRelationshipId', StringType()),StructField('RelatedPersonId', StringType())])\r\n",
+					"M365_schemas['RefDefinition'] = StructType([StructField('Id', StringType()),StructField('Code', StringType()),StructField('FirstSeenDateTime', TimestampType()),StructField('LastSeenDateTime', TimestampType()),StructField('Namespace', StringType()),StructField('RefType', StringType()),StructField('SortOrder', IntegerType())])\r\n",
+					"M365_schemas['Section'] = StructType([StructField('Id', StringType()),StructField('ExternalId', StringType()),StructField('FirstSeenDateTime', TimestampType()),StructField('LastSeenDateTime', TimestampType()),StructField('Name', StringType()),StructField('OrganizationId', StringType()),StructField('SourceSystemId', StringType()),StructField('Code', StringType()),StructField('CourseId', StringType()),StructField('Location', StringType())])\r\n",
+					"M365_schemas['SectionGradeLevel'] = StructType([StructField('Id', StringType()),StructField('FirstSeenDateTime', TimestampType()),StructField('RefGradeLevelId', StringType()),StructField('SectionId', StringType())])\r\n",
+					"M365_schemas['SectionSession'] = StructType([StructField('Id', StringType()),StructField('FirstSeenDateTime', TimestampType()),StructField('IsActiveInSession', BooleanType()),StructField('LastSeenDateTime', TimestampType()),StructField('SectionId', StringType()),StructField('SessionId', StringType())])\r\n",
+					"M365_schemas['SectionSubject'] = StructType([StructField('Id', StringType()),StructField('FirstSeenDateTime', TimestampType()),StructField('RefAcademicSubjectId', StringType()),StructField('SectionId', StringType())])\r\n",
+					"M365_schemas['Session'] = StructType([StructField('Id', StringType()),StructField('EndDate', StringType()),StructField('ExternalId', StringType()),StructField('FirstSeenDateTime', TimestampType()),StructField('LastSeenDateTime', TimestampType()),StructField('Name', StringType()),StructField('RefAcademicYearId', StringType()),StructField('RefSessionTypeId', StringType()),StructField('SourceSystemId', StringType()),StructField('StartDate', StringType()),StructField('ParentSessionId', StringType())])\r\n",
+					"M365_schemas['SourceSystem'] = StructType([StructField('Id', StringType()),StructField('FirstSeenDateTime', TimestampType()),StructField('LastSeenDateTime', TimestampType()),StructField('Name', StringType())])\r\n",
+					"\r\n",
+					"def get_sample_activity_data(entity):\r\n",
+					"    df = spark.read.csv(M365_module_path + '/sample_data/small_samples/' + entity + '.csv', schema=M365_schemas[entity])\r\n",
+					"    return df\r\n",
 					""
 				],
-				"execution_count": 13
+				"execution_count": 30
 			},
 			{
 				"cell_type": "code",
@@ -227,27 +178,15 @@
 					"collapsed": true
 				},
 				"source": [
-					"from pyspark.sql.types import StructType, StructField, StringType, IntegerType, DoubleType, ArrayType, TimestampType, BooleanType\r\n",
+					"def process_activity(s1_path=s1_M365_activity, s2_path=s2_M365):\r\n",
+					"    df = spark.readStream.csv(s1_path + '/*/*.csv', header='false', schema=M365_schemas['TechActivity'])\r\n",
+					"    df = df.dropDuplicates(['SignalId'])\r\n",
+					"    df = df.withColumn('year', year(col('StartTime'))).withColumn('month', month(col('StartTime')))\r\n",
 					"\r\n",
-					"#TechActivity\r\n",
-					"schema_for_activity = StructType([StructField('SignalType', StringType()),StructField('StartTime', StringType()),StructField('UserAgent', StringType()),StructField('SignalId', StringType()),StructField('SisClassId', StringType()),StructField('ClassId', StringType()),StructField('ChannelId', StringType()),StructField('AppName', StringType()),StructField('ActorId', StringType()),StructField('ActorRole', StringType()),StructField('SchemaVersion', StringType()),StructField('AssignmentId', StringType()),StructField('SubmissionId', StringType()),StructField('Action', StringType()),StructField('DueDate', StringType()),StructField('ClassCreationDate', StringType()),StructField('Grade', StringType()),StructField('SourceFileExtension', StringType()),StructField('MeetingDuration', IntegerType())])\r\n",
-					"#Person\r\n",
-					"schema_for_person = StructType([StructField('Id', StringType()),StructField('FirstSeenDateTime', TimestampType()),StructField('LastSeenDateTime', TimestampType()),StructField('GivenName', StringType()),StructField('MiddleName', StringType()),StructField('PreferredGivenName', StringType()),StructField('PreferredMiddleName', StringType()),StructField('PreferredSurname', StringType()),StructField('Surname', StringType())])\r\n",
-					"\r\n",
-					"\r\n",
-					"def get_sample_activity_data2():\r\n",
-					"    df = spark.createDataFrame(\r\n",
-					"        [\r\n",
-					"            (\"PostChannelMessage\",\"2021-06-02 14:48:11.0000000\",\"\",\"AAMkAGRlM2ViNzg5LWMzOGEtNGYyMC05MTFhLWE5MzAxNTk3NjMzNwBGAAAAAAD6n_vRPyLsQ4uBYtj1MoVQBwBONi1figD3Spv1d4sN1luqAAAAAGZ3AABONi1figD3Spv1d4sN1luqAADDKaaJAAA=\",\"\",\"9ab188a9-815d-411d-83a3-a98b56a6c614\",\"19:20990825150f4da78ffdcd6a05cfa2e2@thread.tacv2\",\"Teams\",\"5ddbce29-3ab9-405d-9350-05945a8a8542\",\"Student\",\"1.1\",\"\",\"\",\"\",\"\",\"\",\"\",\"\",\"\")\r\n",
-					"        ],\r\n",
-					"        schema_for_activity \r\n",
-					"    )\r\n",
-					"    return df\r\n",
-					"\r\n",
-					"df = get_sample_activity_data2()\r\n",
-					"df.show()"
+					"    query = df.writeStream.format(\"delta\").outputMode(\"append\").trigger(once=True).option(\"checkpointLocation\", s1_path + '/_checkpoints').partitionBy('year', 'month')\r\n",
+					"    query.start(s2_path)"
 				],
-				"execution_count": 7
+				"execution_count": 31
 			},
 			{
 				"cell_type": "code",
@@ -264,10 +203,70 @@
 					"collapsed": true
 				},
 				"source": [
-					"df = get_sample_activity_data()2\r\n",
-					"df.show()"
+					"process_activity()"
 				],
-				"execution_count": 7
+				"execution_count": 32
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					},
+					"collapsed": true
+				},
+				"source": [
+					"df = get_sample_activity_data('TechActivity')\r\n",
+					"df = get_sample_activity_data('Section')\r\n",
+					"display(df)"
+				],
+				"execution_count": null
+			},
+			{
+				"cell_type": "markdown",
+				"metadata": {
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					"# Move this to M365_process"
+				]
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					},
+					"collapsed": true
+				},
+				"source": [
+					"# Process M365 activity data\r\n",
+					"inbound_path = stage1 + '/tutorial_01/activity'\r\n",
+					"dest_path = stage2 + '/tutorial_01/TechActivity'\r\n",
+					"\r\n",
+					"csvDF = spark.readStream.csv(inbound_path + '/*/*.csv', header='false', schema=schema)\r\n",
+					"csvDF = csvDF.dropDuplicates(['SignalId'])\r\n",
+					"csvDF = csvDF.withColumn('year', year(col('StartTime'))).withColumn('month', month(col('StartTime')))\r\n",
+					"\r\n",
+					"query = csvDF.writeStream.format(\"delta\").outputMode(\"append\").trigger(once=True).option(\"checkpointLocation\", inbound_path + '/_checkpoints').partitionBy('year', 'month')"
+				],
+				"execution_count": null
 			}
 		]
 	}
