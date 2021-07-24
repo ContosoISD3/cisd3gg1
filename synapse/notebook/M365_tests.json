@@ -161,98 +161,6 @@
 				"execution_count": null
 			},
 			{
-				"cell_type": "markdown",
-				"metadata": {
-					"nteract": {
-						"transient": {
-							"deleting": false
-						}
-					}
-				},
-				"source": [
-					"# Move this to lib"
-				]
-			},
-			{
-				"cell_type": "code",
-				"metadata": {
-					"jupyter": {
-						"source_hidden": false,
-						"outputs_hidden": false
-					},
-					"nteract": {
-						"transient": {
-							"deleting": false
-						}
-					},
-					"collapsed": true
-				},
-				"source": [
-					"from pyspark.sql.utils import AnalysisException\r\n",
-					"def process_roster_entity(path, entity):\r\n",
-					"    try:\r\n",
-					"        #logger.debug(f\"[OEA] s1_to_s2: source_path={source_path}, destination_path={destination_path}\")\r\n",
-					"        df = spark.read.csv(path + '/' + entity, header='false', schema=M365_schemas[entity])\r\n",
-					"        df.write.format('delta').mode('overwrite').option(\"mergeSchema\", \"true\").save(s2_M365 + '/' + entity)\r\n",
-					"    except (AnalysisException) as error:\r\n",
-					"        logger.exception(\"[OEA] \" + str(error))\r\n",
-					"        logger.warning(\"[OEA] Warning: \" + str(error))\r\n",
-					"\r\n",
-					"def process_roster_date_folder(date_folder_path):\r\n",
-					"    process_roster_entity(date_folder_path, 'AadUser')\r\n",
-					"    process_roster_entity(date_folder_path, 'AadUserPersonMapping')\r\n",
-					"    process_roster_entity(date_folder_path, 'Course')\r\n",
-					"    process_roster_entity(date_folder_path, 'CourseGradeLevel')\r\n",
-					"    process_roster_entity(date_folder_path, 'CourseSubject')\r\n",
-					"    process_roster_entity(date_folder_path, 'Enrollment')\r\n",
-					"    process_roster_entity(date_folder_path, 'Organization')\r\n",
-					"    process_roster_entity(date_folder_path, 'Person')\r\n",
-					"    process_roster_entity(date_folder_path, 'PersonDemographic')\r\n",
-					"    process_roster_entity(date_folder_path, 'PersonDemographicEthnicity')\r\n",
-					"    process_roster_entity(date_folder_path, 'PersonDemographicPersonFlag')\r\n",
-					"    process_roster_entity(date_folder_path, 'PersonDemographicRace')\r\n",
-					"    process_roster_entity(date_folder_path, 'PersonEmailAddress')\r\n",
-					"    process_roster_entity(date_folder_path, 'PersonIdentifier')\r\n",
-					"    process_roster_entity(date_folder_path, 'PersonOrganizationRole')\r\n",
-					"    process_roster_entity(date_folder_path, 'PersonPhoneNumber')\r\n",
-					"    process_roster_entity(date_folder_path, 'PersonRelationship')\r\n",
-					"    process_roster_entity(date_folder_path, 'RefDefinition')\r\n",
-					"    process_roster_entity(date_folder_path, 'Section')\r\n",
-					"    process_roster_entity(date_folder_path, 'SectionGradeLevel')\r\n",
-					"    process_roster_entity(date_folder_path, 'SectionSession')\r\n",
-					"    process_roster_entity(date_folder_path, 'SectionSubject')\r\n",
-					"    process_roster_entity(date_folder_path, 'Session')\r\n",
-					"    process_roster_entity(date_folder_path, 'SourceSystem')"
-				],
-				"execution_count": 16
-			},
-			{
-				"cell_type": "code",
-				"metadata": {
-					"jupyter": {
-						"source_hidden": false,
-						"outputs_hidden": false
-					},
-					"nteract": {
-						"transient": {
-							"deleting": false
-						}
-					},
-					"collapsed": true
-				},
-				"source": [
-					"def process_roster():\r\n",
-					"    logger.info(\"[OEA] Processing M365 roster data from: \" + inbound_path)\r\n",
-					"\r\n",
-					"    items = mssparkutils.fs.ls(s1_M365 + '/roster')\r\n",
-					"    for item in items:\r\n",
-					"        if item.isDir:\r\n",
-					"            process_roster_date_folder(item.path)\r\n",
-					"            mssparkutils.fs.mv(item.path, s1_M365 + '/roster_processed/', True)"
-				],
-				"execution_count": 17
-			},
-			{
 				"cell_type": "code",
 				"metadata": {
 					"jupyter": {
@@ -270,6 +178,19 @@
 					"process_roster()"
 				],
 				"execution_count": 18
+			},
+			{
+				"cell_type": "markdown",
+				"metadata": {
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					"# Move this to lib"
+				]
 			},
 			{
 				"cell_type": "code",
@@ -298,40 +219,6 @@
 					"files = mssparkutils.fs.ls(stage1 + '/M365/processed/roster')\r\n",
 					"for file in files:\r\n",
 					"    mssparkutils.fs.mv(file.path, stage1 + '/M365/inbound/roster', True)"
-				],
-				"execution_count": null
-			},
-			{
-				"cell_type": "code",
-				"metadata": {
-					"jupyter": {
-						"source_hidden": false,
-						"outputs_hidden": false
-					},
-					"nteract": {
-						"transient": {
-							"deleting": false
-						}
-					},
-					"collapsed": true
-				},
-				"source": [
-					"# Resets all TechActivity processing. This is intended for use during initial testing - use with caution\r\n",
-					"# This function does the following:\r\n",
-					"#  - moves the folders from stage1/M365/roster_processed to stage1/M365/roster\r\n",
-					"#  - deletes the roster delta tables at stage2/M365/*\r\n",
-					"def reset_activity_processing():\r\n",
-					"    # Delete stage2/M365/* if it exists\r\n",
-					"    items = mssparkutils.fs.ls(s2_M365)\r\n",
-					"    #print(file.name, file.isDir, file.isFile, file.path, file.size)\r\n",
-					"    for item in items:\r\n",
-					"        if item.name != 'TechActivity':\r\n",
-					"            mssparkutils.fs.rm(s2_M365 + '/' + item.name, True)\r\n",
-					"\r\n",
-					"    items = mssparkutils.fs.ls(s1_M365 + '/activity')\r\n",
-					"    for item in items:\r\n",
-					"        if item.name == '_checkpoints':\r\n",
-					"            mssparkutils.fs.rm(s1_M365 + '/activity/_checkpoints', True)"
 				],
 				"execution_count": null
 			}
