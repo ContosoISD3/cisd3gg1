@@ -2040,7 +2040,7 @@
 							}
 						},
 						"source": [
-							"# Define variables\r\n",
+							"# Variables\r\n",
 							""
 						]
 					},
@@ -2080,7 +2080,7 @@
 							}
 						},
 						"source": [
-							"# Define schemas"
+							"# Schemas"
 						]
 					},
 					{
@@ -2139,7 +2139,7 @@
 							}
 						},
 						"source": [
-							"# Utilities"
+							"# Functions"
 						]
 					},
 					{
@@ -2169,6 +2169,7 @@
 							"collapsed": true
 						},
 						"source": [
+							"# Process TechActivity data from stage1 into stage2 using structured streaming\r\n",
 							"def process_activity(source_path=s1_M365_activity, dest_path=s2_M365):\r\n",
 							"    df = spark.readStream.csv(source_path + '/*/*.csv', header='false', schema=M365_schemas['TechActivity'])\r\n",
 							"    df = df.dropDuplicates(['SignalId'])\r\n",
@@ -2195,19 +2196,21 @@
 							"collapsed": true
 						},
 						"source": [
+							"# Resets all TechActivity processing. This is intended for use during initial testing - use with caution\r\n",
+							"# This function does the following:\r\n",
+							"#  - deletes the _checkpoints dir from stage1/M365/activity\r\n",
+							"#  - deletes the delta table at stage2/M365/TechActivity\r\n",
 							"def reset_activity_processing():\r\n",
 							"    # Delete stage2/M365/TechActivity if it exists\r\n",
 							"    files = mssparkutils.fs.ls(s2_M365)\r\n",
 							"    #print(file.name, file.isDir, file.isFile, file.path, file.size)\r\n",
-							"    for file in files:\r\n",
-							"        print(file.name)\r\n",
-							"        if file.name == 'TechActivity':\r\n",
+							"    for item in items:\r\n",
+							"        if item.name == 'TechActivity':\r\n",
 							"            mssparkutils.fs.rm(s2_M365 + '/TechActivity', True)\r\n",
 							"\r\n",
 							"    files = mssparkutils.fs.ls(s1_M365 + '/activity')\r\n",
-							"    for file in files:\r\n",
-							"        print(file.name)\r\n",
-							"        if file.name == '_checkpoints':\r\n",
+							"    for item in items:\r\n",
+							"        if item.name == '_checkpoints':\r\n",
 							"            mssparkutils.fs.rm(s1_M365 + '/activity/_checkpoints', True)"
 						],
 						"outputs": [],
