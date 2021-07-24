@@ -168,8 +168,6 @@
 					"collapsed": true
 				},
 				"source": [
-					"from notebookutils import mssparkutils\r\n",
-					"\r\n",
 					"# Returns true if the path exists\r\n",
 					"def path_exists(path):\r\n",
 					"    tableExists = False\r\n",
