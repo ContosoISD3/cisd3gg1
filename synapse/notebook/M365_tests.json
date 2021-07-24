@@ -67,7 +67,7 @@
 					"%run /2) OEA Framework/OEA_Core\r\n",
 					""
 				],
-				"execution_count": 3
+				"execution_count": 2
 			},
 			{
 				"cell_type": "code",
@@ -86,7 +86,7 @@
 				"source": [
 					"%run /2) OEA Framework/Modules/M365/M365_lib"
 				],
-				"execution_count": 4
+				"execution_count": 3
 			},
 			{
 				"cell_type": "markdown",
@@ -118,7 +118,7 @@
 				"source": [
 					"process_activity()"
 				],
-				"execution_count": 1
+				"execution_count": 4
 			},
 			{
 				"cell_type": "code",
@@ -137,7 +137,7 @@
 				"source": [
 					"reset_activity_processing()"
 				],
-				"execution_count": null
+				"execution_count": 5
 			},
 			{
 				"cell_type": "code",
@@ -207,20 +207,66 @@
 					"collapsed": true
 				},
 				"source": [
-					"# Delete stage2/M365 if it exists\r\n",
-					"files = mssparkutils.fs.ls(stage2)\r\n",
-					"#print(file.name, file.isDir, file.isFile, file.path, file.size)\r\n",
-					"for file in files:\r\n",
-					"    print(file.name)\r\n",
-					"    if file.name == 'M365':\r\n",
-					"        mssparkutils.fs.rm(stage2 + '/M365', True)\r\n",
+					"from notebookutils import mssparkutils\r\n",
 					"\r\n",
-					"# Move roster data back in to \"inbound\" folder\r\n",
-					"files = mssparkutils.fs.ls(stage1 + '/M365/processed/roster')\r\n",
-					"for file in files:\r\n",
-					"    mssparkutils.fs.mv(file.path, stage1 + '/M365/inbound/roster', True)"
+					"def folderExists(path, foldername):\r\n",
+					"    items = mssparkutils.fs.ls(path)\r\n",
+					"    tableExists = False\r\n",
+					"    for item in items:\r\n",
+					"        if item.name == foldername:\r\n",
+					"            tableExists = True\r\n",
+					"    return tableExists"
 				],
 				"execution_count": null
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					},
+					"collapsed": true
+				},
+				"source": [
+					"def reset_roster_processing():\r\n",
+					"    # Delete stage2/M365 if it exists\r\n",
+					"    items = mssparkutils.fs.ls(stage2 + '/M365')\r\n",
+					"    #print(file.name, file.isDir, file.isFile, file.path, file.size)\r\n",
+					"    for item in items:\r\n",
+					"        if item.name == 'M365':\r\n",
+					"            mssparkutils.fs.rm(stage2 + '/M365', True)\r\n",
+					"\r\n",
+					"    # Move roster data back in to \"inbound\" folder\r\n",
+					"    items = mssparkutils.fs.ls(stage1 + '/M365/roster_processed')\r\n",
+					"    for item in items:\r\n",
+					"        mssparkutils.fs.mv(item.path, stage1 + '/M365/roster', True)"
+				],
+				"execution_count": 8
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					},
+					"collapsed": true
+				},
+				"source": [
+					"reset_roster_processing()"
+				],
+				"execution_count": 9
 			}
 		]
 	}
