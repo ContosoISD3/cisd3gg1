@@ -326,6 +326,39 @@
 					"            mssparkutils.fs.mv(item.path, s1_M365 + '/roster_processed/', True)"
 				],
 				"execution_count": null
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					},
+					"collapsed": true
+				},
+				"source": [
+					"def reset_roster_processing():\r\n",
+					"\r\n",
+					"    if path_exists(stage2 + '/M365'):\r\n",
+					"        # Delete roster delta tables (everything other than TechActivity)\r\n",
+					"        items = mssparkutils.fs.ls(stage2 + '/M365')\r\n",
+					"        #print(file.name, file.isDir, file.isFile, file.path, file.size)\r\n",
+					"        for item in items:\r\n",
+					"            if item.name != 'TechActivity':\r\n",
+					"                mssparkutils.fs.rm(item.path, True)\r\n",
+					"\r\n",
+					"    if path_exists(stage1 + '/M365/roster_processed'):\r\n",
+					"        # Move roster data back in to \"inbound\" folder\r\n",
+					"        items = mssparkutils.fs.ls(stage1 + '/M365/roster_processed')\r\n",
+					"        for item in items:\r\n",
+					"            mssparkutils.fs.mv(item.path, stage1 + '/M365/roster', True)"
+				],
+				"execution_count": null
 			}
 		]
 	}
