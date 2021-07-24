@@ -178,15 +178,66 @@
 					"collapsed": true
 				},
 				"source": [
-					"def process_activity(s1_path=s1_M365_activity, s2_path=s2_M365):\r\n",
-					"    df = spark.readStream.csv(s1_path + '/*/*.csv', header='false', schema=M365_schemas['TechActivity'])\r\n",
+					"def process_activity(source_path=s1_M365_activity, dest_path=s2_M365):\r\n",
+					"    df = spark.readStream.csv(source_path + '/*/*.csv', header='false', schema=M365_schemas['TechActivity'])\r\n",
 					"    df = df.dropDuplicates(['SignalId'])\r\n",
 					"    df = df.withColumn('year', year(col('StartTime'))).withColumn('month', month(col('StartTime')))\r\n",
 					"\r\n",
-					"    query = df.writeStream.format(\"delta\").outputMode(\"append\").trigger(once=True).option(\"checkpointLocation\", s1_path + '/_checkpoints').partitionBy('year', 'month')\r\n",
-					"    query.start(s2_path)"
+					"    query = df.writeStream.format(\"delta\").outputMode(\"append\").trigger(once=True).option(\"checkpointLocation\", source_path + '/_checkpoints').partitionBy('year', 'month')\r\n",
+					"    query.start(dest_path + '/TechActivity')"
 				],
-				"execution_count": 31
+				"execution_count": 42
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					},
+					"collapsed": true
+				},
+				"source": [
+					"def reset_activity_processing():\r\n",
+					"    # Delete stage2/M365/TechActivity if it exists\r\n",
+					"    files = mssparkutils.fs.ls(s2_M365)\r\n",
+					"    #print(file.name, file.isDir, file.isFile, file.path, file.size)\r\n",
+					"    for file in files:\r\n",
+					"        print(file.name)\r\n",
+					"        if file.name == 'TechActivity':\r\n",
+					"            mssparkutils.fs.rm(s2_M365 + '/TechActivity', True)\r\n",
+					"\r\n",
+					"    files = mssparkutils.fs.ls(s1_M365 + '/activity')\r\n",
+					"    for file in files:\r\n",
+					"        print(file.name)\r\n",
+					"        if file.name == '_checkpoints':\r\n",
+					"            mssparkutils.fs.rm(s1_M365 + '/activity/_checkpoints', True)            "
+				],
+				"execution_count": 43
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					},
+					"collapsed": true
+				},
+				"source": [
+					"reset_activity_processing()"
+				],
+				"execution_count": 44
 			},
 			{
 				"cell_type": "markdown",
@@ -218,7 +269,7 @@
 				"source": [
 					"process_activity()"
 				],
-				"execution_count": 32
+				"execution_count": 45
 			},
 			{
 				"cell_type": "code",
