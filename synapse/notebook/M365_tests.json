@@ -237,7 +237,7 @@
 				"source": [
 					"reset_activity_processing()"
 				],
-				"execution_count": 44
+				"execution_count": null
 			},
 			{
 				"cell_type": "markdown",
