@@ -99,7 +99,8 @@
 				"source": [
 					"from pyspark.sql.types import StructType, StructField, StringType, IntegerType, DoubleType, ArrayType, TimestampType, BooleanType\r\n",
 					"from delta.tables import DeltaTable\r\n",
-					"from pyspark.sql.functions import year, month, col"
+					"from pyspark.sql.functions import year, month, col\r\n",
+					"from pyspark.sql.utils import AnalysisException"
 				],
 				"execution_count": null
 			},
