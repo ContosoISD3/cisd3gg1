@@ -5,14 +5,7 @@
 			{
 				"name": "Ingest graduate data",
 				"type": "Copy",
-				"dependsOn": [
-					{
-						"activity": "Ingest school scores",
-						"dependencyConditions": [
-							"Succeeded"
-						]
-					}
-				],
+				"dependsOn": [],
 				"policy": {
 					"timeout": "7.00:00:00",
 					"retry": 0,
