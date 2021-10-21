@@ -1,0 +1,43 @@
+{
+	"name": "Corgis_data_ingestion",
+	"properties": {
+		"activities": [
+			{
+				"name": "Ingrest graduate data",
+				"type": "Copy",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "BinarySource",
+						"storeSettings": {
+							"type": "HttpReadSettings",
+							"requestMethod": "GET"
+						},
+						"formatSettings": {
+							"type": "BinaryReadSettings"
+						}
+					},
+					"enableStaging": false
+				},
+				"inputs": [
+					{
+						"referenceName": "DS_Corgis_binary",
+						"type": "DatasetReference",
+						"parameters": {
+							"relativeURL": "/corgis/datasets/csv/graduates/graduates.csv"
+						}
+					}
+				]
+			}
+		],
+		"annotations": []
+	}
+}
