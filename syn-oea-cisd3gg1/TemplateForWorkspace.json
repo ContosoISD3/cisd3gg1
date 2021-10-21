@@ -18,6 +18,10 @@
 		"syn-oea-cisd3gg1-WorkspaceDefaultStorage_properties_typeProperties_url": {
 			"type": "string",
 			"defaultValue": "https://stoeacisd3gg1.dfs.core.windows.net"
+		},
+		"LS_HTTP_Corgis_properties_typeProperties_url": {
+			"type": "string",
+			"defaultValue": "https://corgis-edu.github.io"
 		}
 	},
 	"variables": {
@@ -87,6 +91,10 @@
 						}
 					}
 				],
+				"policy": {
+					"elapsedTimeMetric": {},
+					"cancelAfter": {}
+				},
 				"folder": {
 					"name": "0) Master Orchestration"
 				},
@@ -198,6 +206,10 @@
 						}
 					}
 				],
+				"policy": {
+					"elapsedTimeMetric": {},
+					"cancelAfter": {}
+				},
 				"variables": {
 					"exec_date_time": {
 						"type": "String"
@@ -337,6 +349,10 @@
 						}
 					}
 				],
+				"policy": {
+					"elapsedTimeMetric": {},
+					"cancelAfter": {}
+				},
 				"folder": {
 					"name": "2) Process from s1 into s2"
 				},
@@ -370,6 +386,10 @@
 						}
 					}
 				],
+				"policy": {
+					"elapsedTimeMetric": {},
+					"cancelAfter": {}
+				},
 				"folder": {
 					"name": "3) Process from s2 into s3"
 				},
@@ -532,6 +552,10 @@
 						}
 					}
 				],
+				"policy": {
+					"elapsedTimeMetric": {},
+					"cancelAfter": {}
+				},
 				"folder": {
 					"name": "2) Process from s1 into s2"
 				},
@@ -662,6 +686,10 @@
 						}
 					}
 				],
+				"policy": {
+					"elapsedTimeMetric": {},
+					"cancelAfter": {}
+				},
 				"parameters": {
 					"source_filesystem": {
 						"type": "string"
@@ -792,6 +820,10 @@
 						}
 					}
 				],
+				"policy": {
+					"elapsedTimeMetric": {},
+					"cancelAfter": {}
+				},
 				"parameters": {
 					"source_filesystem": {
 						"type": "string"
@@ -848,6 +880,10 @@
 						}
 					}
 				],
+				"policy": {
+					"elapsedTimeMetric": {},
+					"cancelAfter": {}
+				},
 				"annotations": []
 			},
 			"dependsOn": [
@@ -875,6 +911,10 @@
 						}
 					}
 				],
+				"policy": {
+					"elapsedTimeMetric": {},
+					"cancelAfter": {}
+				},
 				"folder": {
 					"name": "4) Outbound"
 				},
@@ -1140,8 +1180,8 @@
 						"language": "sql"
 					},
 					"currentConnection": {
-						"poolName": "Built-in",
-						"databaseName": "master"
+						"databaseName": "master",
+						"poolName": "Built-in"
 					},
 					"resultLimit": 5000
 				},
@@ -1160,8 +1200,8 @@
 						"language": "sql"
 					},
 					"currentConnection": {
-						"poolName": "Built-in",
-						"databaseName": "master"
+						"databaseName": "master",
+						"poolName": "Built-in"
 					},
 					"resultLimit": 5000
 				},
@@ -1180,8 +1220,8 @@
 						"language": "sql"
 					},
 					"currentConnection": {
-						"poolName": "Built-in",
-						"databaseName": "master"
+						"databaseName": "master",
+						"poolName": "Built-in"
 					},
 					"resultLimit": 5000
 				},
@@ -1200,8 +1240,8 @@
 						"language": "sql"
 					},
 					"currentConnection": {
-						"poolName": "Built-in",
-						"databaseName": "master"
+						"databaseName": "master",
+						"poolName": "Built-in"
 					},
 					"resultLimit": 5000
 				},
@@ -1220,8 +1260,8 @@
 						"language": "sql"
 					},
 					"currentConnection": {
-						"poolName": "Built-in",
-						"databaseName": "master"
+						"databaseName": "master",
+						"poolName": "Built-in"
 					},
 					"resultLimit": 5000
 				},
@@ -1240,8 +1280,8 @@
 						"language": "sql"
 					},
 					"currentConnection": {
-						"poolName": "Built-in",
-						"databaseName": "tutorial_01"
+						"databaseName": "tutorial_01",
+						"poolName": "Built-in"
 					},
 					"resultLimit": 5000
 				},
@@ -1260,8 +1300,28 @@
 						"language": "sql"
 					},
 					"currentConnection": {
-						"poolName": "Built-in",
-						"databaseName": "tutorial_sql2"
+						"databaseName": "tutorial_sql2",
+						"poolName": "Built-in"
+					},
+					"resultLimit": 5000
+				},
+				"type": "SqlQuery"
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('workspaceName'), '/ms_TechActivity')]",
+			"type": "Microsoft.Synapse/workspaces/sqlscripts",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"content": {
+					"query": "-- Limitations of SQL Serverless with Delta Lake: \n-- https://docs.microsoft.com/en-us/azure/synapse-analytics/sql/resources-self-help-sql-on-demand#delta-lake\n\n\n-- 0) Get info on inferred data types\n-- Notes: When querying the delta lake via T-SQL, the data types will be inferred based on what is specified in parquet.\n--        Parquet does not give you a way to specify column size, so strings are inferred as varchar(8000) which is not optimal.\nEXEC sp_describe_first_result_set N'\n\tSELECT * FROM \n    OPENROWSET(\n        BULK ''https://stoeacisd3ggimpl3.dfs.core.windows.net/stage2/ms_insights/TechActivity'',\n        FORMAT=''DELTA''\n    ) AS result';\n\n\n-- 1) Create a db via SQL serverless pool\nCREATE DATABASE s2_ms_insights;\nGO\nUSE s2_ms_insights;\nGO\n\n-- Always use UTF-8 collations.\n-- https://techcommunity.microsoft.com/t5/azure-synapse-analytics/always-use-utf-8-collations-to-read-utf-8-text-in-serverless-sql/ba-p/1883633\nALTER DATABASE s2_ms_insights \n    COLLATE Latin1_General_100_BIN2_UTF8;\n\n-- 2) set location info\nCREATE EXTERNAL DATA SOURCE DeltaLakeStorage\nWITH ( location = 'https://stoeacisd3ggimpl3.dfs.core.windows.net/stage2' );\nGO\nCREATE EXTERNAL FILE FORMAT DeltaLakeFormat WITH ( FORMAT_TYPE = DELTA );\nGO\n\n-- 3) Create an external table\n-- for info on data types: https://docs.microsoft.com/en-us/sql/t-sql/data-types/data-types-transact-sql?view=sql-server-ver15\n-- Note: this does not work for the columns used in partitioning the data because you always get null values (in this example you always get null for year and month). \n-- This is a known limitation: https://docs.microsoft.com/en-us/azure/synapse-analytics/sql/resources-self-help-sql-on-demand#partitioning-column-returns-null-values\nCREATE EXTERNAL TABLE TechActivity (\n     SignalType varchar(200),\n     StartTime datetime2,\n     UserAgent varchar(200),\n     SignalId varchar(200),\n     SisClassId varchar(200),\n     ClassId varchar(200),\n     ChannelId varchar(200),\n     AppName varchar(200),\n     ActorId varchar(200),\n     ActorRole varchar(200),\n     SchemaVersion varchar(50),\n     AssignmentId varchar(200),\n     SubmissionId varchar(200),\n     [Action] varchar(200),\n     DueDate datetime2,\n     ClassCreationDate datetime2,\n     Grade varchar(50),\n     SourceFileExtension varchar(50),\n     MeetingDuration int,\n     [year] smallint,\n     [month] tinyint\n) WITH (\n    LOCATION = '/ms_insights/TechActivity',\n    DATA_SOURCE = DeltaLakeStorage,\n    FILE_FORMAT = DeltaLakeFormat\n);\n\n\nselect * from TechActivity where year is not null\n\n--EXEC sp_describe_first_result_set N'\n\t--SELECT * FROM TechActivity AS result';\n\ndrop external table TechActivity2\n\nCREATE EXTERNAL FILE FORMAT ParquetFormat WITH ( FORMAT_TYPE = PARQUET );\nGO\n\n-- This will perform the select and copy the data to the specified LOCATION\nCREATE EXTERNAL TABLE TechActivity2\n  WITH (\n    LOCATION = '/ms_insights/TechActivity2',\n    DATA_SOURCE = DeltaLakeStorage,\n    FILE_FORMAT = ParquetFormat\n)\n  AS select \n     [SignalType] VARCHAR (200),\n     StartTime\n     from \n        OPENROWSET(BULK 'https://stoeacisd3ggimpl3.dfs.core.windows.net/stage2/ms_insights/TechActivity/year=2021/**',\n        FORMAT='PARQUET') AS [r]\n\n\n\n-- Create a partitioned view\n-- https://docs.microsoft.com/en-us/azure/synapse-analytics/sql/create-use-views#delta-lake-partitioned-views\nCREATE OR ALTER VIEW TechActivityView\nAS SELECT \n    CAST(SignalType as varchar(200)) as SignalType,\n    CAST(StartTime as datetime2) as StartTime,\n    CAST(UserAgent as varchar(200)) as UserAgent,\n    CAST(SignalId as varchar(200)) as SignalId,\n    CAST(SisClassId as varchar(200)) as SisClassId,\n    CAST(ClassId as varchar(200)) as ClassId,\n    CAST(ChannelId as varchar(200)) as ChannelId,\n    CAST(AppName as varchar(200)) as AppName,\n    CAST(ActorId as varchar(200)) as ActorId,\n    CAST(ActorRole as varchar(200)) as ActorRole,\n    CAST(SchemaVersion as varchar(50)) as SchemaVersion,\n    CAST(AssignmentId as varchar(200)) as AssignmentId,\n    CAST(SubmissionId as varchar(200)) as SubmissionId,\n    CAST([Action] as varchar(200)) as [Action],\n    CAST(DueDate as datetime2) as DueDate,\n    CAST(ClassCreationDate as datetime2) as ClassCreationDate,\n    CAST(Grade as varchar(50)) as Grade,\n    CAST(SourceFileExtension as varchar(50)) as SourceFileExtension,\n    CAST(MeetingDuration as int) as MeetingDuration,\n    CAST([year] as smallint) as [year],\n    CAST([month] as tinyint) as [month]\nFROM  \n    OPENROWSET(\n        BULK 'ms_insights/TechActivity',\n        DATA_SOURCE = 'DeltaLakeStorage',\n        FORMAT='DELTA'\n    ) AS [r]\n\nSELECT count(*) FROM TechActivityView\n\ndrop view TechActivityView2\n",
+					"metadata": {
+						"language": "sql"
+					},
+					"currentConnection": {
+						"databaseName": "master",
+						"poolName": "Built-in"
 					},
 					"resultLimit": 5000
 				},
@@ -1280,8 +1340,8 @@
 						"language": "sql"
 					},
 					"currentConnection": {
-						"poolName": "Built-in",
-						"databaseName": "master"
+						"databaseName": "master",
+						"poolName": "Built-in"
 					},
 					"resultLimit": 5000
 				},
@@ -1300,8 +1360,8 @@
 						"language": "sql"
 					},
 					"currentConnection": {
-						"poolName": "Built-in",
-						"databaseName": "tutorial_sql_02"
+						"databaseName": "tutorial_sql_02",
+						"poolName": "Built-in"
 					},
 					"resultLimit": 5000
 				},
@@ -6687,6 +6747,230 @@
 				]
 			},
 			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('workspaceName'), '/Corgis_data_ingestion')]",
+			"type": "Microsoft.Synapse/workspaces/pipelines",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"activities": [
+					{
+						"name": "Ingest graduate data",
+						"type": "Copy",
+						"dependsOn": [
+							{
+								"activity": "Ingest school scores",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "BinarySource",
+								"storeSettings": {
+									"type": "HttpReadSettings",
+									"requestMethod": "GET"
+								},
+								"formatSettings": {
+									"type": "BinaryReadSettings"
+								}
+							},
+							"sink": {
+								"type": "BinarySink",
+								"storeSettings": {
+									"type": "AzureBlobFSWriteSettings"
+								}
+							},
+							"enableStaging": false
+						},
+						"inputs": [
+							{
+								"referenceName": "DS_Corgis_binary",
+								"type": "DatasetReference",
+								"parameters": {
+									"relativeURL": "/corgis/datasets/csv/graduates/graduates.csv"
+								}
+							}
+						],
+						"outputs": [
+							{
+								"referenceName": "DS_ADLS_binary",
+								"type": "DatasetReference",
+								"parameters": {
+									"filesystem": "stage1np",
+									"directory": "corgis2/graduates",
+									"filename": "graduates.csv"
+								}
+							}
+						]
+					},
+					{
+						"name": "Ingest school scores",
+						"type": "Copy",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "BinarySource",
+								"storeSettings": {
+									"type": "HttpReadSettings",
+									"requestMethod": "GET"
+								},
+								"formatSettings": {
+									"type": "BinaryReadSettings"
+								}
+							},
+							"sink": {
+								"type": "BinarySink",
+								"storeSettings": {
+									"type": "AzureBlobFSWriteSettings"
+								}
+							},
+							"enableStaging": false
+						},
+						"inputs": [
+							{
+								"referenceName": "DS_Corgis_binary",
+								"type": "DatasetReference",
+								"parameters": {
+									"relativeURL": "/corgis/datasets/csv/school_scores/school_scores.csv"
+								}
+							}
+						],
+						"outputs": [
+							{
+								"referenceName": "DS_ADLS_binary",
+								"type": "DatasetReference",
+								"parameters": {
+									"filesystem": "stage1np",
+									"directory": "corgis2/school_scores",
+									"filename": "school_scores.csv"
+								}
+							}
+						]
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {},
+					"cancelAfter": {}
+				},
+				"annotations": []
+			},
+			"dependsOn": [
+				"[concat(variables('workspaceId'), '/datasets/DS_Corgis_binary')]",
+				"[concat(variables('workspaceId'), '/datasets/DS_ADLS_binary')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('workspaceName'), '/LS_HTTP_Corgis')]",
+			"type": "Microsoft.Synapse/workspaces/linkedServices",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"annotations": [],
+				"type": "HttpServer",
+				"typeProperties": {
+					"url": "[parameters('LS_HTTP_Corgis_properties_typeProperties_url')]",
+					"enableServerCertificateValidation": true,
+					"authenticationType": "Anonymous"
+				},
+				"connectVia": {
+					"referenceName": "AutoResolveIntegrationRuntime",
+					"type": "IntegrationRuntimeReference"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('workspaceId'), '/integrationRuntimes/AutoResolveIntegrationRuntime')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('workspaceName'), '/DS_Corgis_binary')]",
+			"type": "Microsoft.Synapse/workspaces/datasets",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "LS_HTTP_Corgis",
+					"type": "LinkedServiceReference"
+				},
+				"parameters": {
+					"relativeURL": {
+						"type": "string"
+					}
+				},
+				"annotations": [],
+				"type": "Binary",
+				"typeProperties": {
+					"location": {
+						"type": "HttpServerLocation",
+						"relativeUrl": {
+							"value": "@dataset().relativeURL",
+							"type": "Expression"
+						}
+					}
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('workspaceId'), '/linkedServices/LS_HTTP_Corgis')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('workspaceName'), '/DS_ADLS_binary')]",
+			"type": "Microsoft.Synapse/workspaces/datasets",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "syn-oea-cisd3gg1-WorkspaceDefaultStorage",
+					"type": "LinkedServiceReference"
+				},
+				"parameters": {
+					"filesystem": {
+						"type": "string"
+					},
+					"directory": {
+						"type": "string"
+					},
+					"filename": {
+						"type": "string"
+					}
+				},
+				"annotations": [],
+				"type": "Binary",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobFSLocation",
+						"fileName": {
+							"value": "@dataset().filename",
+							"type": "Expression"
+						},
+						"folderPath": {
+							"value": "@dataset().directory",
+							"type": "Expression"
+						},
+						"fileSystem": {
+							"value": "@dataset().filesystem",
+							"type": "Expression"
+						}
+					}
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('workspaceId'), '/linkedServices/syn-oea-cisd3gg1-WorkspaceDefaultStorage')]"
+			]
 		}
 	]
 }
