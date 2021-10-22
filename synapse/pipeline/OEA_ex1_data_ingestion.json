@@ -36,10 +36,11 @@
 				},
 				"inputs": [
 					{
-						"referenceName": "DS_Github_binary",
+						"referenceName": "DS_HTTP_binary",
 						"type": "DatasetReference",
 						"parameters": {
-							"relativeURL": "/microsoft/OpenEduAnalytics/main/modules/Contoso_SIS/test_data/studentattendance.csv"
+							"base_url": "https://raw.githubusercontent.com",
+							"relative_url": "/microsoft/OpenEduAnalytics/main/modules/Contoso_SIS/test_data/studentattendance.csv"
 						}
 					}
 				],
@@ -88,10 +89,11 @@
 				},
 				"inputs": [
 					{
-						"referenceName": "DS_Github_binary",
+						"referenceName": "DS_HTTP_binary",
 						"type": "DatasetReference",
 						"parameters": {
-							"relativeURL": "/microsoft/OpenEduAnalytics/main/modules/Contoso_SIS/test_data/studentdemographics.csv"
+							"base_url": "https://raw.githubusercontent.com",
+							"relative_url": "/microsoft/OpenEduAnalytics/main/modules/Contoso_SIS/test_data/studentdemographics.csv"
 						}
 					}
 				],
@@ -140,10 +142,11 @@
 				},
 				"inputs": [
 					{
-						"referenceName": "DS_Github_binary",
+						"referenceName": "DS_HTTP_binary",
 						"type": "DatasetReference",
 						"parameters": {
-							"relativeURL": "/microsoft/OpenEduAnalytics/main/modules/Contoso_SIS/test_data/studentsectionmark.csv"
+							"base_url": "https://raw.githubusercontent.com",
+							"relative_url": "/microsoft/OpenEduAnalytics/main/modules/Contoso_SIS/test_data/studentsectionmark.csv"
 						}
 					}
 				],
