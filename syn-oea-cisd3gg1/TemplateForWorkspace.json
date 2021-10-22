@@ -1031,10 +1031,11 @@
 						},
 						"inputs": [
 							{
-								"referenceName": "DS_Github_binary",
+								"referenceName": "DS_HTTP_binary",
 								"type": "DatasetReference",
 								"parameters": {
-									"relativeURL": "/microsoft/OpenEduAnalytics/main/modules/Contoso_SIS/test_data/studentattendance.csv"
+									"base_url": "https://raw.githubusercontent.com",
+									"relative_url": "/microsoft/OpenEduAnalytics/main/modules/Contoso_SIS/test_data/studentattendance.csv"
 								}
 							}
 						],
@@ -1083,10 +1084,11 @@
 						},
 						"inputs": [
 							{
-								"referenceName": "DS_Github_binary",
+								"referenceName": "DS_HTTP_binary",
 								"type": "DatasetReference",
 								"parameters": {
-									"relativeURL": "/microsoft/OpenEduAnalytics/main/modules/Contoso_SIS/test_data/studentdemographics.csv"
+									"base_url": "https://raw.githubusercontent.com",
+									"relative_url": "/microsoft/OpenEduAnalytics/main/modules/Contoso_SIS/test_data/studentdemographics.csv"
 								}
 							}
 						],
@@ -1135,10 +1137,11 @@
 						},
 						"inputs": [
 							{
-								"referenceName": "DS_Github_binary",
+								"referenceName": "DS_HTTP_binary",
 								"type": "DatasetReference",
 								"parameters": {
-									"relativeURL": "/microsoft/OpenEduAnalytics/main/modules/Contoso_SIS/test_data/studentsectionmark.csv"
+									"base_url": "https://raw.githubusercontent.com",
+									"relative_url": "/microsoft/OpenEduAnalytics/main/modules/Contoso_SIS/test_data/studentsectionmark.csv"
 								}
 							}
 						],
@@ -1162,7 +1165,7 @@
 				"annotations": []
 			},
 			"dependsOn": [
-				"[concat(variables('workspaceId'), '/datasets/DS_Github_binary')]",
+				"[concat(variables('workspaceId'), '/datasets/DS_HTTP_binary')]",
 				"[concat(variables('workspaceId'), '/datasets/DS_ADLS_binary')]"
 			]
 		},
@@ -2258,7 +2261,7 @@
 						"spark.dynamicAllocation.enabled": "false",
 						"spark.dynamicAllocation.minExecutors": "2",
 						"spark.dynamicAllocation.maxExecutors": "2",
-						"spark.autotune.trackingId": "af00ccc2-3a3e-425a-bca1-7dec7511cb02"
+						"spark.autotune.trackingId": "8a77d054-56e8-431a-9c6e-c786747b5885"
 					}
 				},
 				"metadata": {
@@ -2270,7 +2273,8 @@
 					},
 					"language_info": {
 						"name": "python"
-					}
+					},
+					"sessionKeepAliveTimeout": 30
 				},
 				"cells": [
 					{
@@ -6597,7 +6601,7 @@
 						"spark.dynamicAllocation.enabled": "false",
 						"spark.dynamicAllocation.minExecutors": "2",
 						"spark.dynamicAllocation.maxExecutors": "2",
-						"spark.autotune.trackingId": "4bb631ba-56cb-401b-b7d3-fbbcec22718b"
+						"spark.autotune.trackingId": "cd4f21f7-0c1d-4cd8-82b6-7988b355a21a"
 					}
 				},
 				"metadata": {
@@ -6609,7 +6613,8 @@
 					},
 					"language_info": {
 						"name": "python"
-					}
+					},
+					"sessionKeepAliveTimeout": 30
 				},
 				"cells": [
 					{
@@ -7341,7 +7346,7 @@
 						"spark.dynamicAllocation.enabled": "false",
 						"spark.dynamicAllocation.minExecutors": "2",
 						"spark.dynamicAllocation.maxExecutors": "2",
-						"spark.autotune.trackingId": "5e960d15-6053-4568-84f3-0d255caf9660"
+						"spark.autotune.trackingId": "0d9aecf3-f342-4964-86cd-9b03738d1877"
 					}
 				},
 				"metadata": {
@@ -7353,11 +7358,13 @@
 					},
 					"language_info": {
 						"name": "python"
-					}
+					},
+					"sessionKeepAliveTimeout": 30
 				},
 				"cells": [
 					{
 						"cell_type": "code",
+						"metadata": {},
 						"source": [
 							"class ContosoSIS(BaseOEAModule):\r\n",
 							"    def __init__(self, oea, source_folder='contoso_sis', pseudonymize = True):\r\n",
