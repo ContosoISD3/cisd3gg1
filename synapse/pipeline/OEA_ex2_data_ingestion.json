@@ -47,14 +47,8 @@
 							},
 							"inputs": [
 								{
-									"referenceName": "DS_Github_binary",
-									"type": "DatasetReference",
-									"parameters": {
-										"relativeURL": {
-											"value": "@item()",
-											"type": "Expression"
-										}
-									}
+									"referenceName": "DS_HTTP_binary",
+									"type": "DatasetReference"
 								}
 							],
 							"outputs": [
