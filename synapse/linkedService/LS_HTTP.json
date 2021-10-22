@@ -3,14 +3,14 @@
 	"properties": {
 		"description": "Connection to an HTTP endpoint.\nThe base_url parameter must be passed in from the dataset that utilizes this linked service.",
 		"parameters": {
-			"base_url": {
+			"baseURL": {
 				"type": "string"
 			}
 		},
 		"annotations": [],
 		"type": "HttpServer",
 		"typeProperties": {
-			"url": "@{linkedService().base_url}",
+			"url": "@{linkedService().baseURL}",
 			"enableServerCertificateValidation": true,
 			"authenticationType": "Anonymous"
 		},
