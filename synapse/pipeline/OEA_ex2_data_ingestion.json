@@ -50,11 +50,11 @@
 									"referenceName": "DS_HTTP_binary",
 									"type": "DatasetReference",
 									"parameters": {
-										"baseURL": {
+										"base_url": {
 											"value": "@pipeline().parameters.base_url",
 											"type": "Expression"
 										},
-										"relativeURL": {
+										"relative_url": {
 											"value": "@item()",
 											"type": "Expression"
 										}

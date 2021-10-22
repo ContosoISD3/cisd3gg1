@@ -1,21 +1,22 @@
 {
 	"name": "DS_HTTP_binary",
 	"properties": {
+		"description": "Retrieves data from http endpoint.\nThe data can be in any format - binary allows us to pull any payload without affecting it in any way.",
 		"linkedServiceName": {
 			"referenceName": "LS_HTTP",
 			"type": "LinkedServiceReference",
 			"parameters": {
 				"baseURL": {
-					"value": "@dataset().baseURL",
+					"value": "@dataset().base_url",
 					"type": "Expression"
 				}
 			}
 		},
 		"parameters": {
-			"baseURL": {
+			"base_url": {
 				"type": "string"
 			},
-			"relativeURL": {
+			"relative_url": {
 				"type": "string"
 			}
 		},
@@ -25,7 +26,7 @@
 			"location": {
 				"type": "HttpServerLocation",
 				"relativeUrl": {
-					"value": "@dataset().relativeURL",
+					"value": "@dataset().relative_url",
 					"type": "Expression"
 				}
 			}
