@@ -25,7 +25,7 @@
 		},
 		"LS_HTTP_properties_typeProperties_url": {
 			"type": "string",
-			"defaultValue": "@{linkedService().baseURL}"
+			"defaultValue": "@{linkedService().base_url}"
 		},
 		"LS_HTTP_Corgis_properties_typeProperties_url": {
 			"type": "string",
@@ -1220,11 +1220,11 @@
 											"referenceName": "DS_HTTP_binary",
 											"type": "DatasetReference",
 											"parameters": {
-												"baseURL": {
+												"base_url": {
 													"value": "@pipeline().parameters.base_url",
 													"type": "Expression"
 												},
-												"relativeURL": {
+												"relative_url": {
 													"value": "@item()",
 													"type": "Expression"
 												}
@@ -1469,21 +1469,22 @@
 			"type": "Microsoft.Synapse/workspaces/datasets",
 			"apiVersion": "2019-06-01-preview",
 			"properties": {
+				"description": "Retrieves data from an http endpoint.\nThe data can be in any format - the binary dataset allows us to pull any payload without affecting it.",
 				"linkedServiceName": {
 					"referenceName": "LS_HTTP",
 					"type": "LinkedServiceReference",
 					"parameters": {
 						"baseURL": {
-							"value": "@dataset().baseURL",
+							"value": "@dataset().base_url",
 							"type": "Expression"
 						}
 					}
 				},
 				"parameters": {
-					"baseURL": {
+					"base_url": {
 						"type": "string"
 					},
-					"relativeURL": {
+					"relative_url": {
 						"type": "string"
 					}
 				},
@@ -1493,7 +1494,7 @@
 					"location": {
 						"type": "HttpServerLocation",
 						"relativeUrl": {
-							"value": "@dataset().relativeURL",
+							"value": "@dataset().relative_url",
 							"type": "Expression"
 						}
 					}
@@ -1666,8 +1667,9 @@
 			"type": "Microsoft.Synapse/workspaces/linkedServices",
 			"apiVersion": "2019-06-01-preview",
 			"properties": {
+				"description": "Connection to an HTTP endpoint.\nThe base_url parameter must be passed in from the dataset that utilizes this linked service.",
 				"parameters": {
-					"baseURL": {
+					"base_url": {
 						"type": "string"
 					}
 				},
