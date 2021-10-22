@@ -1,6 +1,7 @@
 {
-	"name": "OEA_example_data_ingestion",
+	"name": "OEA_ex1_data_ingestion",
 	"properties": {
+		"description": "Basic example of pulling data from an http endpoint and landing it in the data lake.",
 		"activities": [
 			{
 				"name": "ingest studentattendance",

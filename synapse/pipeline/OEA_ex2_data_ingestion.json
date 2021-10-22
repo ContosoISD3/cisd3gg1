@@ -1,0 +1,108 @@
+{
+	"name": "OEA_ex2_data_ingestion",
+	"properties": {
+		"description": "This is an example of using parameters to list a series of http endpoints to retrieve data from.",
+		"activities": [
+			{
+				"name": "get data for each endpoint",
+				"type": "ForEach",
+				"dependsOn": [],
+				"userProperties": [],
+				"typeProperties": {
+					"items": {
+						"value": "@pipeline().parameters.endpoints",
+						"type": "Expression"
+					},
+					"activities": [
+						{
+							"name": "ingest data from url",
+							"type": "Copy",
+							"dependsOn": [],
+							"policy": {
+								"timeout": "7.00:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"source": {
+									"type": "BinarySource",
+									"storeSettings": {
+										"type": "HttpReadSettings",
+										"requestMethod": "GET"
+									},
+									"formatSettings": {
+										"type": "BinaryReadSettings"
+									}
+								},
+								"sink": {
+									"type": "BinarySink",
+									"storeSettings": {
+										"type": "AzureBlobFSWriteSettings"
+									}
+								},
+								"enableStaging": false
+							},
+							"inputs": [
+								{
+									"referenceName": "DS_Github_binary",
+									"type": "DatasetReference",
+									"parameters": {
+										"relativeURL": {
+											"value": "@item()",
+											"type": "Expression"
+										}
+									}
+								}
+							],
+							"outputs": [
+								{
+									"referenceName": "DS_ADLS_binary",
+									"type": "DatasetReference",
+									"parameters": {
+										"filesystem": {
+											"value": "@pipeline().parameters.sink_filesystem",
+											"type": "Expression"
+										},
+										"directory": {
+											"value": "@pipeline().parameters.sink_directory",
+											"type": "Expression"
+										},
+										"filename": {
+											"value": "@last(split(item(), '/'))",
+											"type": "Expression"
+										}
+									}
+								}
+							]
+						}
+					]
+				}
+			}
+		],
+		"parameters": {
+			"base_url": {
+				"type": "string",
+				"defaultValue": "https://raw.githubusercontent.com/"
+			},
+			"endpoints": {
+				"type": "array",
+				"defaultValue": [
+					"/microsoft/OpenEduAnalytics/main/modules/Contoso_SIS/test_data/studentattendance.csv",
+					"/microsoft/OpenEduAnalytics/main/modules/Contoso_SIS/test_data/studentdemographics.csv"
+				]
+			},
+			"sink_filesystem": {
+				"type": "string",
+				"defaultValue": "stage1np"
+			},
+			"sink_directory": {
+				"type": "string",
+				"defaultValue": "contoso_sis"
+			}
+		},
+		"annotations": []
+	}
+}
