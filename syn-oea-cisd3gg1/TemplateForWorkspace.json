@@ -11,13 +11,29 @@
 			"type": "secureString",
 			"metadata": "Secure string for 'connectionString' of 'EdFi_Ods_Production'"
 		},
+		"LS_ADLS_OEA_accountKey": {
+			"type": "secureString",
+			"metadata": "Secure string for 'accountKey' of 'LS_ADLS_OEA'"
+		},
 		"syn-oea-cisd3gg1-WorkspaceDefaultSqlServer_connectionString": {
 			"type": "secureString",
 			"metadata": "Secure string for 'connectionString' of 'syn-oea-cisd3gg1-WorkspaceDefaultSqlServer'"
 		},
+		"LS_ADLS_OEA_properties_typeProperties_url": {
+			"type": "string",
+			"defaultValue": "https://stoeacisd3gg1.dfs.core.windows.net"
+		},
+		"LS_HTTP_properties_typeProperties_url": {
+			"type": "string",
+			"defaultValue": "@{linkedService().baseURL}"
+		},
 		"LS_HTTP_Corgis_properties_typeProperties_url": {
 			"type": "string",
 			"defaultValue": "https://corgis-edu.github.io"
+		},
+		"LS_HTTP_Github_properties_typeProperties_url": {
+			"type": "string",
+			"defaultValue": "https://raw.githubusercontent.com"
 		},
 		"syn-oea-cisd3gg1-WorkspaceDefaultStorage_properties_typeProperties_url": {
 			"type": "string",
@@ -976,6 +992,303 @@
 			]
 		},
 		{
+			"name": "[concat(parameters('workspaceName'), '/OEA_ex1_data_ingestion')]",
+			"type": "Microsoft.Synapse/workspaces/pipelines",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"description": "Basic example of pulling data from an http endpoint and landing it in the data lake.",
+				"activities": [
+					{
+						"name": "ingest studentattendance",
+						"type": "Copy",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "BinarySource",
+								"storeSettings": {
+									"type": "HttpReadSettings",
+									"requestMethod": "GET"
+								},
+								"formatSettings": {
+									"type": "BinaryReadSettings"
+								}
+							},
+							"sink": {
+								"type": "BinarySink",
+								"storeSettings": {
+									"type": "AzureBlobFSWriteSettings"
+								}
+							},
+							"enableStaging": false
+						},
+						"inputs": [
+							{
+								"referenceName": "DS_Github_binary",
+								"type": "DatasetReference",
+								"parameters": {
+									"relativeURL": "/microsoft/OpenEduAnalytics/main/modules/Contoso_SIS/test_data/studentattendance.csv"
+								}
+							}
+						],
+						"outputs": [
+							{
+								"referenceName": "DS_ADLS_binary",
+								"type": "DatasetReference",
+								"parameters": {
+									"filesystem": "stage1np",
+									"directory": "contoso_sis",
+									"filename": "studentattendance.csv"
+								}
+							}
+						]
+					},
+					{
+						"name": "ingest studentdemographics",
+						"type": "Copy",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "BinarySource",
+								"storeSettings": {
+									"type": "HttpReadSettings",
+									"requestMethod": "GET"
+								},
+								"formatSettings": {
+									"type": "BinaryReadSettings"
+								}
+							},
+							"sink": {
+								"type": "BinarySink",
+								"storeSettings": {
+									"type": "AzureBlobFSWriteSettings"
+								}
+							},
+							"enableStaging": false
+						},
+						"inputs": [
+							{
+								"referenceName": "DS_Github_binary",
+								"type": "DatasetReference",
+								"parameters": {
+									"relativeURL": "/microsoft/OpenEduAnalytics/main/modules/Contoso_SIS/test_data/studentdemographics.csv"
+								}
+							}
+						],
+						"outputs": [
+							{
+								"referenceName": "DS_ADLS_binary",
+								"type": "DatasetReference",
+								"parameters": {
+									"filesystem": "stage1np",
+									"directory": "contoso_sis",
+									"filename": "studentdemographics.csv"
+								}
+							}
+						]
+					},
+					{
+						"name": "ingest studentsectionmark",
+						"type": "Copy",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "BinarySource",
+								"storeSettings": {
+									"type": "HttpReadSettings",
+									"requestMethod": "GET"
+								},
+								"formatSettings": {
+									"type": "BinaryReadSettings"
+								}
+							},
+							"sink": {
+								"type": "BinarySink",
+								"storeSettings": {
+									"type": "AzureBlobFSWriteSettings"
+								}
+							},
+							"enableStaging": false
+						},
+						"inputs": [
+							{
+								"referenceName": "DS_Github_binary",
+								"type": "DatasetReference",
+								"parameters": {
+									"relativeURL": "/microsoft/OpenEduAnalytics/main/modules/Contoso_SIS/test_data/studentsectionmark.csv"
+								}
+							}
+						],
+						"outputs": [
+							{
+								"referenceName": "DS_ADLS_binary",
+								"type": "DatasetReference",
+								"parameters": {
+									"filesystem": "stage1np",
+									"directory": "contoso_sis",
+									"filename": "studentsectionmark.csv"
+								}
+							}
+						]
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {},
+					"cancelAfter": {}
+				},
+				"annotations": []
+			},
+			"dependsOn": [
+				"[concat(variables('workspaceId'), '/datasets/DS_Github_binary')]",
+				"[concat(variables('workspaceId'), '/datasets/DS_ADLS_binary')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('workspaceName'), '/OEA_ex2_data_ingestion')]",
+			"type": "Microsoft.Synapse/workspaces/pipelines",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"description": "This is an example of using parameters to list a series of http endpoints to retrieve data from.",
+				"activities": [
+					{
+						"name": "get data for each endpoint",
+						"type": "ForEach",
+						"dependsOn": [],
+						"userProperties": [],
+						"typeProperties": {
+							"items": {
+								"value": "@pipeline().parameters.endpoints",
+								"type": "Expression"
+							},
+							"activities": [
+								{
+									"name": "ingest data from url",
+									"type": "Copy",
+									"dependsOn": [],
+									"policy": {
+										"timeout": "7.00:00:00",
+										"retry": 0,
+										"retryIntervalInSeconds": 30,
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"userProperties": [],
+									"typeProperties": {
+										"source": {
+											"type": "BinarySource",
+											"storeSettings": {
+												"type": "HttpReadSettings",
+												"requestMethod": "GET"
+											},
+											"formatSettings": {
+												"type": "BinaryReadSettings"
+											}
+										},
+										"sink": {
+											"type": "BinarySink",
+											"storeSettings": {
+												"type": "AzureBlobFSWriteSettings"
+											}
+										},
+										"enableStaging": false
+									},
+									"inputs": [
+										{
+											"referenceName": "DS_HTTP_binary",
+											"type": "DatasetReference",
+											"parameters": {
+												"baseURL": {
+													"value": "@pipeline().parameters.base_url",
+													"type": "Expression"
+												},
+												"relativeURL": {
+													"value": "@item()",
+													"type": "Expression"
+												}
+											}
+										}
+									],
+									"outputs": [
+										{
+											"referenceName": "DS_ADLS_binary",
+											"type": "DatasetReference",
+											"parameters": {
+												"filesystem": {
+													"value": "@pipeline().parameters.sink_filesystem",
+													"type": "Expression"
+												},
+												"directory": {
+													"value": "@pipeline().parameters.sink_directory",
+													"type": "Expression"
+												},
+												"filename": {
+													"value": "@last(split(item(), '/'))",
+													"type": "Expression"
+												}
+											}
+										}
+									]
+								}
+							]
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {},
+					"cancelAfter": {}
+				},
+				"parameters": {
+					"base_url": {
+						"type": "string",
+						"defaultValue": "https://raw.githubusercontent.com/"
+					},
+					"endpoints": {
+						"type": "array",
+						"defaultValue": [
+							"/microsoft/OpenEduAnalytics/main/modules/Contoso_SIS/test_data/studentattendance.csv",
+							"/microsoft/OpenEduAnalytics/main/modules/Contoso_SIS/test_data/studentdemographics.csv"
+						]
+					},
+					"sink_filesystem": {
+						"type": "string",
+						"defaultValue": "stage1np"
+					},
+					"sink_directory": {
+						"type": "string",
+						"defaultValue": "contoso_sis"
+					}
+				},
+				"annotations": []
+			},
+			"dependsOn": [
+				"[concat(variables('workspaceId'), '/datasets/DS_HTTP_binary')]",
+				"[concat(variables('workspaceId'), '/datasets/DS_ADLS_binary')]"
+			]
+		},
+		{
 			"name": "[concat(parameters('workspaceName'), '/Pipeline 1')]",
 			"type": "Microsoft.Synapse/workspaces/pipelines",
 			"apiVersion": "2019-06-01-preview",
@@ -1122,6 +1435,75 @@
 			]
 		},
 		{
+			"name": "[concat(parameters('workspaceName'), '/DS_Github_binary')]",
+			"type": "Microsoft.Synapse/workspaces/datasets",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "LS_HTTP_Github",
+					"type": "LinkedServiceReference"
+				},
+				"parameters": {
+					"relativeURL": {
+						"type": "string"
+					}
+				},
+				"annotations": [],
+				"type": "Binary",
+				"typeProperties": {
+					"location": {
+						"type": "HttpServerLocation",
+						"relativeUrl": {
+							"value": "@dataset().relativeURL",
+							"type": "Expression"
+						}
+					}
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('workspaceId'), '/linkedServices/LS_HTTP_Github')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('workspaceName'), '/DS_HTTP_binary')]",
+			"type": "Microsoft.Synapse/workspaces/datasets",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "LS_HTTP",
+					"type": "LinkedServiceReference",
+					"parameters": {
+						"baseURL": {
+							"value": "@dataset().baseURL",
+							"type": "Expression"
+						}
+					}
+				},
+				"parameters": {
+					"baseURL": {
+						"type": "string"
+					},
+					"relativeURL": {
+						"type": "string"
+					}
+				},
+				"annotations": [],
+				"type": "Binary",
+				"typeProperties": {
+					"location": {
+						"type": "HttpServerLocation",
+						"relativeUrl": {
+							"value": "@dataset().relativeURL",
+							"type": "Expression"
+						}
+					}
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('workspaceId'), '/linkedServices/LS_HTTP')]"
+			]
+		},
+		{
 			"name": "[concat(parameters('workspaceName'), '/data_lake_binary')]",
 			"type": "Microsoft.Synapse/workspaces/datasets",
 			"apiVersion": "2019-06-01-preview",
@@ -1256,6 +1638,56 @@
 			]
 		},
 		{
+			"name": "[concat(parameters('workspaceName'), '/LS_ADLS_OEA')]",
+			"type": "Microsoft.Synapse/workspaces/linkedServices",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"description": "Connection to the OEA data lake",
+				"annotations": [],
+				"type": "AzureBlobFS",
+				"typeProperties": {
+					"url": "[parameters('LS_ADLS_OEA_properties_typeProperties_url')]",
+					"accountKey": {
+						"type": "SecureString",
+						"value": "[parameters('LS_ADLS_OEA_accountKey')]"
+					}
+				},
+				"connectVia": {
+					"referenceName": "AutoResolveIntegrationRuntime",
+					"type": "IntegrationRuntimeReference"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('workspaceId'), '/integrationRuntimes/AutoResolveIntegrationRuntime')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('workspaceName'), '/LS_HTTP')]",
+			"type": "Microsoft.Synapse/workspaces/linkedServices",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"parameters": {
+					"baseURL": {
+						"type": "string"
+					}
+				},
+				"annotations": [],
+				"type": "HttpServer",
+				"typeProperties": {
+					"url": "[parameters('LS_HTTP_properties_typeProperties_url')]",
+					"enableServerCertificateValidation": true,
+					"authenticationType": "Anonymous"
+				},
+				"connectVia": {
+					"referenceName": "AutoResolveIntegrationRuntime",
+					"type": "IntegrationRuntimeReference"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('workspaceId'), '/integrationRuntimes/AutoResolveIntegrationRuntime')]"
+			]
+		},
+		{
 			"name": "[concat(parameters('workspaceName'), '/LS_HTTP_Corgis')]",
 			"type": "Microsoft.Synapse/workspaces/linkedServices",
 			"apiVersion": "2019-06-01-preview",
@@ -1264,6 +1696,28 @@
 				"type": "HttpServer",
 				"typeProperties": {
 					"url": "[parameters('LS_HTTP_Corgis_properties_typeProperties_url')]",
+					"enableServerCertificateValidation": true,
+					"authenticationType": "Anonymous"
+				},
+				"connectVia": {
+					"referenceName": "AutoResolveIntegrationRuntime",
+					"type": "IntegrationRuntimeReference"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('workspaceId'), '/integrationRuntimes/AutoResolveIntegrationRuntime')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('workspaceName'), '/LS_HTTP_Github')]",
+			"type": "Microsoft.Synapse/workspaces/linkedServices",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"description": "Connection for retrieving datasets from github.",
+				"annotations": [],
+				"type": "HttpServer",
+				"typeProperties": {
+					"url": "[parameters('LS_HTTP_Github_properties_typeProperties_url')]",
 					"enableServerCertificateValidation": true,
 					"authenticationType": "Anonymous"
 				},
@@ -1413,6 +1867,26 @@
 			"properties": {
 				"content": {
 					"query": "-- This is auto-generated code\nSELECT\n    TOP 100 *\nFROM\n    OPENROWSET(\n        BULK 'https://stoeacisd3gg1.dfs.core.windows.net/stage1np/corgis2/graduates/graduates.csv',\n        FORMAT = 'CSV',\n        PARSER_VERSION='2.0'\n    ) AS [result]\n",
+					"metadata": {
+						"language": "sql"
+					},
+					"currentConnection": {
+						"databaseName": "master",
+						"poolName": "Built-in"
+					},
+					"resultLimit": 5000
+				},
+				"type": "SqlQuery"
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('workspaceName'), '/SQL script 13')]",
+			"type": "Microsoft.Synapse/workspaces/sqlscripts",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"content": {
+					"query": "-- This is auto-generated code\nSELECT\n    TOP 100 *\nFROM\n    OPENROWSET(\n        BULK 'https://stoeacisd3gg1.dfs.core.windows.net/stage1np/contoso_sis/studentattendance.csv',\n        FORMAT = 'CSV',\n        PARSER_VERSION='2.0'\n    ) AS [result]\n",
 					"metadata": {
 						"language": "sql"
 					},
@@ -6694,7 +7168,7 @@
 						"spark.dynamicAllocation.enabled": "false",
 						"spark.dynamicAllocation.minExecutors": "2",
 						"spark.dynamicAllocation.maxExecutors": "2",
-						"spark.autotune.trackingId": "f4a035ae-8262-481f-a230-8a9e294287a2"
+						"spark.autotune.trackingId": "d00541ac-382b-49ce-bb97-7b756ccb84a5"
 					}
 				},
 				"metadata": {
@@ -6719,20 +7193,17 @@
 						"sparkVersion": "3.1",
 						"nodeCount": 10,
 						"cores": 4,
-						"memory": 28,
-						"automaticScaleJobs": false
-					},
-					"sessionKeepAliveTimeout": 30
+						"memory": 28
+					}
 				},
 				"cells": [
 					{
 						"cell_type": "code",
-						"metadata": {},
 						"source": [
 							"%run /OEA_py"
 						],
 						"outputs": [],
-						"execution_count": 1
+						"execution_count": 2
 					},
 					{
 						"cell_type": "code",
@@ -6748,10 +7219,35 @@
 							}
 						},
 						"source": [
-							""
+							"   def load_from_stage1(self, path_and_filename, data_format='csv'):\r\n",
+							"        \"\"\" Loads a dataframe with data from stage1, based on the path specified in the given args \"\"\"\r\n",
+							"        path = f\"{self.stage1np}/{path_and_filename}\"\r\n",
+							"        df = spark.read.load(path, format=data_format)\r\n",
+							"        return df   "
 						],
 						"outputs": [],
 						"execution_count": null
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"jupyter": {
+								"source_hidden": false,
+								"outputs_hidden": false
+							},
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							}
+						},
+						"source": [
+							"oea = OEA()\r\n",
+							"df = oea.load_from_stage1(\"corgis2/graduates/graduates.csv\")\r\n",
+							"df.show()"
+						],
+						"outputs": [],
+						"execution_count": 5
 					}
 				]
 			},
