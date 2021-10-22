@@ -2,14 +2,14 @@
 	"name": "LS_HTTP",
 	"properties": {
 		"parameters": {
-			"baseURL": {
+			"base_url": {
 				"type": "string"
 			}
 		},
 		"annotations": [],
 		"type": "HttpServer",
 		"typeProperties": {
-			"url": "@{linkedService().baseURL}",
+			"url": "@{linkedService().base_url}",
 			"enableServerCertificateValidation": true,
 			"authenticationType": "Anonymous"
 		},
