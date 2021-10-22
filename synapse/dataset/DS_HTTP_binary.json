@@ -6,10 +6,7 @@
 			"referenceName": "LS_HTTP",
 			"type": "LinkedServiceReference",
 			"parameters": {
-				"baseURL": {
-					"value": "@dataset().base_url",
-					"type": "Expression"
-				}
+				"baseURL": "https://raw.githubusercontent.com"
 			}
 		},
 		"parameters": {
