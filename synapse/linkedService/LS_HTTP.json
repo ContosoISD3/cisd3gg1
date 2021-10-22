@@ -6,7 +6,6 @@
 				"type": "string"
 			}
 		},
-		"annotations": [],
 		"type": "HttpServer",
 		"typeProperties": {
 			"url": "@{linkedService().base_url}",
@@ -17,6 +16,7 @@
 			"referenceName": "AutoResolveIntegrationRuntime",
 			"type": "IntegrationRuntimeReference"
 		},
-		"description": "Connection to an HTTP endpoint.\nThe base_url parameter must be passed in from the dataset that utilizes this linked service."
+		"description": "Connection to an HTTP endpoint.\nThe base_url parameter must be passed in from the dataset that utilizes this linked service.",
+		"annotations": []
 	}
 }
