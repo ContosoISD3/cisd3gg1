@@ -27,14 +27,6 @@
 			"type": "string",
 			"defaultValue": "@{linkedService().baseURL}"
 		},
-		"LS_HTTP_Corgis_properties_typeProperties_url": {
-			"type": "string",
-			"defaultValue": "https://corgis-edu.github.io"
-		},
-		"LS_HTTP_Github_properties_typeProperties_url": {
-			"type": "string",
-			"defaultValue": "https://raw.githubusercontent.com"
-		},
 		"syn-oea-cisd3gg1-WorkspaceDefaultStorage_properties_typeProperties_url": {
 			"type": "string",
 			"defaultValue": "https://stoeacisd3gg1.dfs.core.windows.net"
@@ -1046,7 +1038,7 @@
 			"type": "Microsoft.Synapse/workspaces/pipelines",
 			"apiVersion": "2019-06-01-preview",
 			"properties": {
-				"description": "This is an example of a pipeline that retrieves data from multiple HTTP endpoints, using parameters to list the URL's to retrieve data from.",
+				"description": "This is an example of a pipeline that retrieves data from multiple HTTP endpoints as specified in the 'endpoints' parameter.\nThe data is landed in the data lake within a folder named with the current datetime (in the timezone specified in the timezone parameter).",
 				"activities": [
 					{
 						"name": "get data for each endpoint",
@@ -1151,7 +1143,7 @@
 						"typeProperties": {
 							"variableName": "currentDateTime",
 							"value": {
-								"value": "@{formatDateTime(convertTimeZone(utcnow(), 'UTC', 'Eastern Standard Time'), 'yyyy-MM-ddTHHmm_ss')}",
+								"value": "@{formatDateTime(convertTimeZone(utcnow(), 'UTC', pipeline().parameters.timezone), 'yyyy-MM-ddTHHmm_ss')}",
 								"type": "Expression"
 							}
 						}
@@ -1185,6 +1177,10 @@
 					"sinkFilesystem": {
 						"type": "string",
 						"defaultValue": "stage1np"
+					},
+					"timezone": {
+						"type": "string",
+						"defaultValue": "Eastern Standard Time"
 					}
 				},
 				"variables": {
@@ -1272,66 +1268,6 @@
 			},
 			"dependsOn": [
 				"[concat(variables('workspaceId'), '/linkedServices/LS_ADLS_OEA')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('workspaceName'), '/DS_Corgis_binary')]",
-			"type": "Microsoft.Synapse/workspaces/datasets",
-			"apiVersion": "2019-06-01-preview",
-			"properties": {
-				"linkedServiceName": {
-					"referenceName": "LS_HTTP_Corgis",
-					"type": "LinkedServiceReference"
-				},
-				"parameters": {
-					"relativeURL": {
-						"type": "string"
-					}
-				},
-				"annotations": [],
-				"type": "Binary",
-				"typeProperties": {
-					"location": {
-						"type": "HttpServerLocation",
-						"relativeUrl": {
-							"value": "@dataset().relativeURL",
-							"type": "Expression"
-						}
-					}
-				}
-			},
-			"dependsOn": [
-				"[concat(variables('workspaceId'), '/linkedServices/LS_HTTP_Corgis')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('workspaceName'), '/DS_Github_binary')]",
-			"type": "Microsoft.Synapse/workspaces/datasets",
-			"apiVersion": "2019-06-01-preview",
-			"properties": {
-				"linkedServiceName": {
-					"referenceName": "LS_HTTP_Github",
-					"type": "LinkedServiceReference"
-				},
-				"parameters": {
-					"relativeURL": {
-						"type": "string"
-					}
-				},
-				"annotations": [],
-				"type": "Binary",
-				"typeProperties": {
-					"location": {
-						"type": "HttpServerLocation",
-						"relativeUrl": {
-							"value": "@dataset().relativeURL",
-							"type": "Expression"
-						}
-					}
-				}
-			},
-			"dependsOn": [
-				"[concat(variables('workspaceId'), '/linkedServices/LS_HTTP_Github')]"
 			]
 		},
 		{
@@ -1446,43 +1382,6 @@
 			]
 		},
 		{
-			"name": "[concat(parameters('workspaceName'), '/data_lake_test1')]",
-			"type": "Microsoft.Synapse/workspaces/datasets",
-			"apiVersion": "2019-06-01-preview",
-			"properties": {
-				"linkedServiceName": {
-					"referenceName": "syn-oea-cisd3gg1-WorkspaceDefaultStorage",
-					"type": "LinkedServiceReference"
-				},
-				"parameters": {
-					"filesystem": {
-						"type": "string"
-					},
-					"directory": {
-						"type": "string"
-					}
-				},
-				"annotations": [],
-				"type": "Binary",
-				"typeProperties": {
-					"location": {
-						"type": "AzureBlobFSLocation",
-						"folderPath": {
-							"value": "@dataset().directory",
-							"type": "Expression"
-						},
-						"fileSystem": {
-							"value": "@dataset().filesystem",
-							"type": "Expression"
-						}
-					}
-				}
-			},
-			"dependsOn": [
-				"[concat(variables('workspaceId'), '/linkedServices/syn-oea-cisd3gg1-WorkspaceDefaultStorage')]"
-			]
-		},
-		{
 			"name": "[concat(parameters('workspaceName'), '/EdFi_Ods_Production')]",
 			"type": "Microsoft.Synapse/workspaces/linkedServices",
 			"apiVersion": "2019-06-01-preview",
@@ -1540,49 +1439,6 @@
 				"type": "HttpServer",
 				"typeProperties": {
 					"url": "[parameters('LS_HTTP_properties_typeProperties_url')]",
-					"enableServerCertificateValidation": true,
-					"authenticationType": "Anonymous"
-				},
-				"connectVia": {
-					"referenceName": "AutoResolveIntegrationRuntime",
-					"type": "IntegrationRuntimeReference"
-				}
-			},
-			"dependsOn": [
-				"[concat(variables('workspaceId'), '/integrationRuntimes/AutoResolveIntegrationRuntime')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('workspaceName'), '/LS_HTTP_Corgis')]",
-			"type": "Microsoft.Synapse/workspaces/linkedServices",
-			"apiVersion": "2019-06-01-preview",
-			"properties": {
-				"annotations": [],
-				"type": "HttpServer",
-				"typeProperties": {
-					"url": "[parameters('LS_HTTP_Corgis_properties_typeProperties_url')]",
-					"enableServerCertificateValidation": true,
-					"authenticationType": "Anonymous"
-				},
-				"connectVia": {
-					"referenceName": "AutoResolveIntegrationRuntime",
-					"type": "IntegrationRuntimeReference"
-				}
-			},
-			"dependsOn": [
-				"[concat(variables('workspaceId'), '/integrationRuntimes/AutoResolveIntegrationRuntime')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('workspaceName'), '/LS_HTTP_Github')]",
-			"type": "Microsoft.Synapse/workspaces/linkedServices",
-			"apiVersion": "2019-06-01-preview",
-			"properties": {
-				"description": "Connection for retrieving datasets from github.",
-				"annotations": [],
-				"type": "HttpServer",
-				"typeProperties": {
-					"url": "[parameters('LS_HTTP_Github_properties_typeProperties_url')]",
 					"enableServerCertificateValidation": true,
 					"authenticationType": "Anonymous"
 				},

@@ -20,12 +20,6 @@
 		"LS_HTTP_properties_typeProperties_url": {
 			"value": "@{linkedService().baseURL}"
 		},
-		"LS_HTTP_Corgis_properties_typeProperties_url": {
-			"value": "https://corgis-edu.github.io"
-		},
-		"LS_HTTP_Github_properties_typeProperties_url": {
-			"value": "https://raw.githubusercontent.com"
-		},
 		"syn-oea-cisd3gg1-WorkspaceDefaultStorage_properties_typeProperties_url": {
 			"value": "https://stoeacisd3gg1.dfs.core.windows.net"
 		}
