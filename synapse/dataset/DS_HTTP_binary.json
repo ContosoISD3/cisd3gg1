@@ -6,14 +6,17 @@
 			"referenceName": "LS_HTTP",
 			"type": "LinkedServiceReference",
 			"parameters": {
-				"baseURL": "https://raw.githubusercontent.com"
+				"baseURL": {
+					"value": "@dataset().baseURL",
+					"type": "Expression"
+				}
 			}
 		},
 		"parameters": {
-			"base_url": {
+			"baseURL": {
 				"type": "string"
 			},
-			"relative_url": {
+			"relativeURL": {
 				"type": "string"
 			}
 		},
@@ -23,7 +26,7 @@
 			"location": {
 				"type": "HttpServerLocation",
 				"relativeUrl": {
-					"value": "@dataset().relative_url",
+					"value": "@dataset().relativeURL",
 					"type": "Expression"
 				}
 			}

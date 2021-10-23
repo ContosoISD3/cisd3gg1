@@ -38,8 +38,8 @@
 						"referenceName": "DS_HTTP_binary",
 						"type": "DatasetReference",
 						"parameters": {
-							"base_url": "https://raw.githubusercontent.com",
-							"relative_url": "/microsoft/OpenEduAnalytics/main/modules/Contoso_SIS/test_data/studentattendance.csv"
+							"baseURL": "https://raw.githubusercontent.com",
+							"relativeURL": "/microsoft/OpenEduAnalytics/main/modules/Contoso_SIS/test_data/studentattendance.csv"
 						}
 					}
 				],

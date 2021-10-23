@@ -1,7 +1,7 @@
 {
 	"name": "OEA_ex2_data_ingestion",
 	"properties": {
-		"description": "This is an example of using parameters to list a series of http endpoints to retrieve data from.",
+		"description": "This is an example of a pipeline that retrieves data from multiple HTTP endpoints, using parameters to list the URL's to retrieve data from.",
 		"activities": [
 			{
 				"name": "get data for each endpoint",
@@ -50,11 +50,11 @@
 									"referenceName": "DS_HTTP_binary",
 									"type": "DatasetReference",
 									"parameters": {
-										"base_url": {
-											"value": "@pipeline().parameters.base_url",
+										"baseURL": {
+											"value": "@pipeline().parameters.baseURL",
 											"type": "Expression"
 										},
-										"relative_url": {
+										"relativeURL": {
 											"value": "@item()",
 											"type": "Expression"
 										}
@@ -67,11 +67,11 @@
 									"type": "DatasetReference",
 									"parameters": {
 										"filesystem": {
-											"value": "@pipeline().parameters.sink_filesystem",
+											"value": "@pipeline().parameters.sinkFilesystem",
 											"type": "Expression"
 										},
 										"directory": {
-											"value": "@pipeline().parameters.sink_directory",
+											"value": "@pipeline().parameters.sinkDirectory",
 											"type": "Expression"
 										},
 										"filename": {
@@ -87,7 +87,7 @@
 			}
 		],
 		"parameters": {
-			"base_url": {
+			"baseURL": {
 				"type": "string",
 				"defaultValue": "https://raw.githubusercontent.com/"
 			},
@@ -98,11 +98,11 @@
 					"/microsoft/OpenEduAnalytics/main/modules/Contoso_SIS/test_data/studentdemographics.csv"
 				]
 			},
-			"sink_filesystem": {
+			"sinkFilesystem": {
 				"type": "string",
 				"defaultValue": "stage1np"
 			},
-			"sink_directory": {
+			"sinkDirectory": {
 				"type": "string",
 				"defaultValue": "contoso_sis"
 			}
