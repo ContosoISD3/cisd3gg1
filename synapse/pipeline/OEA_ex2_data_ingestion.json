@@ -25,28 +25,7 @@
 								"secureOutput": false,
 								"secureInput": false
 							},
-							"userProperties": [
-								{
-									"name": "baseURL",
-									"value": "@pipeline().parameters.baseURL"
-								},
-								{
-									"name": "relativeURL",
-									"value": "@{item()}"
-								},
-								{
-									"name": "filesystem",
-									"value": "@pipeline().parameters.sinkFilesystem"
-								},
-								{
-									"name": "directory",
-									"value": "@pipeline().parameters.sinkDirectory"
-								},
-								{
-									"name": "filename",
-									"value": "@last(split(item(), '/'))"
-								}
-							],
+							"userProperties": [],
 							"typeProperties": {
 								"source": {
 									"type": "BinarySource",
@@ -86,7 +65,7 @@
 									"type": "DatasetReference",
 									"parameters": {
 										"URL": {
-											"value": "@json(item()).source",
+											"value": "@item().source",
 											"type": "Expression"
 										}
 									}
@@ -102,7 +81,7 @@
 											"type": "Expression"
 										},
 										"filename": {
-											"value": "@json(item()).destination",
+											"value": "@item().destination",
 											"type": "Expression"
 										}
 									}
