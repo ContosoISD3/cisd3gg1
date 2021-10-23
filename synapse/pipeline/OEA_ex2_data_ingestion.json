@@ -90,7 +90,7 @@
 											"type": "Expression"
 										},
 										"relativeURL": {
-											"value": "@item()",
+											"value": "@first(split(item(), '-->'))",
 											"type": "Expression"
 										}
 									}
@@ -124,14 +124,14 @@
 		"parameters": {
 			"baseURL": {
 				"type": "string",
-				"defaultValue": "https://raw.githubusercontent.com/microsoft/OpenEduAnalytics/main/modules/Contoso_SIS/test_data"
+				"defaultValue": "https://raw.githubusercontent.com"
 			},
 			"endpoints": {
 				"type": "array",
 				"defaultValue": [
-					"/studentattendance.csv",
-					"/studentdemographics.csv",
-					"/studentsectionmark.csv"
+					"/microsoft/OpenEduAnalytics/main/modules/Contoso_SIS/test_data/studentattendance.csv",
+					"/microsoft/OpenEduAnalytics/main/modules/Contoso_SIS/test_data/studentdemographics.csv",
+					"/microsoft/OpenEduAnalytics/main/modules/Contoso_SIS/test_data/studentsectionmark.csv"
 				]
 			},
 			"sinkFilesystem": {
