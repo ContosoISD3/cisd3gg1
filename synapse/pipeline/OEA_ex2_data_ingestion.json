@@ -85,12 +85,8 @@
 									"referenceName": "DS_HTTP_binary",
 									"type": "DatasetReference",
 									"parameters": {
-										"baseURL": {
-											"value": "@pipeline().parameters.baseURL",
-											"type": "Expression"
-										},
-										"relativeURL": {
-											"value": "@first(split(item(), '-->'))",
+										"URL": {
+											"value": "@json(item()).source",
 											"type": "Expression"
 										}
 									}
@@ -105,12 +101,8 @@
 											"value": "@pipeline().parameters.sinkFilesystem",
 											"type": "Expression"
 										},
-										"directory": {
-											"value": "@pipeline().parameters.sinkDirectory",
-											"type": "Expression"
-										},
 										"filename": {
-											"value": "@last(split(item(), '/'))",
+											"value": "@json(item()).destination",
 											"type": "Expression"
 										}
 									}
@@ -122,25 +114,18 @@
 			}
 		],
 		"parameters": {
-			"baseURL": {
-				"type": "string",
-				"defaultValue": "https://raw.githubusercontent.com"
-			},
 			"endpoints": {
 				"type": "array",
 				"defaultValue": [
-					"/microsoft/OpenEduAnalytics/main/modules/Contoso_SIS/test_data/studentattendance.csv",
-					"/microsoft/OpenEduAnalytics/main/modules/Contoso_SIS/test_data/studentdemographics.csv",
-					"/microsoft/OpenEduAnalytics/main/modules/Contoso_SIS/test_data/studentsectionmark.csv"
+					{
+						"source": "https://raw.githubusercontent.com/microsoft/OpenEduAnalytics/main/modules/Contoso_SIS/test_data/studentattendance.csv",
+						"destination": "contoso_sis/studentattendance/studentattendance.csv"
+					}
 				]
 			},
 			"sinkFilesystem": {
 				"type": "string",
 				"defaultValue": "stage1np"
-			},
-			"sinkDirectory": {
-				"type": "string",
-				"defaultValue": "contoso_sis"
 			}
 		},
 		"annotations": []

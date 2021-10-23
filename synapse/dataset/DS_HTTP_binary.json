@@ -7,16 +7,13 @@
 			"type": "LinkedServiceReference",
 			"parameters": {
 				"baseURL": {
-					"value": "@dataset().baseURL",
+					"value": "@dataset().URL",
 					"type": "Expression"
 				}
 			}
 		},
 		"parameters": {
-			"baseURL": {
-				"type": "string"
-			},
-			"relativeURL": {
+			"URL": {
 				"type": "string"
 			}
 		},
@@ -24,11 +21,7 @@
 		"type": "Binary",
 		"typeProperties": {
 			"location": {
-				"type": "HttpServerLocation",
-				"relativeUrl": {
-					"value": "@dataset().relativeURL",
-					"type": "Expression"
-				}
+				"type": "HttpServerLocation"
 			}
 		}
 	}
