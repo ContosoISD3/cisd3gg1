@@ -1200,12 +1200,24 @@
 									},
 									"userProperties": [
 										{
-											"name": "Source",
+											"name": "baseURL",
+											"value": "@pipeline().parameters.baseURL"
+										},
+										{
+											"name": "relativeURL",
 											"value": "@{item()}"
 										},
 										{
-											"name": "Destination",
-											"value": "@{pipeline().parameters.sinkFilesystem}/@{pipeline().parameters.sinkDirectory}/@{last(split(item(), '/'))}"
+											"name": "filesystem",
+											"value": "@pipeline().parameters.sinkFilesystem"
+										},
+										{
+											"name": "directory",
+											"value": "@pipeline().parameters.sinkDirectory"
+										},
+										{
+											"name": "filename",
+											"value": "@last(split(item(), '/'))"
 										}
 									],
 									"typeProperties": {
