@@ -25,7 +25,7 @@
 		},
 		"LS_HTTP_properties_typeProperties_url": {
 			"type": "string",
-			"defaultValue": "@{linkedService().base_url}"
+			"defaultValue": "@{linkedService().baseURL}"
 		},
 		"LS_HTTP_Corgis_properties_typeProperties_url": {
 			"type": "string",
@@ -1034,8 +1034,8 @@
 								"referenceName": "DS_HTTP_binary",
 								"type": "DatasetReference",
 								"parameters": {
-									"base_url": "https://raw.githubusercontent.com",
-									"relative_url": "/microsoft/OpenEduAnalytics/main/modules/Contoso_SIS/test_data/studentattendance.csv"
+									"baseURL": "https://raw.githubusercontent.com",
+									"relativeURL": "/microsoft/OpenEduAnalytics/main/modules/Contoso_SIS/test_data/studentattendance.csv"
 								}
 							}
 						],
@@ -1087,8 +1087,8 @@
 								"referenceName": "DS_HTTP_binary",
 								"type": "DatasetReference",
 								"parameters": {
-									"base_url": "https://raw.githubusercontent.com",
-									"relative_url": "/microsoft/OpenEduAnalytics/main/modules/Contoso_SIS/test_data/studentdemographics.csv"
+									"baseURL": "https://raw.githubusercontent.com",
+									"relativeURL": "/microsoft/OpenEduAnalytics/main/modules/Contoso_SIS/test_data/studentdemographics.csv"
 								}
 							}
 						],
@@ -1140,8 +1140,8 @@
 								"referenceName": "DS_HTTP_binary",
 								"type": "DatasetReference",
 								"parameters": {
-									"base_url": "https://raw.githubusercontent.com",
-									"relative_url": "/microsoft/OpenEduAnalytics/main/modules/Contoso_SIS/test_data/studentsectionmark.csv"
+									"baseURL": "https://raw.githubusercontent.com",
+									"relativeURL": "/microsoft/OpenEduAnalytics/main/modules/Contoso_SIS/test_data/studentsectionmark.csv"
 								}
 							}
 						],
@@ -1174,7 +1174,7 @@
 			"type": "Microsoft.Synapse/workspaces/pipelines",
 			"apiVersion": "2019-06-01-preview",
 			"properties": {
-				"description": "This is an example of using parameters to list a series of http endpoints to retrieve data from.",
+				"description": "This is an example of a pipeline that retrieves data from multiple HTTP endpoints, using parameters to list the URL's to retrieve data from.",
 				"activities": [
 					{
 						"name": "get data for each endpoint",
@@ -1198,7 +1198,16 @@
 										"secureOutput": false,
 										"secureInput": false
 									},
-									"userProperties": [],
+									"userProperties": [
+										{
+											"name": "Source",
+											"value": "@{item()}"
+										},
+										{
+											"name": "Destination",
+											"value": "@{pipeline().parameters.sinkFilesystem}/@{pipeline().parameters.sinkDirectory}/@{last(split(item(), '/'))}"
+										}
+									],
 									"typeProperties": {
 										"source": {
 											"type": "BinarySource",
@@ -1216,18 +1225,32 @@
 												"type": "AzureBlobFSWriteSettings"
 											}
 										},
-										"enableStaging": false
+										"enableStaging": false,
+										"logSettings": {
+											"enableCopyActivityLog": true,
+											"copyActivityLogSettings": {
+												"logLevel": "Info",
+												"enableReliableLogging": false
+											},
+											"logLocationSettings": {
+												"linkedServiceName": {
+													"referenceName": "LS_ADLS_OEA",
+													"type": "LinkedServiceReference"
+												},
+												"path": "oea-framework/pipeline_logs"
+											}
+										}
 									},
 									"inputs": [
 										{
 											"referenceName": "DS_HTTP_binary",
 											"type": "DatasetReference",
 											"parameters": {
-												"base_url": {
-													"value": "@pipeline().parameters.base_url",
+												"baseURL": {
+													"value": "@pipeline().parameters.baseURL",
 													"type": "Expression"
 												},
-												"relative_url": {
+												"relativeURL": {
 													"value": "@item()",
 													"type": "Expression"
 												}
@@ -1240,11 +1263,11 @@
 											"type": "DatasetReference",
 											"parameters": {
 												"filesystem": {
-													"value": "@pipeline().parameters.sink_filesystem",
+													"value": "@pipeline().parameters.sinkFilesystem",
 													"type": "Expression"
 												},
 												"directory": {
-													"value": "@pipeline().parameters.sink_directory",
+													"value": "@pipeline().parameters.sinkDirectory",
 													"type": "Expression"
 												},
 												"filename": {
@@ -1264,22 +1287,23 @@
 					"cancelAfter": {}
 				},
 				"parameters": {
-					"base_url": {
+					"baseURL": {
 						"type": "string",
-						"defaultValue": "https://raw.githubusercontent.com/"
+						"defaultValue": "https://raw.githubusercontent.com/microsoft/OpenEduAnalytics/main/modules/Contoso_SIS/test_data"
 					},
 					"endpoints": {
 						"type": "array",
 						"defaultValue": [
-							"/microsoft/OpenEduAnalytics/main/modules/Contoso_SIS/test_data/studentattendance.csv",
-							"/microsoft/OpenEduAnalytics/main/modules/Contoso_SIS/test_data/studentdemographics.csv"
+							"/studentattendance.csv",
+							"/studentdemographics.csv",
+							"/studentsectionmark.csv"
 						]
 					},
-					"sink_filesystem": {
+					"sinkFilesystem": {
 						"type": "string",
 						"defaultValue": "stage1np"
 					},
-					"sink_directory": {
+					"sinkDirectory": {
 						"type": "string",
 						"defaultValue": "contoso_sis"
 					}
@@ -1288,7 +1312,8 @@
 			},
 			"dependsOn": [
 				"[concat(variables('workspaceId'), '/datasets/DS_HTTP_binary')]",
-				"[concat(variables('workspaceId'), '/datasets/DS_ADLS_binary')]"
+				"[concat(variables('workspaceId'), '/datasets/DS_ADLS_binary')]",
+				"[concat(variables('workspaceId'), '/linkedServices/LS_ADLS_OEA')]"
 			]
 		},
 		{
@@ -1326,6 +1351,77 @@
 			},
 			"dependsOn": [
 				"[concat(variables('workspaceId'), '/notebooks/Notebook3')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('workspaceName'), '/Pipeline 2')]",
+			"type": "Microsoft.Synapse/workspaces/pipelines",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"activities": [
+					{
+						"name": "ingest studentattendance",
+						"type": "Copy",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "BinarySource",
+								"storeSettings": {
+									"type": "HttpReadSettings",
+									"requestMethod": "GET"
+								},
+								"formatSettings": {
+									"type": "BinaryReadSettings"
+								}
+							},
+							"sink": {
+								"type": "BinarySink",
+								"storeSettings": {
+									"type": "AzureBlobFSWriteSettings"
+								}
+							},
+							"enableStaging": false
+						},
+						"inputs": [
+							{
+								"referenceName": "DS_HTTP_binary",
+								"type": "DatasetReference",
+								"parameters": {
+									"baseURL": "https://raw.githubusercontent.com",
+									"relativeURL": "/microsoft/OpenEduAnalytics/main/modules/Contoso_SIS/test_data/studentattendance.csv"
+								}
+							}
+						],
+						"outputs": [
+							{
+								"referenceName": "DS_ADLS_binary",
+								"type": "DatasetReference",
+								"parameters": {
+									"filesystem": "stage1np",
+									"directory": "contoso_sis",
+									"filename": "studentattendance.csv"
+								}
+							}
+						]
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {},
+					"cancelAfter": {}
+				},
+				"annotations": []
+			},
+			"dependsOn": [
+				"[concat(variables('workspaceId'), '/datasets/DS_HTTP_binary')]",
+				"[concat(variables('workspaceId'), '/datasets/DS_ADLS_binary')]"
 			]
 		},
 		{
@@ -1478,16 +1574,16 @@
 					"type": "LinkedServiceReference",
 					"parameters": {
 						"baseURL": {
-							"value": "@dataset().base_url",
+							"value": "@dataset().baseURL",
 							"type": "Expression"
 						}
 					}
 				},
 				"parameters": {
-					"base_url": {
+					"baseURL": {
 						"type": "string"
 					},
-					"relative_url": {
+					"relativeURL": {
 						"type": "string"
 					}
 				},
@@ -1497,7 +1593,7 @@
 					"location": {
 						"type": "HttpServerLocation",
 						"relativeUrl": {
-							"value": "@dataset().relative_url",
+							"value": "@dataset().relativeURL",
 							"type": "Expression"
 						}
 					}
@@ -1670,9 +1766,9 @@
 			"type": "Microsoft.Synapse/workspaces/linkedServices",
 			"apiVersion": "2019-06-01-preview",
 			"properties": {
-				"description": "Connection to an HTTP endpoint.\nThe base_url parameter must be passed in from the dataset that utilizes this linked service.",
+				"description": "Connection to an HTTP endpoint.\nThe baseURL parameter must be passed in from the dataset that utilizes this linked service.",
 				"parameters": {
-					"base_url": {
+					"baseURL": {
 						"type": "string"
 					}
 				},
@@ -2261,7 +2357,7 @@
 						"spark.dynamicAllocation.enabled": "false",
 						"spark.dynamicAllocation.minExecutors": "2",
 						"spark.dynamicAllocation.maxExecutors": "2",
-						"spark.autotune.trackingId": "8a77d054-56e8-431a-9c6e-c786747b5885"
+						"spark.autotune.trackingId": "af00ccc2-3a3e-425a-bca1-7dec7511cb02"
 					}
 				},
 				"metadata": {
@@ -2273,8 +2369,7 @@
 					},
 					"language_info": {
 						"name": "python"
-					},
-					"sessionKeepAliveTimeout": 30
+					}
 				},
 				"cells": [
 					{
@@ -6601,7 +6696,7 @@
 						"spark.dynamicAllocation.enabled": "false",
 						"spark.dynamicAllocation.minExecutors": "2",
 						"spark.dynamicAllocation.maxExecutors": "2",
-						"spark.autotune.trackingId": "cd4f21f7-0c1d-4cd8-82b6-7988b355a21a"
+						"spark.autotune.trackingId": "4bb631ba-56cb-401b-b7d3-fbbcec22718b"
 					}
 				},
 				"metadata": {
@@ -6613,8 +6708,7 @@
 					},
 					"language_info": {
 						"name": "python"
-					},
-					"sessionKeepAliveTimeout": 30
+					}
 				},
 				"cells": [
 					{
@@ -7346,7 +7440,7 @@
 						"spark.dynamicAllocation.enabled": "false",
 						"spark.dynamicAllocation.minExecutors": "2",
 						"spark.dynamicAllocation.maxExecutors": "2",
-						"spark.autotune.trackingId": "0d9aecf3-f342-4964-86cd-9b03738d1877"
+						"spark.autotune.trackingId": "5e960d15-6053-4568-84f3-0d255caf9660"
 					}
 				},
 				"metadata": {
@@ -7358,13 +7452,11 @@
 					},
 					"language_info": {
 						"name": "python"
-					},
-					"sessionKeepAliveTimeout": 30
+					}
 				},
 				"cells": [
 					{
 						"cell_type": "code",
-						"metadata": {},
 						"source": [
 							"class ContosoSIS(BaseOEAModule):\r\n",
 							"    def __init__(self, oea, source_folder='contoso_sis', pseudonymize = True):\r\n",
@@ -8615,6 +8707,69 @@
 				]
 			},
 			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('workspaceName'), '/OEA_ex3_data_ingestion')]",
+			"type": "Microsoft.Synapse/workspaces/pipelines",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"description": "This is an example of a parent pipeline that uses a child pipeline to retrieves data from multiple HTTP endpoints, using parameters to list the URL's to retrieve data from.",
+				"activities": [
+					{
+						"name": "get contoso_sis test data",
+						"type": "ExecutePipeline",
+						"dependsOn": [],
+						"userProperties": [],
+						"typeProperties": {
+							"pipeline": {
+								"referenceName": "OEA_ex2_data_ingestion",
+								"type": "PipelineReference"
+							},
+							"waitOnCompletion": true,
+							"parameters": {
+								"baseURL": "https://raw.githubusercontent.com/microsoft/OpenEduAnalytics/main/modules/Contoso_SIS/test_data",
+								"endpoints": "[\"/studentattendance.csv\",\"/studentdemographics.csv\",\"/studentsectionmark.csv\"]",
+								"sinkFilesystem": "stage1np",
+								"sinkDirectory": "contoso_sis"
+							}
+						}
+					},
+					{
+						"name": "get m365 test data",
+						"type": "ExecutePipeline",
+						"dependsOn": [
+							{
+								"activity": "get contoso_sis test data",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"userProperties": [],
+						"typeProperties": {
+							"pipeline": {
+								"referenceName": "OEA_ex2_data_ingestion",
+								"type": "PipelineReference"
+							},
+							"waitOnCompletion": true,
+							"parameters": {
+								"baseURL": "https://raw.githubusercontent.com/",
+								"endpoints": "[\"/microsoft/OpenEduAnalytics/main/modules/Contoso_SIS/test_data/studentattendance.csv\",\"/microsoft/OpenEduAnalytics/main/modules/Contoso_SIS/test_data/studentdemographics.csv\",\"/microsoft/OpenEduAnalytics/main/modules/Contoso_SIS/test_data/studentsectionmark.csv\"]",
+								"sinkFilesystem": "stage1np",
+								"sinkDirectory": "contoso_sis"
+							}
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {},
+					"cancelAfter": {}
+				},
+				"annotations": []
+			},
+			"dependsOn": [
+				"[concat(variables('workspaceId'), '/pipelines/OEA_ex2_data_ingestion')]"
+			]
 		}
 	]
 }

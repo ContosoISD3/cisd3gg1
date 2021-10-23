@@ -18,7 +18,7 @@
 			"value": "https://stoeacisd3gg1.dfs.core.windows.net"
 		},
 		"LS_HTTP_properties_typeProperties_url": {
-			"value": "@{linkedService().base_url}"
+			"value": "@{linkedService().baseURL}"
 		},
 		"LS_HTTP_Corgis_properties_typeProperties_url": {
 			"value": "https://corgis-edu.github.io"
