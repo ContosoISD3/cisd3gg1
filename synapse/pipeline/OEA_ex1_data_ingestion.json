@@ -39,8 +39,7 @@
 						"referenceName": "DS_HTTP_binary",
 						"type": "DatasetReference",
 						"parameters": {
-							"URL": "https://raw.githubusercontent.com",
-							"relativeURL": "/microsoft/OpenEduAnalytics/main/modules/Contoso_SIS/test_data/studentattendance.csv"
+							"URL": "https://raw.githubusercontent.com/microsoft/OpenEduAnalytics/main/modules/Contoso_SIS/test_data/studentattendance.csv"
 						}
 					}
 				],
@@ -50,8 +49,7 @@
 						"type": "DatasetReference",
 						"parameters": {
 							"filesystem": "stage1np",
-							"directory": "contoso_sis",
-							"filename": "studentattendance.csv"
+							"filename": "contoso_sis/example1/studentattendance.csv"
 						}
 					}
 				]
@@ -92,8 +90,7 @@
 						"referenceName": "DS_HTTP_binary",
 						"type": "DatasetReference",
 						"parameters": {
-							"URL": "https://raw.githubusercontent.com",
-							"relativeURL": "/microsoft/OpenEduAnalytics/main/modules/Contoso_SIS/test_data/studentdemographics.csv"
+							"URL": "https://raw.githubusercontent.com/microsoft/OpenEduAnalytics/main/modules/Contoso_SIS/test_data/studentdemographics.csv"
 						}
 					}
 				],
@@ -103,8 +100,7 @@
 						"type": "DatasetReference",
 						"parameters": {
 							"filesystem": "stage1np",
-							"directory": "contoso_sis",
-							"filename": "studentdemographics.csv"
+							"filename": "contoso_sis/example1/studentdemographics.csv"
 						}
 					}
 				]
@@ -145,8 +141,7 @@
 						"referenceName": "DS_HTTP_binary",
 						"type": "DatasetReference",
 						"parameters": {
-							"URL": "https://raw.githubusercontent.com",
-							"relativeURL": "/microsoft/OpenEduAnalytics/main/modules/Contoso_SIS/test_data/studentsectionmark.csv"
+							"URL": "https://raw.githubusercontent.com/microsoft/OpenEduAnalytics/main/modules/Contoso_SIS/test_data/studentsectionmark.csv"
 						}
 					}
 				],
@@ -156,8 +151,7 @@
 						"type": "DatasetReference",
 						"parameters": {
 							"filesystem": "stage1np",
-							"directory": "contoso_sis",
-							"filename": "studentsectionmark.csv"
+							"filename": "contoso_sis/example1/studentsectionmark.csv"
 						}
 					}
 				]
