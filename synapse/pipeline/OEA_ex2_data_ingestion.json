@@ -6,7 +6,14 @@
 			{
 				"name": "get data for each endpoint",
 				"type": "ForEach",
-				"dependsOn": [],
+				"dependsOn": [
+					{
+						"activity": "Set currentDateTime",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
 				"userProperties": [],
 				"typeProperties": {
 					"items": {
@@ -81,7 +88,7 @@
 											"type": "Expression"
 										},
 										"filename": {
-											"value": "@item().destination",
+											"value": "@{item().destinationDirectory}/@{variables('currentDateTime')}/@{item().destinationFilename}",
 											"type": "Expression"
 										}
 									}
@@ -89,6 +96,19 @@
 							]
 						}
 					]
+				}
+			},
+			{
+				"name": "Set currentDateTime",
+				"type": "SetVariable",
+				"dependsOn": [],
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "currentDateTime",
+					"value": {
+						"value": "@{formatDateTime(convertTimeZone(utcnow(), 'UTC', 'Eastern Standard Time'), 'yyyy-MM-ddTHHmm_ss')}",
+						"type": "Expression"
+					}
 				}
 			}
 		],
@@ -98,13 +118,29 @@
 				"defaultValue": [
 					{
 						"source": "https://raw.githubusercontent.com/microsoft/OpenEduAnalytics/main/modules/Contoso_SIS/test_data/studentattendance.csv",
-						"destination": "contoso_sis/studentattendance/studentattendance.csv"
+						"destinationDirectory": "contoso_sis",
+						"destinationFilename": "studentattendance/studentattendance.csv"
+					},
+					{
+						"source": "https://raw.githubusercontent.com/microsoft/OpenEduAnalytics/main/modules/Contoso_SIS/test_data/studentdemographics.csv",
+						"destinationDirectory": "contoso_sis",
+						"destinationFilename": "studentdemographics/studentdemographics.csv"
+					},
+					{
+						"source": "https://raw.githubusercontent.com/microsoft/OpenEduAnalytics/main/modules/Contoso_SIS/test_data/studentsectionmark.csv",
+						"destinationDirectory": "contoso_sis",
+						"destinationFilename": "studentsectionmark/studentsectionmark.csv"
 					}
 				]
 			},
 			"sinkFilesystem": {
 				"type": "string",
 				"defaultValue": "stage1np"
+			}
+		},
+		"variables": {
+			"currentDateTime": {
+				"type": "String"
 			}
 		},
 		"annotations": []
