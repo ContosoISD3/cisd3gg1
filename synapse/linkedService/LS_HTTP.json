@@ -1,7 +1,7 @@
 {
 	"name": "LS_HTTP",
 	"properties": {
-		"description": "Connection to an HTTP endpoint.\nThe base_url parameter must be passed in from the dataset that utilizes this linked service.",
+		"description": "Connection to an HTTP endpoint.\nThe baseURL parameter must be passed in from the dataset that utilizes this linked service.",
 		"parameters": {
 			"baseURL": {
 				"type": "string"
