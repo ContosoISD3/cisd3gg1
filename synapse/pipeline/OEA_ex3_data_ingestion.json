@@ -15,36 +15,8 @@
 					},
 					"waitOnCompletion": true,
 					"parameters": {
-						"baseURL": "https://raw.githubusercontent.com/microsoft/OpenEduAnalytics/main/modules/Contoso_SIS/test_data",
-						"endpoints": "[\"/studentattendance.csv\",\"/studentdemographics.csv\",\"/studentsectionmark.csv\"]",
-						"sinkFilesystem": "stage1np",
-						"sinkDirectory": "contoso_sis"
-					}
-				}
-			},
-			{
-				"name": "get m365 test data",
-				"type": "ExecutePipeline",
-				"dependsOn": [
-					{
-						"activity": "get contoso_sis test data",
-						"dependencyConditions": [
-							"Succeeded"
-						]
-					}
-				],
-				"userProperties": [],
-				"typeProperties": {
-					"pipeline": {
-						"referenceName": "OEA_ex2_data_ingestion",
-						"type": "PipelineReference"
-					},
-					"waitOnCompletion": true,
-					"parameters": {
-						"baseURL": "https://raw.githubusercontent.com/",
-						"endpoints": "[\"/microsoft/OpenEduAnalytics/main/modules/Contoso_SIS/test_data/studentattendance.csv\",\"/microsoft/OpenEduAnalytics/main/modules/Contoso_SIS/test_data/studentdemographics.csv\",\"/microsoft/OpenEduAnalytics/main/modules/Contoso_SIS/test_data/studentsectionmark.csv\"]",
-						"sinkFilesystem": "stage1np",
-						"sinkDirectory": "contoso_sis"
+						"endpoints": "[\n{\"source\":\"https://raw.githubusercontent.com/microsoft/OpenEduAnalytics/main/modules/Contoso_SIS/test_data/studentattendance.csv\", \"destinationDirectory\":\"contoso_sis\", \"destinationFilename\":\"studentattendance/studentattendance.csv\"},\n{\"source\":\"https://raw.githubusercontent.com/microsoft/OpenEduAnalytics/main/modules/Contoso_SIS/test_data/studentdemographics.csv\", \"destinationDirectory\":\"contoso_sis\", \"destinationFilename\":\"studentdemographics/studentdemographics.csv\"},\n{\"source\":\"https://raw.githubusercontent.com/microsoft/OpenEduAnalytics/main/modules/Contoso_SIS/test_data/studentsectionmark.csv\", \"destinationDirectory\":\"contoso_sis\", \"destinationFilename\":\"studentsectionmark/studentsectionmark.csv\"}\n]",
+						"sinkFilesystem": "stage1np"
 					}
 				}
 			}
