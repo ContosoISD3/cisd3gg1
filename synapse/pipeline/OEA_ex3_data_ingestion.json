@@ -1,0 +1,54 @@
+{
+	"name": "OEA_ex3_data_ingestion",
+	"properties": {
+		"description": "This is an example of a parent pipeline that uses a child pipeline to retrieves data from multiple HTTP endpoints, using parameters to list the URL's to retrieve data from.",
+		"activities": [
+			{
+				"name": "get contoso_sis test data",
+				"type": "ExecutePipeline",
+				"dependsOn": [],
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "OEA_ex2_data_ingestion",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true,
+					"parameters": {
+						"baseURL": "https://raw.githubusercontent.com/microsoft/OpenEduAnalytics/main/modules/Contoso_SIS/test_data",
+						"endpoints": "[\"/studentattendance.csv\",\"/studentdemographics.csv\",\"/studentsectionmark.csv\"]",
+						"sinkFilesystem": "stage1np",
+						"sinkDirectory": "contoso_sis"
+					}
+				}
+			},
+			{
+				"name": "get m365 test data",
+				"type": "ExecutePipeline",
+				"dependsOn": [
+					{
+						"activity": "get contoso_sis test data",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "OEA_ex2_data_ingestion",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true,
+					"parameters": {
+						"baseURL": "https://raw.githubusercontent.com/",
+						"endpoints": "[\"/microsoft/OpenEduAnalytics/main/modules/Contoso_SIS/test_data/studentattendance.csv\",\"/microsoft/OpenEduAnalytics/main/modules/Contoso_SIS/test_data/studentdemographics.csv\",\"/microsoft/OpenEduAnalytics/main/modules/Contoso_SIS/test_data/studentsectionmark.csv\"]",
+						"sinkFilesystem": "stage1np",
+						"sinkDirectory": "contoso_sis"
+					}
+				}
+			}
+		],
+		"annotations": []
+	}
+}

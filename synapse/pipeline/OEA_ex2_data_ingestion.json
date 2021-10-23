@@ -25,7 +25,16 @@
 								"secureOutput": false,
 								"secureInput": false
 							},
-							"userProperties": [],
+							"userProperties": [
+								{
+									"name": "Source",
+									"value": "@{item()}"
+								},
+								{
+									"name": "Destination",
+									"value": "@{pipeline().parameters.sinkFilesystem}/@{pipeline().parameters.sinkDirectory}/@{last(split(item(), '/'))}"
+								}
+							],
 							"typeProperties": {
 								"source": {
 									"type": "BinarySource",
@@ -43,7 +52,21 @@
 										"type": "AzureBlobFSWriteSettings"
 									}
 								},
-								"enableStaging": false
+								"enableStaging": false,
+								"logSettings": {
+									"enableCopyActivityLog": true,
+									"copyActivityLogSettings": {
+										"logLevel": "Info",
+										"enableReliableLogging": false
+									},
+									"logLocationSettings": {
+										"linkedServiceName": {
+											"referenceName": "LS_ADLS_OEA",
+											"type": "LinkedServiceReference"
+										},
+										"path": "oea-framework/pipeline_logs"
+									}
+								}
 							},
 							"inputs": [
 								{
@@ -89,13 +112,14 @@
 		"parameters": {
 			"baseURL": {
 				"type": "string",
-				"defaultValue": "https://raw.githubusercontent.com/"
+				"defaultValue": "https://raw.githubusercontent.com/microsoft/OpenEduAnalytics/main/modules/Contoso_SIS/test_data"
 			},
 			"endpoints": {
 				"type": "array",
 				"defaultValue": [
-					"/microsoft/OpenEduAnalytics/main/modules/Contoso_SIS/test_data/studentattendance.csv",
-					"/microsoft/OpenEduAnalytics/main/modules/Contoso_SIS/test_data/studentdemographics.csv"
+					"/studentattendance.csv",
+					"/studentdemographics.csv",
+					"/studentsectionmark.csv"
 				]
 			},
 			"sinkFilesystem": {
