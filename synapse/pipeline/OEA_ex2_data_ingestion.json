@@ -1,7 +1,7 @@
 {
 	"name": "OEA_ex2_data_ingestion",
 	"properties": {
-		"description": "This is an example of a pipeline that retrieves data from multiple HTTP endpoints as specified in the 'endpoints' parameter.\nThe data is landed in the data lake within a folder named with the current datetime (in the timezone specified in the timezone parameter).",
+		"description": "This is an example of a pipeline that retrieves data from multiple HTTP endpoints as specified in the 'endpoints' parameter.\nThe data is landed in the data lake within a folder named with the current datetime (in the timezone specified in the timezone parameter).\n\nFor a list of timezones, see: https://docs.microsoft.com/en-us/azure/data-factory/control-flow-expression-language-functions#convertfromutc",
 		"activities": [
 			{
 				"name": "get data for each endpoint",
