@@ -417,128 +417,6 @@
 			]
 		},
 		{
-			"name": "[concat(parameters('workspaceName'), '/Corgis_data_ingestion')]",
-			"type": "Microsoft.Synapse/workspaces/pipelines",
-			"apiVersion": "2019-06-01-preview",
-			"properties": {
-				"activities": [
-					{
-						"name": "Ingest graduate data",
-						"type": "Copy",
-						"dependsOn": [],
-						"policy": {
-							"timeout": "7.00:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"source": {
-								"type": "BinarySource",
-								"storeSettings": {
-									"type": "HttpReadSettings",
-									"requestMethod": "GET"
-								},
-								"formatSettings": {
-									"type": "BinaryReadSettings"
-								}
-							},
-							"sink": {
-								"type": "BinarySink",
-								"storeSettings": {
-									"type": "AzureBlobFSWriteSettings"
-								}
-							},
-							"enableStaging": false
-						},
-						"inputs": [
-							{
-								"referenceName": "DS_Corgis_binary",
-								"type": "DatasetReference",
-								"parameters": {
-									"relativeURL": "/corgis/datasets/csv/graduates/graduates.csv"
-								}
-							}
-						],
-						"outputs": [
-							{
-								"referenceName": "DS_ADLS_binary",
-								"type": "DatasetReference",
-								"parameters": {
-									"filesystem": "stage1np",
-									"directory": "corgis2/graduates",
-									"filename": "graduates.csv"
-								}
-							}
-						]
-					},
-					{
-						"name": "Ingest school scores",
-						"type": "Copy",
-						"dependsOn": [],
-						"policy": {
-							"timeout": "7.00:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"source": {
-								"type": "BinarySource",
-								"storeSettings": {
-									"type": "HttpReadSettings",
-									"requestMethod": "GET"
-								},
-								"formatSettings": {
-									"type": "BinaryReadSettings"
-								}
-							},
-							"sink": {
-								"type": "BinarySink",
-								"storeSettings": {
-									"type": "AzureBlobFSWriteSettings"
-								}
-							},
-							"enableStaging": false
-						},
-						"inputs": [
-							{
-								"referenceName": "DS_Corgis_binary",
-								"type": "DatasetReference",
-								"parameters": {
-									"relativeURL": "/corgis/datasets/csv/school_scores/school_scores.csv"
-								}
-							}
-						],
-						"outputs": [
-							{
-								"referenceName": "DS_ADLS_binary",
-								"type": "DatasetReference",
-								"parameters": {
-									"filesystem": "stage1np",
-									"directory": "corgis2/school_scores",
-									"filename": "school_scores.csv"
-								}
-							}
-						]
-					}
-				],
-				"policy": {
-					"elapsedTimeMetric": {},
-					"cancelAfter": {}
-				},
-				"annotations": []
-			},
-			"dependsOn": [
-				"[concat(variables('workspaceId'), '/datasets/DS_Corgis_binary')]",
-				"[concat(variables('workspaceId'), '/datasets/DS_ADLS_binary')]"
-			]
-		},
-		{
 			"name": "[concat(parameters('workspaceName'), '/M365_roster_s1_into_s2')]",
 			"type": "Microsoft.Synapse/workspaces/pipelines",
 			"apiVersion": "2019-06-01-preview",
@@ -1034,8 +912,7 @@
 								"referenceName": "DS_HTTP_binary",
 								"type": "DatasetReference",
 								"parameters": {
-									"baseURL": "https://raw.githubusercontent.com",
-									"relativeURL": "/microsoft/OpenEduAnalytics/main/modules/Contoso_SIS/test_data/studentattendance.csv"
+									"URL": "https://raw.githubusercontent.com/microsoft/OpenEduAnalytics/main/modules/Contoso_SIS/test_data/studentattendance.csv"
 								}
 							}
 						],
@@ -1045,8 +922,7 @@
 								"type": "DatasetReference",
 								"parameters": {
 									"filesystem": "stage1np",
-									"directory": "contoso_sis",
-									"filename": "studentattendance.csv"
+									"filename": "contoso_sis/example1/studentattendance.csv"
 								}
 							}
 						]
@@ -1087,8 +963,7 @@
 								"referenceName": "DS_HTTP_binary",
 								"type": "DatasetReference",
 								"parameters": {
-									"baseURL": "https://raw.githubusercontent.com",
-									"relativeURL": "/microsoft/OpenEduAnalytics/main/modules/Contoso_SIS/test_data/studentdemographics.csv"
+									"URL": "https://raw.githubusercontent.com/microsoft/OpenEduAnalytics/main/modules/Contoso_SIS/test_data/studentdemographics.csv"
 								}
 							}
 						],
@@ -1098,8 +973,7 @@
 								"type": "DatasetReference",
 								"parameters": {
 									"filesystem": "stage1np",
-									"directory": "contoso_sis",
-									"filename": "studentdemographics.csv"
+									"filename": "contoso_sis/example1/studentdemographics.csv"
 								}
 							}
 						]
@@ -1140,8 +1014,7 @@
 								"referenceName": "DS_HTTP_binary",
 								"type": "DatasetReference",
 								"parameters": {
-									"baseURL": "https://raw.githubusercontent.com",
-									"relativeURL": "/microsoft/OpenEduAnalytics/main/modules/Contoso_SIS/test_data/studentsectionmark.csv"
+									"URL": "https://raw.githubusercontent.com/microsoft/OpenEduAnalytics/main/modules/Contoso_SIS/test_data/studentsectionmark.csv"
 								}
 							}
 						],
@@ -1151,8 +1024,7 @@
 								"type": "DatasetReference",
 								"parameters": {
 									"filesystem": "stage1np",
-									"directory": "contoso_sis",
-									"filename": "studentsectionmark.csv"
+									"filename": "contoso_sis/example1/studentsectionmark.csv"
 								}
 							}
 						]
@@ -1179,7 +1051,14 @@
 					{
 						"name": "get data for each endpoint",
 						"type": "ForEach",
-						"dependsOn": [],
+						"dependsOn": [
+							{
+								"activity": "Set currentDateTime",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
 						"userProperties": [],
 						"typeProperties": {
 							"items": {
@@ -1198,28 +1077,7 @@
 										"secureOutput": false,
 										"secureInput": false
 									},
-									"userProperties": [
-										{
-											"name": "baseURL",
-											"value": "@pipeline().parameters.baseURL"
-										},
-										{
-											"name": "relativeURL",
-											"value": "@{item()}"
-										},
-										{
-											"name": "filesystem",
-											"value": "@pipeline().parameters.sinkFilesystem"
-										},
-										{
-											"name": "directory",
-											"value": "@pipeline().parameters.sinkDirectory"
-										},
-										{
-											"name": "filename",
-											"value": "@last(split(item(), '/'))"
-										}
-									],
+									"userProperties": [],
 									"typeProperties": {
 										"source": {
 											"type": "BinarySource",
@@ -1258,12 +1116,8 @@
 											"referenceName": "DS_HTTP_binary",
 											"type": "DatasetReference",
 											"parameters": {
-												"baseURL": {
-													"value": "@pipeline().parameters.baseURL",
-													"type": "Expression"
-												},
-												"relativeURL": {
-													"value": "@item()",
+												"URL": {
+													"value": "@item().source",
 													"type": "Expression"
 												}
 											}
@@ -1278,12 +1132,8 @@
 													"value": "@pipeline().parameters.sinkFilesystem",
 													"type": "Expression"
 												},
-												"directory": {
-													"value": "@pipeline().parameters.sinkDirectory",
-													"type": "Expression"
-												},
 												"filename": {
-													"value": "@last(split(item(), '/'))",
+													"value": "@{item().destinationDirectory}/@{variables('currentDateTime')}/@{item().destinationFilename}",
 													"type": "Expression"
 												}
 											}
@@ -1292,6 +1142,19 @@
 								}
 							]
 						}
+					},
+					{
+						"name": "Set currentDateTime",
+						"type": "SetVariable",
+						"dependsOn": [],
+						"userProperties": [],
+						"typeProperties": {
+							"variableName": "currentDateTime",
+							"value": {
+								"value": "@{formatDateTime(convertTimeZone(utcnow(), 'UTC', 'Eastern Standard Time'), 'yyyy-MM-ddTHHmm_ss')}",
+								"type": "Expression"
+							}
+						}
 					}
 				],
 				"policy": {
@@ -1299,25 +1162,34 @@
 					"cancelAfter": {}
 				},
 				"parameters": {
-					"baseURL": {
-						"type": "string",
-						"defaultValue": "https://raw.githubusercontent.com/microsoft/OpenEduAnalytics/main/modules/Contoso_SIS/test_data"
-					},
 					"endpoints": {
 						"type": "array",
 						"defaultValue": [
-							"/studentattendance.csv",
-							"/studentdemographics.csv",
-							"/studentsectionmark.csv"
+							{
+								"source": "https://raw.githubusercontent.com/microsoft/OpenEduAnalytics/main/modules/Contoso_SIS/test_data/studentattendance.csv",
+								"destinationDirectory": "contoso_sis",
+								"destinationFilename": "studentattendance/studentattendance.csv"
+							},
+							{
+								"source": "https://raw.githubusercontent.com/microsoft/OpenEduAnalytics/main/modules/Contoso_SIS/test_data/studentdemographics.csv",
+								"destinationDirectory": "contoso_sis",
+								"destinationFilename": "studentdemographics/studentdemographics.csv"
+							},
+							{
+								"source": "https://raw.githubusercontent.com/microsoft/OpenEduAnalytics/main/modules/Contoso_SIS/test_data/studentsectionmark.csv",
+								"destinationDirectory": "contoso_sis",
+								"destinationFilename": "studentsectionmark/studentsectionmark.csv"
+							}
 						]
 					},
 					"sinkFilesystem": {
 						"type": "string",
 						"defaultValue": "stage1np"
-					},
-					"sinkDirectory": {
-						"type": "string",
-						"defaultValue": "contoso_sis"
+					}
+				},
+				"variables": {
+					"currentDateTime": {
+						"type": "String"
 					}
 				},
 				"annotations": []
@@ -1326,114 +1198,6 @@
 				"[concat(variables('workspaceId'), '/datasets/DS_HTTP_binary')]",
 				"[concat(variables('workspaceId'), '/datasets/DS_ADLS_binary')]",
 				"[concat(variables('workspaceId'), '/linkedServices/LS_ADLS_OEA')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('workspaceName'), '/Pipeline 1')]",
-			"type": "Microsoft.Synapse/workspaces/pipelines",
-			"apiVersion": "2019-06-01-preview",
-			"properties": {
-				"activities": [
-					{
-						"name": "Notebook1",
-						"type": "SynapseNotebook",
-						"dependsOn": [],
-						"policy": {
-							"timeout": "7.00:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"notebook": {
-								"referenceName": "Notebook3",
-								"type": "NotebookReference"
-							},
-							"snapshot": true
-						}
-					}
-				],
-				"policy": {
-					"elapsedTimeMetric": {},
-					"cancelAfter": {}
-				},
-				"annotations": []
-			},
-			"dependsOn": [
-				"[concat(variables('workspaceId'), '/notebooks/Notebook3')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('workspaceName'), '/Pipeline 2')]",
-			"type": "Microsoft.Synapse/workspaces/pipelines",
-			"apiVersion": "2019-06-01-preview",
-			"properties": {
-				"activities": [
-					{
-						"name": "ingest studentattendance",
-						"type": "Copy",
-						"dependsOn": [],
-						"policy": {
-							"timeout": "7.00:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"source": {
-								"type": "BinarySource",
-								"storeSettings": {
-									"type": "HttpReadSettings",
-									"requestMethod": "GET"
-								},
-								"formatSettings": {
-									"type": "BinaryReadSettings"
-								}
-							},
-							"sink": {
-								"type": "BinarySink",
-								"storeSettings": {
-									"type": "AzureBlobFSWriteSettings"
-								}
-							},
-							"enableStaging": false
-						},
-						"inputs": [
-							{
-								"referenceName": "DS_HTTP_binary",
-								"type": "DatasetReference",
-								"parameters": {
-									"baseURL": "https://raw.githubusercontent.com",
-									"relativeURL": "/microsoft/OpenEduAnalytics/main/modules/Contoso_SIS/test_data/studentattendance.csv"
-								}
-							}
-						],
-						"outputs": [
-							{
-								"referenceName": "DS_ADLS_binary",
-								"type": "DatasetReference",
-								"parameters": {
-									"filesystem": "stage1np",
-									"directory": "contoso_sis",
-									"filename": "studentattendance.csv"
-								}
-							}
-						]
-					}
-				],
-				"policy": {
-					"elapsedTimeMetric": {},
-					"cancelAfter": {}
-				},
-				"annotations": []
-			},
-			"dependsOn": [
-				"[concat(variables('workspaceId'), '/datasets/DS_HTTP_binary')]",
-				"[concat(variables('workspaceId'), '/datasets/DS_ADLS_binary')]"
 			]
 		},
 		{
@@ -1476,16 +1240,15 @@
 			"type": "Microsoft.Synapse/workspaces/datasets",
 			"apiVersion": "2019-06-01-preview",
 			"properties": {
+				"description": "Used for landing data in the data lake.\nDefaults to landing data in stage1np.\nNote that you can specify a full path in the filename param (eg, to land a file in a specific folder filename param can be 'contoso_sis/students/students.csv').\n",
 				"linkedServiceName": {
-					"referenceName": "syn-oea-cisd3gg1-WorkspaceDefaultStorage",
+					"referenceName": "LS_ADLS_OEA",
 					"type": "LinkedServiceReference"
 				},
 				"parameters": {
 					"filesystem": {
-						"type": "string"
-					},
-					"directory": {
-						"type": "string"
+						"type": "string",
+						"defaultValue": "stage1np"
 					},
 					"filename": {
 						"type": "string"
@@ -1500,10 +1263,6 @@
 							"value": "@dataset().filename",
 							"type": "Expression"
 						},
-						"folderPath": {
-							"value": "@dataset().directory",
-							"type": "Expression"
-						},
 						"fileSystem": {
 							"value": "@dataset().filesystem",
 							"type": "Expression"
@@ -1512,7 +1271,7 @@
 				}
 			},
 			"dependsOn": [
-				"[concat(variables('workspaceId'), '/linkedServices/syn-oea-cisd3gg1-WorkspaceDefaultStorage')]"
+				"[concat(variables('workspaceId'), '/linkedServices/LS_ADLS_OEA')]"
 			]
 		},
 		{
@@ -1586,16 +1345,13 @@
 					"type": "LinkedServiceReference",
 					"parameters": {
 						"baseURL": {
-							"value": "@dataset().baseURL",
+							"value": "@dataset().URL",
 							"type": "Expression"
 						}
 					}
 				},
 				"parameters": {
-					"baseURL": {
-						"type": "string"
-					},
-					"relativeURL": {
+					"URL": {
 						"type": "string"
 					}
 				},
@@ -1603,11 +1359,7 @@
 				"type": "Binary",
 				"typeProperties": {
 					"location": {
-						"type": "HttpServerLocation",
-						"relativeUrl": {
-							"value": "@dataset().relativeURL",
-							"type": "Expression"
-						}
+						"type": "HttpServerLocation"
 					}
 				}
 			},
@@ -8739,36 +8491,8 @@
 							},
 							"waitOnCompletion": true,
 							"parameters": {
-								"baseURL": "https://raw.githubusercontent.com/microsoft/OpenEduAnalytics/main/modules/Contoso_SIS/test_data",
-								"endpoints": "[\"/studentattendance.csv\",\"/studentdemographics.csv\",\"/studentsectionmark.csv\"]",
-								"sinkFilesystem": "stage1np",
-								"sinkDirectory": "contoso_sis"
-							}
-						}
-					},
-					{
-						"name": "get m365 test data",
-						"type": "ExecutePipeline",
-						"dependsOn": [
-							{
-								"activity": "get contoso_sis test data",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							}
-						],
-						"userProperties": [],
-						"typeProperties": {
-							"pipeline": {
-								"referenceName": "OEA_ex2_data_ingestion",
-								"type": "PipelineReference"
-							},
-							"waitOnCompletion": true,
-							"parameters": {
-								"baseURL": "https://raw.githubusercontent.com/",
-								"endpoints": "[\"/microsoft/OpenEduAnalytics/main/modules/Contoso_SIS/test_data/studentattendance.csv\",\"/microsoft/OpenEduAnalytics/main/modules/Contoso_SIS/test_data/studentdemographics.csv\",\"/microsoft/OpenEduAnalytics/main/modules/Contoso_SIS/test_data/studentsectionmark.csv\"]",
-								"sinkFilesystem": "stage1np",
-								"sinkDirectory": "contoso_sis"
+								"endpoints": "[\n{\"source\":\"https://raw.githubusercontent.com/microsoft/OpenEduAnalytics/main/modules/Contoso_SIS/test_data/studentattendance.csv\", \"destinationDirectory\":\"contoso_sis\", \"destinationFilename\":\"studentattendance/studentattendance.csv\"},\n{\"source\":\"https://raw.githubusercontent.com/microsoft/OpenEduAnalytics/main/modules/Contoso_SIS/test_data/studentdemographics.csv\", \"destinationDirectory\":\"contoso_sis\", \"destinationFilename\":\"studentdemographics/studentdemographics.csv\"},\n{\"source\":\"https://raw.githubusercontent.com/microsoft/OpenEduAnalytics/main/modules/Contoso_SIS/test_data/studentsectionmark.csv\", \"destinationDirectory\":\"contoso_sis\", \"destinationFilename\":\"studentsectionmark/studentsectionmark.csv\"}\n]",
+								"sinkFilesystem": "stage1np"
 							}
 						}
 					}
@@ -8782,6 +8506,26 @@
 			"dependsOn": [
 				"[concat(variables('workspaceId'), '/pipelines/OEA_ex2_data_ingestion')]"
 			]
+		},
+		{
+			"name": "[concat(parameters('workspaceName'), '/SQL script 14')]",
+			"type": "Microsoft.Synapse/workspaces/sqlscripts",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"content": {
+					"query": "-- This is auto-generated code\nSELECT\n    TOP 100 *\nFROM\n    OPENROWSET(\n        BULK 'https://stoeacisd3gg1.dfs.core.windows.net/stage1np/contoso_sis/studentattendance/studentattendance.csv',\n        FORMAT = 'CSV',\n        PARSER_VERSION='2.0'\n    ) AS [result]\n",
+					"metadata": {
+						"language": "sql"
+					},
+					"currentConnection": {
+						"databaseName": "master",
+						"poolName": "Built-in"
+					},
+					"resultLimit": 5000
+				},
+				"type": "SqlQuery"
+			},
+			"dependsOn": []
 		}
 	]
 }
