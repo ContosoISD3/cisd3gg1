@@ -1,7 +1,7 @@
 {
 	"name": "OEA_ex2_data_ingestion",
 	"properties": {
-		"description": "This is an example of a pipeline that retrieves data from multiple HTTP endpoints, using parameters to list the URL's to retrieve data from.",
+		"description": "This is an example of a pipeline that retrieves data from multiple HTTP endpoints as specified in the 'endpoints' parameter.\nThe data is landed in the data lake within a folder named with the current datetime (in the timezone specified in the timezone parameter).",
 		"activities": [
 			{
 				"name": "get data for each endpoint",
@@ -106,7 +106,7 @@
 				"typeProperties": {
 					"variableName": "currentDateTime",
 					"value": {
-						"value": "@{formatDateTime(convertTimeZone(utcnow(), 'UTC', 'Eastern Standard Time'), 'yyyy-MM-ddTHHmm_ss')}",
+						"value": "@{formatDateTime(convertTimeZone(utcnow(), 'UTC', pipeline().parameters.timezone), 'yyyy-MM-ddTHHmm_ss')}",
 						"type": "Expression"
 					}
 				}
@@ -136,6 +136,10 @@
 			"sinkFilesystem": {
 				"type": "string",
 				"defaultValue": "stage1np"
+			},
+			"timezone": {
+				"type": "string",
+				"defaultValue": "Eastern Standard Time"
 			}
 		},
 		"variables": {
