@@ -1,6 +1,9 @@
 {
 	"name": "corgis_py",
 	"properties": {
+		"folder": {
+			"name": "archive"
+		},
 		"nbformat": 4,
 		"nbformat_minor": 2,
 		"sessionProperties": {
@@ -13,7 +16,7 @@
 				"spark.dynamicAllocation.enabled": "false",
 				"spark.dynamicAllocation.minExecutors": "2",
 				"spark.dynamicAllocation.maxExecutors": "2",
-				"spark.autotune.trackingId": "5ae0788d-a875-4ecd-94ea-61d7d9dbbaf6"
+				"spark.autotune.trackingId": "a26b369c-61bf-4993-9323-51028b14af36"
 			}
 		},
 		"metadata": {

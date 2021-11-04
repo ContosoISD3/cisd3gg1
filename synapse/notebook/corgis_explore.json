@@ -1,6 +1,9 @@
 {
 	"name": "corgis_explore",
 	"properties": {
+		"folder": {
+			"name": "archive"
+		},
 		"nbformat": 4,
 		"nbformat_minor": 2,
 		"bigDataPool": {
@@ -17,7 +20,7 @@
 				"spark.dynamicAllocation.enabled": "false",
 				"spark.dynamicAllocation.minExecutors": "2",
 				"spark.dynamicAllocation.maxExecutors": "2",
-				"spark.autotune.trackingId": "d00541ac-382b-49ce-bb97-7b756ccb84a5"
+				"spark.autotune.trackingId": "55aeabca-90e4-49f0-af2b-50c395684c73"
 			}
 		},
 		"metadata": {
