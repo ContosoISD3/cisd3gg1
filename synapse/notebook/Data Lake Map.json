@@ -17,7 +17,7 @@
 				"spark.dynamicAllocation.enabled": "false",
 				"spark.dynamicAllocation.minExecutors": "2",
 				"spark.dynamicAllocation.maxExecutors": "2",
-				"spark.autotune.trackingId": "c1353fa9-078e-4622-bedb-5d828c123e97"
+				"spark.autotune.trackingId": "1092c832-611f-4cff-98bc-8932583cd799"
 			}
 		},
 		"metadata": {
@@ -58,7 +58,9 @@
 					}
 				},
 				"source": [
-					"<img align=\"right\" height=\"50\" src=\"https://github.com/microsoft/OpenEduAnalytics/blob/main/docs/pics/oea-logo-nobg.png\">\r\n",
+					"![OEA](https://openeducationanalytics.org/assets/imgs/img_oea_logo.png)\r\n",
+					"![image-alt-text](https://raw.githubusercontent.com/microsoft/OpenEduAnalytics/main/docs/pics/diagrams/OEA_ref_arch_v0.5.png)\r\n",
+					"\r\n",
 					"&nbsp\r\n",
 					"&nbsp\r\n",
 					"\r\n",
