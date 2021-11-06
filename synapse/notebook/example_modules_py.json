@@ -13,7 +13,7 @@
 				"spark.dynamicAllocation.enabled": "false",
 				"spark.dynamicAllocation.minExecutors": "2",
 				"spark.dynamicAllocation.maxExecutors": "2",
-				"spark.autotune.trackingId": "4bb0e659-33ec-418b-8445-87644f02ce03"
+				"spark.autotune.trackingId": "78f4b739-9f8f-4b42-9f71-a991f4ae49bf"
 			}
 		},
 		"metadata": {
@@ -64,8 +64,11 @@
 					"\n",
 					"    def process_latest_from_stage1(self):\n",
 					"        latest = oea.get_latest_folder(self.stage1np)\n",
-					"        self._process_entity_from_stage1(latest, 'studentattendance', 'csv', 'overwrite', 'true')\n",
-					"        self._process_entity_from_stage1(latest, 'studentsectionmark', 'csv', 'overwrite', 'true')\n",
+					"        if latest == None:\n",
+					"            logger.info(\"No folders found in: \" + self.stage1np)\n",
+					"        else:\n",
+					"            self._process_entity_from_stage1(latest, 'studentattendance', 'csv', 'overwrite', 'true')\n",
+					"            self._process_entity_from_stage1(latest, 'studentsectionmark', 'csv', 'overwrite', 'true')\n",
 					"\n",
 					"    def process_data_from_stage1(self):\n",
 					"        self._process_entity_from_stage1('studentattendance', 'csv', 'overwrite', 'true')\n",
