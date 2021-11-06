@@ -13,7 +13,7 @@
 				"spark.dynamicAllocation.enabled": "false",
 				"spark.dynamicAllocation.minExecutors": "2",
 				"spark.dynamicAllocation.maxExecutors": "2",
-				"spark.autotune.trackingId": "14a62ae9-1e98-4ebf-a0a7-37f1c135c438"
+				"spark.autotune.trackingId": "4bb0e659-33ec-418b-8445-87644f02ce03"
 			}
 		},
 		"metadata": {
@@ -280,11 +280,15 @@
 					"\n",
 					"    def process_latest_roster_from_stage1(self):\n",
 					"        latest = oea.get_latest_folder(self.stage1np)\n",
-					"        items = mssparkutils.fs.ls(self.stage1np + '/' + latest)\n",
-					"        print(items)\n",
-					"        #for item in items:\n",
-					"        #    if item.name != 'Activity':     \n",
-					"        #        self._process_entity_from_stage1(latest, item.name, 'csv', 'overwrite', 'false')\n",
+					"        if latest == None:\n",
+					"            logger.info(\"There is no roster data in stage1 to process.\")\n",
+					"        else:\n",
+					"            folder_to_process = self.stage1np + '/' + latest\n",
+					"            items = mssparkutils.fs.ls(folder_to_process)\n",
+					"            logger.info(\"Processing latest roster data from: \" + folder_to_process)\n",
+					"            for item in items:\n",
+					"                if item.name != 'Activity':     \n",
+					"                    self._process_entity_from_stage1(latest, item.name, 'csv', 'overwrite', 'false')\n",
 					"\n",
 					"    def reset_roster_processing(self):\n",
 					"        \"\"\" Resets all stage1 to stage2 processing of roster data. \"\"\"\n",
