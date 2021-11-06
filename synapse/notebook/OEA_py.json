@@ -13,7 +13,7 @@
 				"spark.dynamicAllocation.enabled": "false",
 				"spark.dynamicAllocation.minExecutors": "2",
 				"spark.dynamicAllocation.maxExecutors": "2",
-				"spark.autotune.trackingId": "3f720ccd-1c0a-4b6f-9c82-8ba02b0536a2"
+				"spark.autotune.trackingId": "28054ff3-2cc5-40dc-bd12-5efa5a59be70"
 			}
 		},
 		"metadata": {
@@ -213,7 +213,7 @@
 					"            logger.warning(\"[OEA] Could not get list of folders in specified path: \" + path + \"\\nThis may be because the path does not exist.\")\n",
 					"        return dirs\n",
 					"\n",
-					"    def get_latest_folder(path):\n",
+					"    def get_latest_folder(self, path):\n",
 					"        folders = oea.get_folders(path)\n",
 					"        if len(folders) > 0: return folders[-1]\n",
 					"        else: return None\n",
