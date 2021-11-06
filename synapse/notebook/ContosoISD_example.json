@@ -3,17 +3,21 @@
 	"properties": {
 		"nbformat": 4,
 		"nbformat_minor": 2,
+		"bigDataPool": {
+			"referenceName": "spark4v3p1",
+			"type": "BigDataPoolReference"
+		},
 		"sessionProperties": {
 			"driverMemory": "28g",
 			"driverCores": 4,
 			"executorMemory": "28g",
 			"executorCores": 4,
-			"numExecutors": 2,
+			"numExecutors": 4,
 			"conf": {
 				"spark.dynamicAllocation.enabled": "false",
-				"spark.dynamicAllocation.minExecutors": "2",
-				"spark.dynamicAllocation.maxExecutors": "2",
-				"spark.autotune.trackingId": "bbd84e34-9123-4c75-885c-c456042d6aa7"
+				"spark.dynamicAllocation.minExecutors": "4",
+				"spark.dynamicAllocation.maxExecutors": "4",
+				"spark.autotune.trackingId": "e3e94e85-362e-44a9-8ed1-e1a27d70980f"
 			}
 		},
 		"metadata": {
@@ -25,6 +29,21 @@
 			},
 			"language_info": {
 				"name": "python"
+			},
+			"a365ComputeOptions": {
+				"id": "/subscriptions/7b9a4896-4541-483f-bdc7-d8f4ec6be3ee/resourceGroups/rg-oea-CISD3GG1/providers/Microsoft.Synapse/workspaces/syn-oea-cisd3gg1/bigDataPools/spark4v3p1",
+				"name": "spark4v3p1",
+				"type": "Spark",
+				"endpoint": "https://syn-oea-cisd3gg1.dev.azuresynapse.net/livyApi/versions/2019-11-01-preview/sparkPools/spark4v3p1",
+				"auth": {
+					"type": "AAD",
+					"authResource": "https://dev.azuresynapse.net"
+				},
+				"sparkVersion": "3.1",
+				"nodeCount": 10,
+				"cores": 4,
+				"memory": 28,
+				"automaticScaleJobs": false
 			},
 			"sessionKeepAliveTimeout": 30
 		},
@@ -70,7 +89,7 @@
 				"source": [
 					"%run /OEA_py"
 				],
-				"execution_count": null
+				"execution_count": 11
 			},
 			{
 				"cell_type": "code",
@@ -89,7 +108,7 @@
 				"source": [
 					"%run /example_modules_py"
 				],
-				"execution_count": null
+				"execution_count": 12
 			},
 			{
 				"cell_type": "code",
@@ -109,9 +128,9 @@
 					"# 1) Initialize the OEA framework and modules needed.\n",
 					"oea = OEA()\n",
 					"m365 = M365(oea)\n",
-					"contoso_sis = ContosoSIS(oea, 'contoso_sis', False)"
+					"contoso_sis = ContosoSIS(oea)"
 				],
-				"execution_count": null
+				"execution_count": 15
 			},
 			{
 				"cell_type": "code",
@@ -134,7 +153,7 @@
 					"contoso_sis.process_latest_from_stage1()\n",
 					"m365.process_activity_data_from_stage1()"
 				],
-				"execution_count": null
+				"execution_count": 4
 			},
 			{
 				"cell_type": "code",
@@ -183,7 +202,7 @@
 					"df = spark.sql(\"select Id, Name, Code, Description, ExternalId, CreateDate, LastModifiedDate, IsActive, CalendarId, 'Math' Department from Course\")\n",
 					"df.write.format('parquet').mode('overwrite').save(oea.stage2np + '/ContosoISD/Course')"
 				],
-				"execution_count": null
+				"execution_count": 5
 			},
 			{
 				"cell_type": "code",
@@ -223,7 +242,7 @@
 					"\n",
 					"print(f\"Created spark db's.\\nYou can now open the 'techInequityDashboardContoso v2.pbix' dashboard and change the datasource to point to: {oea.serverless_sql_endpoint}\")"
 				],
-				"execution_count": null
+				"execution_count": 6
 			},
 			{
 				"cell_type": "markdown",
@@ -266,9 +285,9 @@
 					"    oea.drop_db('s2_m365')\n",
 					"\n",
 					"# Uncomment the following line and run this cell to reset everything if you want to walk through the process again.\n",
-					"#reset_all_processing()"
+					"reset_all_processing()"
 				],
-				"execution_count": null
+				"execution_count": 14
 			}
 		]
 	}
