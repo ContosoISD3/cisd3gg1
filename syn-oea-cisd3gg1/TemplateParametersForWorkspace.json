@@ -8,7 +8,10 @@
 		"EdFi_Ods_Production_connectionString": {
 			"value": ""
 		},
-		"LS_ADLS_OEA_accountKey": {
+		"LS_Azure_SQL_DB_connectionString": {
+			"value": ""
+		},
+		"LS_SQL_Serverless_OEA_connectionString": {
 			"value": ""
 		},
 		"syn-oea-cisd3gg1-WorkspaceDefaultSqlServer_connectionString": {
@@ -19,6 +22,12 @@
 		},
 		"LS_HTTP_properties_typeProperties_url": {
 			"value": "@{linkedService().baseURL}"
+		},
+		"LS_KeyVault_OEA_properties_typeProperties_baseUrl": {
+			"value": "https://yourkeyvault.vault.azure.net/"
+		},
+		"bing-covid-19-data_sasUri": {
+			"value": ""
 		},
 		"syn-oea-cisd3gg1-WorkspaceDefaultStorage_properties_typeProperties_url": {
 			"value": "https://stoeacisd3gg1.dfs.core.windows.net"
