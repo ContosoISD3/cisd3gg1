@@ -13,7 +13,7 @@
 				"spark.dynamicAllocation.enabled": "false",
 				"spark.dynamicAllocation.minExecutors": "2",
 				"spark.dynamicAllocation.maxExecutors": "2",
-				"spark.autotune.trackingId": "1c4a8084-531d-49b3-8c06-e912d991b465"
+				"spark.autotune.trackingId": "b8653d8f-0199-45e6-ae80-594e463dbb43"
 			}
 		},
 		"metadata": {
@@ -61,7 +61,6 @@
 					"                                            ['credits_earned', 'short', 'no-op'],\n",
 					"                                            ['grad_credit_type', 'string', 'no-op']]\n",
 					"\n",
-					"\n",
 					"    def process_latest_from_stage1(self):\n",
 					"        latest = oea.get_latest_folder(self.stage1np)\n",
 					"        if latest == None:\n",
@@ -69,14 +68,6 @@
 					"        else:\n",
 					"            self._process_entity_from_stage1(latest, 'studentattendance', 'csv', 'overwrite', 'true')\n",
 					"            self._process_entity_from_stage1(latest, 'studentsectionmark', 'csv', 'overwrite', 'true')\n",
-					"\n",
-					"    def process_data_from_stage1(self):\n",
-					"        self._process_entity_from_stage1('studentattendance', 'csv', 'overwrite', 'true')\n",
-					"        self._process_entity_from_stage1('studentsectionmark', 'csv', 'overwrite', 'true')\n",
-					"\n",
-					"    def copy_test_data_to_stage1(self):\n",
-					"        mssparkutils.fs.cp(self.module_path + '/test_data/studentattendance.csv', self.stage1np + '/studentattendance/studentattendance.csv', True)\n",
-					"        mssparkutils.fs.cp(self.module_path + '/test_data/studentsectionmark.csv', self.stage1np + '/studentsectionmark/studentsectionmark.csv', True)\n",
 					"\n",
 					"class M365(BaseOEAModule):\n",
 					"    \"\"\"\n",

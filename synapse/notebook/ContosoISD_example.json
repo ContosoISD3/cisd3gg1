@@ -17,7 +17,7 @@
 				"spark.dynamicAllocation.enabled": "false",
 				"spark.dynamicAllocation.minExecutors": "4",
 				"spark.dynamicAllocation.maxExecutors": "4",
-				"spark.autotune.trackingId": "1a9fea50-c974-4ec2-b21b-d7de1f0cd9a5"
+				"spark.autotune.trackingId": "aa552fde-460b-460d-8835-18838ad20caa"
 			}
 		},
 		"metadata": {
@@ -153,7 +153,7 @@
 					"contoso_sis.process_latest_from_stage1()\n",
 					"m365.process_activity_data_from_stage1()"
 				],
-				"execution_count": 55
+				"execution_count": 57
 			},
 			{
 				"cell_type": "code",
@@ -173,21 +173,21 @@
 					"# 3) Run additional prep on the data to create a unified dataset that can be used in a Power BI report\n",
 					"\n",
 					"# Process sectionmark data. Convert id values to use the Person.Id and Section.Id values set in the m365 data.\n",
-					"sqlContext.registerDataFrameAsTable(spark.read.format('parquet').load(oea.stage2np + '/contoso_sis/studentsectionmark'), 'SectionMark')\n",
-					"sqlContext.registerDataFrameAsTable(spark.read.format('parquet').load(oea.stage2np + '/m365/Person'), 'Person')\n",
-					"sqlContext.registerDataFrameAsTable(spark.read.format('parquet').load(oea.stage2np + '/m365/Section'), 'Section')\n",
+					"sqlContext.registerDataFrameAsTable(spark.read.format('delta').load(oea.stage2np + '/contoso_sis/studentsectionmark'), 'SectionMark')\n",
+					"sqlContext.registerDataFrameAsTable(spark.read.format('delta').load(oea.stage2np + '/m365/Person'), 'Person')\n",
+					"sqlContext.registerDataFrameAsTable(spark.read.format('delta').load(oea.stage2np + '/m365/Section'), 'Section')\n",
 					"df = spark.sql(\"select sm.id Id, p.Id PersonId, s.Id SectionId, cast(sm.numeric_grade_earned as int) NumericGrade, \\\n",
 					"sm.alpha_grade_earned AlphaGrade, sm.is_final_grade IsFinalGrade, cast(sm.credits_attempted as int) CreditsAttempted, cast(sm.credits_earned as int) CreditsEarned, \\\n",
 					"sm.grad_credit_type GraduationCreditType, sm.id ExternalId, CURRENT_TIMESTAMP CreateDate, CURRENT_TIMESTAMP LastModifiedDate, true IsActive \\\n",
 					"from SectionMark sm, Person p, Section s \\\n",
 					"where sm.student_id = p.ExternalId \\\n",
 					"and sm.section_id = s.ExternalId\")\n",
-					"df.write.format('parquet').mode('overwrite').save(oea.stage2np + '/ContosoISD/SectionMark')\n",
+					"df.write.format('delta').mode('overwrite').save(oea.stage2np + '/ContosoISD/SectionMark')\n",
 					"\n",
 					"# Repeat the above process, this time for student attendance\n",
 					"# Convert id values to use the Person.Id, Org.Id and Section.Id values\n",
-					"sqlContext.registerDataFrameAsTable(spark.read.format('parquet').load(oea.stage2np + '/contoso_sis/studentattendance'), 'Attendance')\n",
-					"sqlContext.registerDataFrameAsTable(spark.read.format('parquet').load(oea.stage2np + '/m365/Org'), 'Org')\n",
+					"sqlContext.registerDataFrameAsTable(spark.read.format('delta').load(oea.stage2np + '/contoso_sis/studentattendance'), 'Attendance')\n",
+					"sqlContext.registerDataFrameAsTable(spark.read.format('delta').load(oea.stage2np + '/m365/Org'), 'Org')\n",
 					"df = spark.sql(\"select att.id Id, p.Id PersonId, att.school_year SchoolYear, o.Id OrgId, to_date(att.attendance_date,'MM/dd/yyyy') AttendanceDate, \\\n",
 					"att.all_day AllDay, att.Period Period, s.Id SectionId, att.AttendanceCode AttendanceCode, att.PresenceFlag PresenceFlag, \\\n",
 					"att.attendance_status AttendanceStatus, att.attendance_type AttendanceType, att.attendance_sequence AttendanceSequence \\\n",
@@ -195,14 +195,14 @@
 					"where att.student_id = p.ExternalId \\\n",
 					"and att.school_id = o.ExternalId \\\n",
 					"and att.section_id = s.ExternalId\")\n",
-					"df.write.format('parquet').mode('overwrite').save(oea.stage2np +'/ContosoISD/Attendance')\n",
+					"df.write.format('delta').mode('overwrite').save(oea.stage2np +'/ContosoISD/Attendance')\n",
 					"\n",
 					"# Add 'Department' column to Course (hardcoded to \"Math\" for this Contoso example)\n",
-					"sqlContext.registerDataFrameAsTable(spark.read.format('parquet').load(oea.stage2np + '/m365/Course'), 'Course')\n",
+					"sqlContext.registerDataFrameAsTable(spark.read.format('delta').load(oea.stage2np + '/m365/Course'), 'Course')\n",
 					"df = spark.sql(\"select Id, Name, Code, Description, ExternalId, CreateDate, LastModifiedDate, IsActive, CalendarId, 'Math' Department from Course\")\n",
-					"df.write.format('parquet').mode('overwrite').save(oea.stage2np + '/ContosoISD/Course')"
+					"df.write.format('delta').mode('overwrite').save(oea.stage2np + '/ContosoISD/Course')"
 				],
-				"execution_count": null
+				"execution_count": 58
 			},
 			{
 				"cell_type": "code",
