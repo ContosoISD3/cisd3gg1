@@ -16,14 +16,6 @@
 				},
 				"userProperties": [],
 				"typeProperties": {
-					"dataset": {
-						"referenceName": "data_lake_binary",
-						"type": "DatasetReference",
-						"parameters": {
-							"filesystem": "stage1",
-							"directory": "M365/inbound/roster"
-						}
-					},
 					"fieldList": [
 						"childItems"
 					],
@@ -87,38 +79,6 @@
 									}
 								},
 								"snapshot": true
-							}
-						},
-						{
-							"name": "Move_Files",
-							"type": "ExecutePipeline",
-							"dependsOn": [
-								{
-									"activity": "M365_s1_to_s2",
-									"dependencyConditions": [
-										"Succeeded"
-									]
-								}
-							],
-							"userProperties": [],
-							"typeProperties": {
-								"pipeline": {
-									"referenceName": "Move_files",
-									"type": "PipelineReference"
-								},
-								"waitOnCompletion": true,
-								"parameters": {
-									"source_filesystem": "stage1",
-									"source_path": {
-										"value": "M365/inbound/roster/@{item().name}",
-										"type": "Expression"
-									},
-									"destination_filesystem": "stage1",
-									"destination_path": {
-										"value": "M365/processed/roster/@{item().name}",
-										"type": "Expression"
-									}
-								}
 							}
 						}
 					]
