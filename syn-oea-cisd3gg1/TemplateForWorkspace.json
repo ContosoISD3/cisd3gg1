@@ -1361,206 +1361,6 @@
 			"dependsOn": []
 		},
 		{
-			"name": "[concat(parameters('workspaceName'), '/SQL script 11')]",
-			"type": "Microsoft.Synapse/workspaces/sqlscripts",
-			"apiVersion": "2019-06-01-preview",
-			"properties": {
-				"content": {
-					"query": "-- This is auto-generated code\nSELECT\n    TOP 100 *\nFROM\n    OPENROWSET(\n        BULK 'https://stoeacisd3gg1.dfs.core.windows.net/stage1/M365/activity/2021-06-10/ApplicationUsage.Part001.csv',\n        FORMAT = 'CSV',\n        PARSER_VERSION='2.0'\n    ) AS [result]\n",
-					"metadata": {
-						"language": "sql"
-					},
-					"currentConnection": {
-						"databaseName": "master",
-						"poolName": "Built-in"
-					},
-					"resultLimit": 5000
-				},
-				"type": "SqlQuery"
-			},
-			"dependsOn": []
-		},
-		{
-			"name": "[concat(parameters('workspaceName'), '/SQL script 12')]",
-			"type": "Microsoft.Synapse/workspaces/sqlscripts",
-			"apiVersion": "2019-06-01-preview",
-			"properties": {
-				"content": {
-					"query": "-- This is auto-generated code\nSELECT\n    TOP 100 *\nFROM\n    OPENROWSET(\n        BULK 'https://stoeacisd3gg1.dfs.core.windows.net/stage1np/corgis2/graduates/graduates.csv',\n        FORMAT = 'CSV',\n        PARSER_VERSION='2.0'\n    ) AS [result]\n",
-					"metadata": {
-						"language": "sql"
-					},
-					"currentConnection": {
-						"databaseName": "master",
-						"poolName": "Built-in"
-					},
-					"resultLimit": 5000
-				},
-				"type": "SqlQuery"
-			},
-			"dependsOn": []
-		},
-		{
-			"name": "[concat(parameters('workspaceName'), '/SQL script 13')]",
-			"type": "Microsoft.Synapse/workspaces/sqlscripts",
-			"apiVersion": "2019-06-01-preview",
-			"properties": {
-				"content": {
-					"query": "-- This is auto-generated code\nSELECT\n    TOP 100 *\nFROM\n    OPENROWSET(\n        BULK 'https://stoeacisd3gg1.dfs.core.windows.net/stage1np/contoso_sis/studentattendance.csv',\n        FORMAT = 'CSV',\n        PARSER_VERSION='2.0'\n    ) AS [result]\n",
-					"metadata": {
-						"language": "sql"
-					},
-					"currentConnection": {
-						"databaseName": "master",
-						"poolName": "Built-in"
-					},
-					"resultLimit": 5000
-				},
-				"type": "SqlQuery"
-			},
-			"dependsOn": []
-		},
-		{
-			"name": "[concat(parameters('workspaceName'), '/SQL script 14')]",
-			"type": "Microsoft.Synapse/workspaces/sqlscripts",
-			"apiVersion": "2019-06-01-preview",
-			"properties": {
-				"content": {
-					"query": "-- This is auto-generated code\nSELECT\n    TOP 100 *\nFROM\n    OPENROWSET(\n        BULK 'https://stoeacisd3gg1.dfs.core.windows.net/stage1np/contoso_sis/studentattendance/studentattendance.csv',\n        FORMAT = 'CSV',\n        PARSER_VERSION='2.0'\n    ) AS [result]\n",
-					"metadata": {
-						"language": "sql"
-					},
-					"currentConnection": {
-						"databaseName": "master",
-						"poolName": "Built-in"
-					},
-					"resultLimit": 5000
-				},
-				"type": "SqlQuery"
-			},
-			"dependsOn": []
-		},
-		{
-			"name": "[concat(parameters('workspaceName'), '/SQL script 2')]",
-			"type": "Microsoft.Synapse/workspaces/sqlscripts",
-			"apiVersion": "2019-06-01-preview",
-			"properties": {
-				"content": {
-					"query": "-- This is auto-generated code\nSELECT\n    TOP 100 *\nFROM\n    OPENROWSET(\n        BULK 'https://stoeacisd3gg1.dfs.core.windows.net/stage1/M365/roster/2021-06-15T04-04-12/Person/part-00000-90ae57f8-0d60-4c5a-bc4e-9866483ef367-c000.csv',\n        FORMAT = 'CSV',\n        PARSER_VERSION='2.0'\n    ) AS [result]\n",
-					"metadata": {
-						"language": "sql"
-					},
-					"currentConnection": {
-						"databaseName": "master",
-						"poolName": "Built-in"
-					},
-					"resultLimit": 5000
-				},
-				"type": "SqlQuery"
-			},
-			"dependsOn": []
-		},
-		{
-			"name": "[concat(parameters('workspaceName'), '/SQL script 3')]",
-			"type": "Microsoft.Synapse/workspaces/sqlscripts",
-			"apiVersion": "2019-06-01-preview",
-			"properties": {
-				"content": {
-					"query": "SELECT\n    TOP 100 *\nFROM\n    OPENROWSET(\n        BULK 'https://stoeacisd3gg1.dfs.core.windows.net/stage2/M365/Person/part-00000-b8157474-2acc-4d3d-a095-bc5cf6553591-c000.snappy.parquet',\n        FORMAT='PARQUET'\n    ) AS [result]\n",
-					"metadata": {
-						"language": "sql"
-					},
-					"currentConnection": {
-						"databaseName": "master",
-						"poolName": "Built-in"
-					},
-					"resultLimit": 5000
-				},
-				"type": "SqlQuery"
-			},
-			"dependsOn": []
-		},
-		{
-			"name": "[concat(parameters('workspaceName'), '/SQL script 4')]",
-			"type": "Microsoft.Synapse/workspaces/sqlscripts",
-			"apiVersion": "2019-06-01-preview",
-			"properties": {
-				"content": {
-					"query": "SELECT\n    TOP 100 *\nFROM\n    OPENROWSET(\n        BULK 'https://stoeacisd3gg1.dfs.core.windows.net/stage2/tutorial_01/Person/part-00000-45776a54-6c81-4904-8a7c-d577eddebbb7-c000.snappy.parquet',\n        FORMAT='PARQUET'\n    ) AS [result]\n",
-					"metadata": {
-						"language": "sql"
-					},
-					"currentConnection": {
-						"databaseName": "master",
-						"poolName": "Built-in"
-					},
-					"resultLimit": 5000
-				},
-				"type": "SqlQuery"
-			},
-			"dependsOn": []
-		},
-		{
-			"name": "[concat(parameters('workspaceName'), '/SQL script 5')]",
-			"type": "Microsoft.Synapse/workspaces/sqlscripts",
-			"apiVersion": "2019-06-01-preview",
-			"properties": {
-				"content": {
-					"query": "-- This is auto-generated code\nSELECT\n    TOP 100 *\nFROM\n    OPENROWSET(\n        BULK 'https://stoeacisd3gg1.dfs.core.windows.net/stage1/tutorial_01/roster/2021-06-11/Person/part-00000-eacccad9-25c4-4ffc-a662-7ecce7b2d86b-c000.csv',\n        FORMAT = 'CSV',\n        PARSER_VERSION='2.0'\n    ) AS [result]\n",
-					"metadata": {
-						"language": "sql"
-					},
-					"currentConnection": {
-						"databaseName": "master",
-						"poolName": "Built-in"
-					},
-					"resultLimit": 5000
-				},
-				"type": "SqlQuery"
-			},
-			"dependsOn": []
-		},
-		{
-			"name": "[concat(parameters('workspaceName'), '/SQL script 6')]",
-			"type": "Microsoft.Synapse/workspaces/sqlscripts",
-			"apiVersion": "2019-06-01-preview",
-			"properties": {
-				"content": {
-					"query": "",
-					"metadata": {
-						"language": "sql"
-					},
-					"currentConnection": {
-						"databaseName": "tutorial_01",
-						"poolName": "Built-in"
-					},
-					"resultLimit": 5000
-				},
-				"type": "SqlQuery"
-			},
-			"dependsOn": []
-		},
-		{
-			"name": "[concat(parameters('workspaceName'), '/SQL script 9')]",
-			"type": "Microsoft.Synapse/workspaces/sqlscripts",
-			"apiVersion": "2019-06-01-preview",
-			"properties": {
-				"content": {
-					"query": "SELECT TOP (100) [Id]\n,[FirstSeenDateTime]\n,[LastSeenDateTime]\n,[GivenName]\n,[MiddleName]\n,[PreferredGivenName]\n,[PreferredMiddleName]\n,[PreferredSurname]\n,[Surname]\n FROM [dbo].[Person]",
-					"metadata": {
-						"language": "sql"
-					},
-					"currentConnection": {
-						"databaseName": "tutorial_sql2",
-						"poolName": "Built-in"
-					},
-					"resultLimit": 5000
-				},
-				"type": "SqlQuery"
-			},
-			"dependsOn": []
-		},
-		{
 			"name": "[concat(parameters('workspaceName'), '/ms_TechActivity')]",
 			"type": "Microsoft.Synapse/workspaces/sqlscripts",
 			"apiVersion": "2019-06-01-preview",
@@ -1786,17 +1586,21 @@
 			"properties": {
 				"nbformat": 4,
 				"nbformat_minor": 2,
+				"bigDataPool": {
+					"referenceName": "spark4v3p1",
+					"type": "BigDataPoolReference"
+				},
 				"sessionProperties": {
 					"driverMemory": "28g",
 					"driverCores": 4,
 					"executorMemory": "28g",
 					"executorCores": 4,
-					"numExecutors": 2,
+					"numExecutors": 4,
 					"conf": {
 						"spark.dynamicAllocation.enabled": "false",
-						"spark.dynamicAllocation.minExecutors": "2",
-						"spark.dynamicAllocation.maxExecutors": "2",
-						"spark.autotune.trackingId": "bbd84e34-9123-4c75-885c-c456042d6aa7"
+						"spark.dynamicAllocation.minExecutors": "4",
+						"spark.dynamicAllocation.maxExecutors": "4",
+						"spark.autotune.trackingId": "4b1215c0-c418-47b2-9c17-02bd0f0a5529"
 					}
 				},
 				"metadata": {
@@ -1808,7 +1612,23 @@
 					},
 					"language_info": {
 						"name": "python"
-					}
+					},
+					"a365ComputeOptions": {
+						"id": "/subscriptions/7b9a4896-4541-483f-bdc7-d8f4ec6be3ee/resourceGroups/rg-oea-CISD3GG1/providers/Microsoft.Synapse/workspaces/syn-oea-cisd3gg1/bigDataPools/spark4v3p1",
+						"name": "spark4v3p1",
+						"type": "Spark",
+						"endpoint": "https://syn-oea-cisd3gg1.dev.azuresynapse.net/livyApi/versions/2019-11-01-preview/sparkPools/spark4v3p1",
+						"auth": {
+							"type": "AAD",
+							"authResource": "https://dev.azuresynapse.net"
+						},
+						"sparkVersion": "3.1",
+						"nodeCount": 10,
+						"cores": 4,
+						"memory": 28,
+						"automaticScaleJobs": false
+					},
+					"sessionKeepAliveTimeout": 30
 				},
 				"cells": [
 					{
@@ -1853,7 +1673,7 @@
 							"%run /OEA_py"
 						],
 						"outputs": [],
-						"execution_count": null
+						"execution_count": 11
 					},
 					{
 						"cell_type": "code",
@@ -1873,7 +1693,7 @@
 							"%run /example_modules_py"
 						],
 						"outputs": [],
-						"execution_count": null
+						"execution_count": 12
 					},
 					{
 						"cell_type": "code",
@@ -1893,10 +1713,10 @@
 							"# 1) Initialize the OEA framework and modules needed.\n",
 							"oea = OEA()\n",
 							"m365 = M365(oea)\n",
-							"contoso_sis = ContosoSIS(oea, 'contoso_sis', False)"
+							"contoso_sis = ContosoSIS(oea)"
 						],
 						"outputs": [],
-						"execution_count": null
+						"execution_count": 15
 					},
 					{
 						"cell_type": "code",
@@ -1920,7 +1740,7 @@
 							"m365.process_activity_data_from_stage1()"
 						],
 						"outputs": [],
-						"execution_count": null
+						"execution_count": 4
 					},
 					{
 						"cell_type": "code",
@@ -1970,7 +1790,7 @@
 							"df.write.format('parquet').mode('overwrite').save(oea.stage2np + '/ContosoISD/Course')"
 						],
 						"outputs": [],
-						"execution_count": null
+						"execution_count": 5
 					},
 					{
 						"cell_type": "code",
@@ -2011,7 +1831,7 @@
 							"print(f\"Created spark db's.\\nYou can now open the 'techInequityDashboardContoso v2.pbix' dashboard and change the datasource to point to: {oea.serverless_sql_endpoint}\")"
 						],
 						"outputs": [],
-						"execution_count": null
+						"execution_count": 6
 					},
 					{
 						"cell_type": "markdown",
@@ -2054,10 +1874,10 @@
 							"    oea.drop_db('s2_m365')\n",
 							"\n",
 							"# Uncomment the following line and run this cell to reset everything if you want to walk through the process again.\n",
-							"#reset_all_processing()"
+							"reset_all_processing()"
 						],
 						"outputs": [],
-						"execution_count": null
+						"execution_count": 14
 					}
 				]
 			},
@@ -6937,7 +6757,7 @@
 						"spark.dynamicAllocation.enabled": "false",
 						"spark.dynamicAllocation.minExecutors": "2",
 						"spark.dynamicAllocation.maxExecutors": "2",
-						"spark.autotune.trackingId": "32e1ffa3-dcb5-40bb-9276-cdd118562fe7"
+						"spark.autotune.trackingId": "4938cc5f-28f7-4849-bd6d-e9338dcef9de"
 					}
 				},
 				"metadata": {
@@ -6949,7 +6769,8 @@
 					},
 					"language_info": {
 						"name": "python"
-					}
+					},
+					"sessionKeepAliveTimeout": 30
 				},
 				"cells": [
 					{
@@ -7831,7 +7652,7 @@
 						"spark.dynamicAllocation.enabled": "false",
 						"spark.dynamicAllocation.minExecutors": "2",
 						"spark.dynamicAllocation.maxExecutors": "2",
-						"spark.autotune.trackingId": "f8b82050-e1ba-425a-a52c-2c58a358220e"
+						"spark.autotune.trackingId": "d86fdcf6-8d58-458f-bd00-0f750a212687"
 					}
 				},
 				"metadata": {
@@ -7843,11 +7664,13 @@
 					},
 					"language_info": {
 						"name": "python"
-					}
+					},
+					"sessionKeepAliveTimeout": 30
 				},
 				"cells": [
 					{
 						"cell_type": "code",
+						"metadata": {},
 						"source": [
 							"class ContosoSIS(BaseOEAModule):\n",
 							"    def __init__(self, oea, source_folder='contoso_sis', pseudonymize = True):\n",
@@ -8057,8 +7880,8 @@
 							"        spark_schema = self.oea.to_spark_schema(self.schemas['Activity'])\n",
 							"        df = spark.read.csv(self.stage1np + '/' + latest + '/Activity/*.csv', header='false', schema=spark_schema) \n",
 							"        sqlContext.registerDataFrameAsTable(df, 'Activity')\n",
-							"        sqlContext.registerDataFrameAsTable(spark.read.format('parquet').load(self.oea.stage2np + '/m365/PersonIdentifier'), 'PersonIdentifier')\n",
-							"        sqlContext.registerDataFrameAsTable(spark.read.format('parquet').load(self.oea.stage2np + '/m365/RefDefinition'), 'RefDefinition')\n",
+							"        sqlContext.registerDataFrameAsTable(spark.read.format('delta').load(self.oea.stage2np + '/m365/PersonIdentifier'), 'PersonIdentifier')\n",
+							"        sqlContext.registerDataFrameAsTable(spark.read.format('delta').load(self.oea.stage2np + '/m365/RefDefinition'), 'RefDefinition')\n",
 							"\n",
 							"        df = spark.sql( \n",
 							"            \"select act.SignalType, act.StartTime, act.UserAgent, act.SignalId, act.SISClassId, act.OfficeClassId, act.ChannelId, \\\n",
@@ -8074,7 +7897,7 @@
 							"        df = df.dropDuplicates(['SignalId'])\n",
 							"        df = df.withColumn('year', F.year(F.col('StartTime'))).withColumn('month', F.month(F.col('StartTime')))\n",
 							"        df = self.oea.fix_column_names(df)\n",
-							"        df.write.format('parquet').mode('overwrite').option(\"mergeSchema\", \"true\").save(self.stage2np + '/TechActivity')\n",
+							"        df.write.format('delta').mode('overwrite').option(\"mergeSchema\", \"true\").save(self.stage2np + '/TechActivity')\n",
 							"\n",
 							"    def reset_activity_processing(self):\n",
 							"        \"\"\" Resets all TechActivity processing. This is intended for use during initial testing - use with caution. \"\"\"\n",
@@ -8090,7 +7913,7 @@
 							"            spark_schema = self.oea.to_spark_schema(self.schemas[entity])\n",
 							"            df = spark.read.csv(path, header='false', schema=spark_schema)\n",
 							"            df = self.oea.fix_column_names(df)\n",
-							"            df.write.format('parquet').mode('overwrite').option(\"mergeSchema\", \"true\").save(self.stage2np + '/' + entity)\n",
+							"            df.write.format('delta').mode('overwrite').option(\"mergeSchema\", \"true\").save(self.stage2np + '/' + entity)\n",
 							"\n",
 							"        except (AnalysisException) as error:\n",
 							"            logger.exception(str(error))\n",
@@ -8101,16 +7924,6 @@
 							"        for item in items:\n",
 							"            if item.name != 'Activity':     \n",
 							"                self._process_entity_from_stage1(latest, item.name, 'csv', 'overwrite', 'false')\n",
-							"\n",
-							"    def xprocess_roster_data_from_stage1(self):\n",
-							"        \"\"\" Processes all roster data in stage1 and writes out to stage2 and stage2p \"\"\"\n",
-							"        latest = oea.get_latest_folder(self.stage1np)\n",
-							"        logger.info(\"Processing ms_insights roster data from: \" + self.stage1np + '/' + latest)\n",
-							"\n",
-							"        items = mssparkutils.fs.ls(self.stage1np + '/' + latest)\n",
-							"        for item in items:\n",
-							"            if item.name != 'Activity':\n",
-							"                self._process_roster_entity(item.path)\n",
 							"\n",
 							"    def reset_roster_processing(self):\n",
 							"        \"\"\" Resets all stage1 to stage2 processing of roster data. \"\"\"\n",
@@ -9219,6 +9032,26 @@
 						"execution_count": 2
 					}
 				]
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('workspaceName'), '/create_sql_db')]",
+			"type": "Microsoft.Synapse/workspaces/sqlscripts",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"content": {
+					"query": "-- 1) Create a db via SQL serverless pool\nCREATE DATABASE s2sql_contoso_sis;\nGO\nUSE s2sql_contoso_sis;\nGO\n\n-- Always use UTF-8 collations.\n-- https://techcommunity.microsoft.com/t5/azure-synapse-analytics/always-use-utf-8-collations-to-read-utf-8-text-in-serverless-sql/ba-p/1883633\nALTER DATABASE s2sql_contoso_sis COLLATE Latin1_General_100_BIN2_UTF8;\n\n-- 2) set location info\nCREATE EXTERNAL DATA SOURCE DeltaLakeStorage\nWITH ( location = 'https://stoeacisd3gg1.dfs.core.windows.net/stage2np' );\nGO\nCREATE EXTERNAL FILE FORMAT DeltaLakeFormat WITH ( FORMAT_TYPE = DELTA );\nGO\n\n-- 3) Create an external table\n-- for info on data types: https://docs.microsoft.com/en-us/sql/t-sql/data-types/data-types-transact-sql?view=sql-server-ver15\n-- Note: this does not work for the columns used in partitioning the data because you always get null values (in this example you always get null for year and month). \n-- This is a known limitation: https://docs.microsoft.com/en-us/azure/synapse-analytics/sql/resources-self-help-sql-on-demand#partitioning-column-returns-null-values\nCREATE EXTERNAL TABLE TechActivity (\n     SignalType varchar(200),\n     StartTime datetime2,\n     UserAgent varchar(200),\n     SignalId varchar(200),\n     SisClassId varchar(200),\n     ClassId varchar(200),\n     ChannelId varchar(200),\n     AppName varchar(200),\n     ActorId varchar(200),\n     ActorRole varchar(200),\n     SchemaVersion varchar(50),\n     AssignmentId varchar(200),\n     SubmissionId varchar(200),\n     [Action] varchar(200),\n     DueDate datetime2,\n     ClassCreationDate datetime2,\n     Grade varchar(50),\n     SourceFileExtension varchar(50),\n     MeetingDuration int,\n     [year] smallint,\n     [month] tinyint\n) WITH (\n    LOCATION = '/ms_insights/TechActivity',\n    DATA_SOURCE = DeltaLakeStorage,\n    FILE_FORMAT = DeltaLakeFormat\n);\n\n\nselect * from TechActivity where year is not null",
+					"metadata": {
+						"language": "sql"
+					},
+					"currentConnection": {
+						"databaseName": "sql_s2_contoso_sis",
+						"poolName": "Built-in"
+					},
+					"resultLimit": 5000
+				},
+				"type": "SqlQuery"
 			},
 			"dependsOn": []
 		}
