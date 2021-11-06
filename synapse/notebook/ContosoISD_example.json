@@ -17,7 +17,7 @@
 				"spark.dynamicAllocation.enabled": "false",
 				"spark.dynamicAllocation.minExecutors": "4",
 				"spark.dynamicAllocation.maxExecutors": "4",
-				"spark.autotune.trackingId": "aa552fde-460b-460d-8835-18838ad20caa"
+				"spark.autotune.trackingId": "a4892659-cfa4-47be-ba53-0a4bbb44c9c5"
 			}
 		},
 		"metadata": {
@@ -173,7 +173,7 @@
 					"# 3) Run additional prep on the data to create a unified dataset that can be used in a Power BI report\n",
 					"\n",
 					"# Process sectionmark data. Convert id values to use the Person.Id and Section.Id values set in the m365 data.\n",
-					"sqlContext.registerDataFrameAsTable(spark.read.format('delta').load(oea.stage2np + '/contoso_sis/studentsectionmark'), 'SectionMark')\n",
+					"sqlContext.registerDataFrameAsTable(spark.read.format('delta').load(oea.stage2p + '/contoso_sis/studentsectionmark'), 'SectionMark')\n",
 					"sqlContext.registerDataFrameAsTable(spark.read.format('delta').load(oea.stage2np + '/m365/Person'), 'Person')\n",
 					"sqlContext.registerDataFrameAsTable(spark.read.format('delta').load(oea.stage2np + '/m365/Section'), 'Section')\n",
 					"df = spark.sql(\"select sm.id Id, p.Id PersonId, s.Id SectionId, cast(sm.numeric_grade_earned as int) NumericGrade, \\\n",
