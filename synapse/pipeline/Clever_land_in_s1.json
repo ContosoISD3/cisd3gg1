@@ -24,59 +24,39 @@
 				"userProperties": [],
 				"typeProperties": {
 					"source": {
-						"type": "DelimitedTextSource",
+						"type": "BinarySource",
 						"storeSettings": {
-							"type": "AzureBlobFSReadSettings",
-							"recursive": true,
-							"wildcardFolderPath": "stage1/clever",
-							"wildcardFileName": "*",
-							"enablePartitionDiscovery": false
+							"type": "HttpReadSettings",
+							"requestMethod": "GET"
 						},
 						"formatSettings": {
-							"type": "DelimitedTextReadSettings"
+							"type": "BinaryReadSettings"
 						}
 					},
 					"sink": {
-						"type": "DelimitedTextSink",
+						"type": "BinarySink",
 						"storeSettings": {
 							"type": "AzureBlobFSWriteSettings"
-						},
-						"formatSettings": {
-							"type": "DelimitedTextWriteSettings",
-							"quoteAllText": true,
-							"fileExtension": ".csv"
 						}
 					},
-					"enableStaging": false,
-					"translator": {
-						"type": "TabularTranslator",
-						"typeConversion": true,
-						"typeConversionSettings": {
-							"allowDataTruncation": true,
-							"treatBooleanAsNumber": false
-						}
-					}
+					"enableStaging": false
 				},
 				"inputs": [
 					{
-						"referenceName": "data_lake_csv",
+						"referenceName": "DS_HTTP_binary",
 						"type": "DatasetReference",
 						"parameters": {
-							"filesystem": "test-env",
-							"directory": "stage1/Clever"
+							"URL": "https://raw.githubusercontent.com/microsoft/OpenEduAnalytics/main/modules/Clever/test_data/2020-10-27-resource-usage-students.csv"
 						}
 					}
 				],
 				"outputs": [
 					{
-						"referenceName": "data_lake_csv",
+						"referenceName": "DS_ADLS_binary",
 						"type": "DatasetReference",
 						"parameters": {
-							"filesystem": "stage1",
-							"directory": {
-								"value": "Clever/inbound/@{variables('exec_date_time')}",
-								"type": "Expression"
-							}
+							"filesystem": "stage1np",
+							"filename": "clever/part1.csv"
 						}
 					}
 				]
