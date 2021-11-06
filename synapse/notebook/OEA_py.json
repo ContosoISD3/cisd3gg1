@@ -13,7 +13,7 @@
 				"spark.dynamicAllocation.enabled": "false",
 				"spark.dynamicAllocation.minExecutors": "2",
 				"spark.dynamicAllocation.maxExecutors": "2",
-				"spark.autotune.trackingId": "32e1ffa3-dcb5-40bb-9276-cdd118562fe7"
+				"spark.autotune.trackingId": "3f720ccd-1c0a-4b6f-9c82-8ba02b0536a2"
 			}
 		},
 		"metadata": {
@@ -213,8 +213,10 @@
 					"            logger.warning(\"[OEA] Could not get list of folders in specified path: \" + path + \"\\nThis may be because the path does not exist.\")\n",
 					"        return dirs\n",
 					"\n",
-					"    def get_latest_folder(self, path):\n",
-					"        return self.get_folders(path)[-1]\n",
+					"    def get_latest_folder(path):\n",
+					"        folders = oea.get_folders(path)\n",
+					"        if len(folders) > 0: return folders[-1]\n",
+					"        else: return None\n",
 					"\n",
 					"    # Remove a folder if it exists (defaults to use of recursive removal).\n",
 					"    def rm_if_exists(self, path, recursive_remove=True):\n",

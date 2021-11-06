@@ -17,7 +17,7 @@
 				"spark.dynamicAllocation.enabled": "false",
 				"spark.dynamicAllocation.minExecutors": "4",
 				"spark.dynamicAllocation.maxExecutors": "4",
-				"spark.autotune.trackingId": "e3e94e85-362e-44a9-8ed1-e1a27d70980f"
+				"spark.autotune.trackingId": "35cc5790-a2b7-45fe-af2f-bb29a4a62728"
 			}
 		},
 		"metadata": {
@@ -89,7 +89,7 @@
 				"source": [
 					"%run /OEA_py"
 				],
-				"execution_count": 11
+				"execution_count": 16
 			},
 			{
 				"cell_type": "code",
@@ -108,7 +108,7 @@
 				"source": [
 					"%run /example_modules_py"
 				],
-				"execution_count": 12
+				"execution_count": 17
 			},
 			{
 				"cell_type": "code",
@@ -130,7 +130,50 @@
 					"m365 = M365(oea)\n",
 					"contoso_sis = ContosoSIS(oea)"
 				],
-				"execution_count": 15
+				"execution_count": 18
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					"def get_latest_folder(path):\r\n",
+					"    folders = oea.get_folders(path)\r\n",
+					"    if len(folders) > 0: return folders[-1]\r\n",
+					"    else: return []\r\n",
+					"\r\n",
+					"get_latest_folder(m365.stage1np)"
+				],
+				"execution_count": 30
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					"latest = oea.get_latest_folder(m365.stage1np)\r\n",
+					"#items = mssparkutils.fs.ls(m365.stage1np + '/' + latest)\r\n",
+					"#print(items)"
+				],
+				"execution_count": 21
 			},
 			{
 				"cell_type": "code",
@@ -153,7 +196,7 @@
 					"contoso_sis.process_latest_from_stage1()\n",
 					"m365.process_activity_data_from_stage1()"
 				],
-				"execution_count": 4
+				"execution_count": 19
 			},
 			{
 				"cell_type": "code",
@@ -202,7 +245,7 @@
 					"df = spark.sql(\"select Id, Name, Code, Description, ExternalId, CreateDate, LastModifiedDate, IsActive, CalendarId, 'Math' Department from Course\")\n",
 					"df.write.format('parquet').mode('overwrite').save(oea.stage2np + '/ContosoISD/Course')"
 				],
-				"execution_count": 5
+				"execution_count": null
 			},
 			{
 				"cell_type": "code",
@@ -242,7 +285,7 @@
 					"\n",
 					"print(f\"Created spark db's.\\nYou can now open the 'techInequityDashboardContoso v2.pbix' dashboard and change the datasource to point to: {oea.serverless_sql_endpoint}\")"
 				],
-				"execution_count": 6
+				"execution_count": null
 			},
 			{
 				"cell_type": "markdown",
@@ -285,9 +328,9 @@
 					"    oea.drop_db('s2_m365')\n",
 					"\n",
 					"# Uncomment the following line and run this cell to reset everything if you want to walk through the process again.\n",
-					"reset_all_processing()"
+					"#reset_all_processing()"
 				],
-				"execution_count": 14
+				"execution_count": null
 			}
 		]
 	}
