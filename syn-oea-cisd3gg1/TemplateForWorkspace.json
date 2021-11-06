@@ -1600,7 +1600,7 @@
 						"spark.dynamicAllocation.enabled": "false",
 						"spark.dynamicAllocation.minExecutors": "4",
 						"spark.dynamicAllocation.maxExecutors": "4",
-						"spark.autotune.trackingId": "8c4be7a2-fd8c-474d-8b45-df459ff87526"
+						"spark.autotune.trackingId": "32d7c9a6-9e6e-4e81-9749-0279173605d9"
 					}
 				},
 				"metadata": {
@@ -1673,7 +1673,7 @@
 							"%run /OEA_py"
 						],
 						"outputs": [],
-						"execution_count": 16
+						"execution_count": 34
 					},
 					{
 						"cell_type": "code",
@@ -1693,7 +1693,7 @@
 							"%run /example_modules_py"
 						],
 						"outputs": [],
-						"execution_count": 17
+						"execution_count": 35
 					},
 					{
 						"cell_type": "code",
@@ -1716,52 +1716,7 @@
 							"contoso_sis = ContosoSIS(oea)"
 						],
 						"outputs": [],
-						"execution_count": 18
-					},
-					{
-						"cell_type": "code",
-						"metadata": {
-							"jupyter": {
-								"source_hidden": false,
-								"outputs_hidden": false
-							},
-							"nteract": {
-								"transient": {
-									"deleting": false
-								}
-							}
-						},
-						"source": [
-							"def get_latest_folder(path):\r\n",
-							"    folders = oea.get_folders(path)\r\n",
-							"    if len(folders) > 0: return folders[-1]\r\n",
-							"    else: return []\r\n",
-							"\r\n",
-							"get_latest_folder(m365.stage1np)"
-						],
-						"outputs": [],
-						"execution_count": 30
-					},
-					{
-						"cell_type": "code",
-						"metadata": {
-							"jupyter": {
-								"source_hidden": false,
-								"outputs_hidden": false
-							},
-							"nteract": {
-								"transient": {
-									"deleting": false
-								}
-							}
-						},
-						"source": [
-							"latest = oea.get_latest_folder(m365.stage1np)\r\n",
-							"#items = mssparkutils.fs.ls(m365.stage1np + '/' + latest)\r\n",
-							"#print(items)"
-						],
-						"outputs": [],
-						"execution_count": 21
+						"execution_count": 36
 					},
 					{
 						"cell_type": "code",
@@ -1785,7 +1740,7 @@
 							"m365.process_activity_data_from_stage1()"
 						],
 						"outputs": [],
-						"execution_count": 19
+						"execution_count": 38
 					},
 					{
 						"cell_type": "code",
@@ -6802,7 +6757,7 @@
 						"spark.dynamicAllocation.enabled": "false",
 						"spark.dynamicAllocation.minExecutors": "2",
 						"spark.dynamicAllocation.maxExecutors": "2",
-						"spark.autotune.trackingId": "dde7e4d8-59db-40bf-b207-c9bfec3782bd"
+						"spark.autotune.trackingId": "4636e1e2-6469-4d99-bb7f-a4ea71ec5d96"
 					}
 				},
 				"metadata": {
@@ -7002,7 +6957,7 @@
 							"            logger.warning(\"[OEA] Could not get list of folders in specified path: \" + path + \"\\nThis may be because the path does not exist.\")\n",
 							"        return dirs\n",
 							"\n",
-							"    def get_latest_folder(path):\n",
+							"    def get_latest_folder(self, path):\n",
 							"        folders = oea.get_folders(path)\n",
 							"        if len(folders) > 0: return folders[-1]\n",
 							"        else: return None\n",
@@ -7699,7 +7654,7 @@
 						"spark.dynamicAllocation.enabled": "false",
 						"spark.dynamicAllocation.minExecutors": "2",
 						"spark.dynamicAllocation.maxExecutors": "2",
-						"spark.autotune.trackingId": "80198518-2731-4a6e-bdd4-0fe18283c936"
+						"spark.autotune.trackingId": "11f532cc-6318-42af-a790-447a74ef3970"
 					}
 				},
 				"metadata": {
