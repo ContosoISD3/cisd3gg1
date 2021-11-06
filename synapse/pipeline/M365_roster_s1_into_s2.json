@@ -16,6 +16,14 @@
 				},
 				"userProperties": [],
 				"typeProperties": {
+					"dataset": {
+						"referenceName": "DS_ADLS_binary",
+						"type": "DatasetReference",
+						"parameters": {
+							"filesystem": "stage1np",
+							"filename": "clever"
+						}
+					},
 					"fieldList": [
 						"childItems"
 					],
