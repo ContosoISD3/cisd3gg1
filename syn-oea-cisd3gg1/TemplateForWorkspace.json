@@ -1600,7 +1600,7 @@
 						"spark.dynamicAllocation.enabled": "false",
 						"spark.dynamicAllocation.minExecutors": "4",
 						"spark.dynamicAllocation.maxExecutors": "4",
-						"spark.autotune.trackingId": "0a4e908e-d515-4b55-a941-45388a2add10"
+						"spark.autotune.trackingId": "17ede11a-3251-47c0-9fd8-766a40046de9"
 					}
 				},
 				"metadata": {
@@ -1673,7 +1673,7 @@
 							"%run /OEA_py"
 						],
 						"outputs": [],
-						"execution_count": 39
+						"execution_count": 48
 					},
 					{
 						"cell_type": "code",
@@ -1693,7 +1693,7 @@
 							"%run /example_modules_py"
 						],
 						"outputs": [],
-						"execution_count": 40
+						"execution_count": 49
 					},
 					{
 						"cell_type": "code",
@@ -1716,7 +1716,7 @@
 							"contoso_sis = ContosoSIS(oea)"
 						],
 						"outputs": [],
-						"execution_count": 41
+						"execution_count": 50
 					},
 					{
 						"cell_type": "code",
@@ -1740,7 +1740,7 @@
 							"m365.process_activity_data_from_stage1()"
 						],
 						"outputs": [],
-						"execution_count": 42
+						"execution_count": 51
 					},
 					{
 						"cell_type": "code",
@@ -6757,7 +6757,7 @@
 						"spark.dynamicAllocation.enabled": "false",
 						"spark.dynamicAllocation.minExecutors": "2",
 						"spark.dynamicAllocation.maxExecutors": "2",
-						"spark.autotune.trackingId": "3a9e7aec-7505-4ff3-a6b9-bcc6a73da450"
+						"spark.autotune.trackingId": "35f4bf8b-1621-49f8-bff9-8ae54d7688f7"
 					}
 				},
 				"metadata": {
@@ -7654,7 +7654,7 @@
 						"spark.dynamicAllocation.enabled": "false",
 						"spark.dynamicAllocation.minExecutors": "2",
 						"spark.dynamicAllocation.maxExecutors": "2",
-						"spark.autotune.trackingId": "6e97b51d-34a6-4b62-b725-7bf178cb178d"
+						"spark.autotune.trackingId": "a036cabe-4666-4fbb-b62c-eaac1cbf36b4"
 					}
 				},
 				"metadata": {
@@ -7880,6 +7880,10 @@
 							"            https://spark.apache.org/docs/latest/structured-streaming-programming-guide.html\n",
 							"        \"\"\"\n",
 							"        latest = oea.get_latest_folder(self.stage1np)\n",
+							"        if latest == None:\n",
+							"            logger.info(\"No activity data available to process in folder: \" + self.stage1np)\n",
+							"            return\n",
+							"\n",
 							"        logger.info(\"Processing activity data from: \" + self.stage1np + '/' + latest)\n",
 							"\n",
 							"        spark_schema = self.oea.to_spark_schema(self.schemas['Activity'])\n",
