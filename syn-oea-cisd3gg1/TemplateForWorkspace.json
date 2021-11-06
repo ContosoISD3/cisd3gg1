@@ -1600,7 +1600,7 @@
 						"spark.dynamicAllocation.enabled": "false",
 						"spark.dynamicAllocation.minExecutors": "4",
 						"spark.dynamicAllocation.maxExecutors": "4",
-						"spark.autotune.trackingId": "32d7c9a6-9e6e-4e81-9749-0279173605d9"
+						"spark.autotune.trackingId": "0a4e908e-d515-4b55-a941-45388a2add10"
 					}
 				},
 				"metadata": {
@@ -1673,7 +1673,7 @@
 							"%run /OEA_py"
 						],
 						"outputs": [],
-						"execution_count": 34
+						"execution_count": 39
 					},
 					{
 						"cell_type": "code",
@@ -1693,7 +1693,7 @@
 							"%run /example_modules_py"
 						],
 						"outputs": [],
-						"execution_count": 35
+						"execution_count": 40
 					},
 					{
 						"cell_type": "code",
@@ -1716,7 +1716,7 @@
 							"contoso_sis = ContosoSIS(oea)"
 						],
 						"outputs": [],
-						"execution_count": 36
+						"execution_count": 41
 					},
 					{
 						"cell_type": "code",
@@ -1740,7 +1740,7 @@
 							"m365.process_activity_data_from_stage1()"
 						],
 						"outputs": [],
-						"execution_count": 38
+						"execution_count": 42
 					},
 					{
 						"cell_type": "code",
@@ -6757,7 +6757,7 @@
 						"spark.dynamicAllocation.enabled": "false",
 						"spark.dynamicAllocation.minExecutors": "2",
 						"spark.dynamicAllocation.maxExecutors": "2",
-						"spark.autotune.trackingId": "4636e1e2-6469-4d99-bb7f-a4ea71ec5d96"
+						"spark.autotune.trackingId": "3a9e7aec-7505-4ff3-a6b9-bcc6a73da450"
 					}
 				},
 				"metadata": {
@@ -7654,7 +7654,7 @@
 						"spark.dynamicAllocation.enabled": "false",
 						"spark.dynamicAllocation.minExecutors": "2",
 						"spark.dynamicAllocation.maxExecutors": "2",
-						"spark.autotune.trackingId": "11f532cc-6318-42af-a790-447a74ef3970"
+						"spark.autotune.trackingId": "6e97b51d-34a6-4b62-b725-7bf178cb178d"
 					}
 				},
 				"metadata": {
@@ -7706,8 +7706,11 @@
 							"\n",
 							"    def process_latest_from_stage1(self):\n",
 							"        latest = oea.get_latest_folder(self.stage1np)\n",
-							"        self._process_entity_from_stage1(latest, 'studentattendance', 'csv', 'overwrite', 'true')\n",
-							"        self._process_entity_from_stage1(latest, 'studentsectionmark', 'csv', 'overwrite', 'true')\n",
+							"        if latest == None:\n",
+							"            logger.info(\"No folders found in: \" + self.stage1np)\n",
+							"        else:\n",
+							"            self._process_entity_from_stage1(latest, 'studentattendance', 'csv', 'overwrite', 'true')\n",
+							"            self._process_entity_from_stage1(latest, 'studentsectionmark', 'csv', 'overwrite', 'true')\n",
 							"\n",
 							"    def process_data_from_stage1(self):\n",
 							"        self._process_entity_from_stage1('studentattendance', 'csv', 'overwrite', 'true')\n",
