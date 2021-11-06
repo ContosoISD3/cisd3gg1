@@ -13,7 +13,7 @@
 				"spark.dynamicAllocation.enabled": "false",
 				"spark.dynamicAllocation.minExecutors": "2",
 				"spark.dynamicAllocation.maxExecutors": "2",
-				"spark.autotune.trackingId": "78f4b739-9f8f-4b42-9f71-a991f4ae49bf"
+				"spark.autotune.trackingId": "1c4a8084-531d-49b3-8c06-e912d991b465"
 			}
 		},
 		"metadata": {
@@ -238,6 +238,10 @@
 					"            https://spark.apache.org/docs/latest/structured-streaming-programming-guide.html\n",
 					"        \"\"\"\n",
 					"        latest = oea.get_latest_folder(self.stage1np)\n",
+					"        if latest == None:\n",
+					"            logger.info(\"No activity data available to process in folder: \" + self.stage1np)\n",
+					"            return\n",
+					"\n",
 					"        logger.info(\"Processing activity data from: \" + self.stage1np + '/' + latest)\n",
 					"\n",
 					"        spark_schema = self.oea.to_spark_schema(self.schemas['Activity'])\n",
