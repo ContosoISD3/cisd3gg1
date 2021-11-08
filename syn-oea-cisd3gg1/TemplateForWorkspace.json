@@ -914,6 +914,121 @@
 			]
 		},
 		{
+			"name": "[concat(parameters('workspaceName'), '/create_views')]",
+			"type": "Microsoft.Synapse/workspaces/pipelines",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"activities": [
+					{
+						"name": "Stored procedure1",
+						"type": "SqlServerStoredProcedure",
+						"dependsOn": [
+							{
+								"activity": "create sql db",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"storedProcedureName": "[dbo].[sp_executesql]",
+							"storedProcedureParameters": {
+								"command": {
+									"value": "CREATE OR ALTER VIEW studentattendance AS\nSELECT * FROM OPENROWSET(\n    BULK 'https://stoeacisd3gg1.dfs.core.windows.net/stage2p/contoso_sis/studentattendance',\n    FORMAT='DELTA'\n) AS [r]",
+									"type": "String"
+								}
+							}
+						},
+						"linkedServiceName": {
+							"referenceName": "LS_SQL_Serverless_OEA",
+							"type": "LinkedServiceReference",
+							"parameters": {
+								"databaseName": "sql_s2_contoso_sis"
+							}
+						}
+					},
+					{
+						"name": "create sql db",
+						"type": "SqlServerStoredProcedure",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [
+							{
+								"name": "sql",
+								"value": "\"IF NOT EXISTS (SELECT * FROM sys.databases WHERE name = '@{pipeline().parameters.databaseName}') BEGIN CREATE DATABASE @{pipeline().parameters.databaseName}; END;\""
+							}
+						],
+						"typeProperties": {
+							"storedProcedureName": "[dbo].[sp_executesql]",
+							"storedProcedureParameters": {
+								"command": {
+									"value": {
+										"value": "\"IF NOT EXISTS (SELECT * FROM sys.databases WHERE name = '@{pipeline().parameters.databaseName}') BEGIN CREATE DATABASE @{pipeline().parameters.databaseName}; END;\"",
+										"type": "Expression"
+									},
+									"type": "String"
+								}
+							}
+						},
+						"linkedServiceName": {
+							"referenceName": "LS_SQL_Serverless_OEA",
+							"type": "LinkedServiceReference",
+							"parameters": {
+								"databaseName": {
+									"value": "@pipeline().parameters.databaseName",
+									"type": "Expression"
+								}
+							}
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {},
+					"cancelAfter": {}
+				},
+				"parameters": {
+					"storageAccount": {
+						"type": "string",
+						"defaultValue": "stoeacisd3gg1"
+					},
+					"filesystem": {
+						"type": "string",
+						"defaultValue": "stage2p"
+					},
+					"sourceDirectory": {
+						"type": "string",
+						"defaultValue": "contoso_sis"
+					},
+					"table": {
+						"type": "string",
+						"defaultValue": "studentattendance"
+					},
+					"databaseName": {
+						"type": "string",
+						"defaultValue": "sql_s2_contoso_sis"
+					}
+				},
+				"annotations": []
+			},
+			"dependsOn": [
+				"[concat(variables('workspaceId'), '/linkedServices/LS_SQL_Serverless_OEA')]"
+			]
+		},
+		{
 			"name": "[concat(parameters('workspaceName'), '/Push_to_SDS')]",
 			"type": "Microsoft.Synapse/workspaces/pipelines",
 			"apiVersion": "2019-06-01-preview",
@@ -1261,6 +1376,11 @@
 			"type": "Microsoft.Synapse/workspaces/linkedServices",
 			"apiVersion": "2019-06-01-preview",
 			"properties": {
+				"parameters": {
+					"databaseName": {
+						"type": "string"
+					}
+				},
 				"annotations": [],
 				"type": "AzureSqlDatabase",
 				"typeProperties": {
@@ -1357,6 +1477,46 @@
 			"properties": {
 				"type": "ManagedIdentity",
 				"typeProperties": {}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('workspaceName'), '/SQL script 1')]",
+			"type": "Microsoft.Synapse/workspaces/sqlscripts",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"content": {
+					"query": "SELECT TOP (100) [id]\n,[student_id_pseudonym]\n,[school_year]\n,[school_id]\n,[attendance_date]\n,[all_day]\n,[attendance_sequence]\n,[Period]\n,[section_id]\n,[AttendanceCode]\n,[PresenceFlag]\n,[attendance_status]\n,[attendance_type]\n FROM [dbo].[studentattendance]",
+					"metadata": {
+						"language": "sql"
+					},
+					"currentConnection": {
+						"databaseName": "sql_s2_contoso_sis",
+						"poolName": "Built-in"
+					},
+					"resultLimit": 5000
+				},
+				"type": "SqlQuery"
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('workspaceName'), '/create_sql_db')]",
+			"type": "Microsoft.Synapse/workspaces/sqlscripts",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"content": {
+					"query": "-- 1) Create a db via SQL serverless pool\nCREATE DATABASE s2sql_contoso_sis;\nGO\nUSE s2sql_contoso_sis;\nGO\n\n-- Always use UTF-8 collations.\n-- https://techcommunity.microsoft.com/t5/azure-synapse-analytics/always-use-utf-8-collations-to-read-utf-8-text-in-serverless-sql/ba-p/1883633\nALTER DATABASE s2sql_contoso_sis COLLATE Latin1_General_100_BIN2_UTF8;\n\nDROP VIEW IF EXISTS studentattendance;\nGO\nCREATE VIEW studentattendance AS\nSELECT * FROM OPENROWSET(\n    BULK 'contoso_sis/studentattendance',\n    DATA_SOURCE='stage2p',\n    FORMAT='DELTA'\n) AS [r]\nGO\n\nDROP VIEW IF EXISTS studentattendance;\nGO\nCREATE VIEW studentattendance AS\nSELECT * FROM OPENROWSET(\n    BULK 'https://stoeacisd3gg1.dfs.core.windows.net/stage2p/contoso_sis/studentattendance',\n    FORMAT='DELTA'\n) AS [r]\nGO\n\n\n-- 2) set location info\nCREATE EXTERNAL DATA SOURCE stage2p WITH ( location = 'https://stoeacisd3gg1.dfs.core.windows.net/stage2p' );\nCREATE EXTERNAL DATA SOURCE stage2np WITH ( location = 'https://stoeacisd3gg1.dfs.core.windows.net/stage2np' );\nGO\nCREATE EXTERNAL FILE FORMAT DeltaLakeFormat WITH ( FORMAT_TYPE = DELTA );\nGO\n\n-- 3) Create an external table\n-- for info on data types: https://docs.microsoft.com/en-us/sql/t-sql/data-types/data-types-transact-sql?view=sql-server-ver15\n-- Note: this does not work for the columns used in partitioning the data because you always get null values (in this example you always get null for year and month). \n-- This is a known limitation: https://docs.microsoft.com/en-us/azure/synapse-analytics/sql/resources-self-help-sql-on-demand#partitioning-column-returns-null-values\nCREATE EXTERNAL TABLE studentattendance () WITH (\n    LOCATION = '/contoso_sis/studentattendance',\n    DATA_SOURCE = stage2p,\n    FILE_FORMAT = DeltaLakeFormat\n);\n\n\nselect * from TechActivity where year is not null",
+					"metadata": {
+						"language": "sql"
+					},
+					"currentConnection": {
+						"databaseName": "sql_s2_contoso_sis",
+						"poolName": "Built-in"
+					},
+					"resultLimit": 5000
+				},
+				"type": "SqlQuery"
 			},
 			"dependsOn": []
 		},
@@ -1600,7 +1760,7 @@
 						"spark.dynamicAllocation.enabled": "false",
 						"spark.dynamicAllocation.minExecutors": "4",
 						"spark.dynamicAllocation.maxExecutors": "4",
-						"spark.autotune.trackingId": "c69ee309-e567-41fd-8afc-0d477c264ade"
+						"spark.autotune.trackingId": "16a64b45-d245-499f-a13a-e0515eab592b"
 					}
 				},
 				"metadata": {
@@ -1625,10 +1785,8 @@
 						"sparkVersion": "3.1",
 						"nodeCount": 10,
 						"cores": 4,
-						"memory": 28,
-						"automaticScaleJobs": false
-					},
-					"sessionKeepAliveTimeout": 30
+						"memory": 28
+					}
 				},
 				"cells": [
 					{
@@ -1673,7 +1831,7 @@
 							"%run /OEA_py"
 						],
 						"outputs": [],
-						"execution_count": 52
+						"execution_count": 2
 					},
 					{
 						"cell_type": "code",
@@ -1693,7 +1851,7 @@
 							"%run /example_modules_py"
 						],
 						"outputs": [],
-						"execution_count": 53
+						"execution_count": 3
 					},
 					{
 						"cell_type": "code",
@@ -1716,7 +1874,49 @@
 							"contoso_sis = ContosoSIS(oea)"
 						],
 						"outputs": [],
-						"execution_count": 54
+						"execution_count": 4
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"jupyter": {
+								"source_hidden": false,
+								"outputs_hidden": false
+							},
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							},
+							"collapsed": false
+						},
+						"source": [
+							"df = spark.read.load(f'{oea.stage2p}/contoso_sis/studentattendance', format='delta')\r\n",
+							"#display(df)\r\n",
+							"df.schema\r\n",
+							""
+						],
+						"outputs": [],
+						"execution_count": 10
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"jupyter": {
+								"source_hidden": false,
+								"outputs_hidden": false
+							},
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							}
+						},
+						"source": [
+							""
+						],
+						"outputs": [],
+						"execution_count": null
 					},
 					{
 						"cell_type": "code",
@@ -1760,7 +1960,7 @@
 							"# 3) Run additional prep on the data to create a unified dataset that can be used in a Power BI report\n",
 							"\n",
 							"# Process sectionmark data. Convert id values to use the Person.Id and Section.Id values set in the m365 data.\n",
-							"sqlContext.registerDataFrameAsTable(spark.read.format('delta').load(oea.stage2np + '/contoso_sis/studentsectionmark'), 'SectionMark')\n",
+							"sqlContext.registerDataFrameAsTable(spark.read.format('delta').load(oea.stage2p + '/contoso_sis/studentsectionmark'), 'SectionMark')\n",
 							"sqlContext.registerDataFrameAsTable(spark.read.format('delta').load(oea.stage2np + '/m365/Person'), 'Person')\n",
 							"sqlContext.registerDataFrameAsTable(spark.read.format('delta').load(oea.stage2np + '/m365/Section'), 'Section')\n",
 							"df = spark.sql(\"select sm.id Id, p.Id PersonId, s.Id SectionId, cast(sm.numeric_grade_earned as int) NumericGrade, \\\n",
@@ -6757,7 +6957,7 @@
 						"spark.dynamicAllocation.enabled": "false",
 						"spark.dynamicAllocation.minExecutors": "2",
 						"spark.dynamicAllocation.maxExecutors": "2",
-						"spark.autotune.trackingId": "69700613-e35a-4590-874b-9fd1cdf37457"
+						"spark.autotune.trackingId": "889aab1e-21c0-446f-90dc-168e22feb3eb"
 					}
 				},
 				"metadata": {
@@ -6769,8 +6969,7 @@
 					},
 					"language_info": {
 						"name": "python"
-					},
-					"sessionKeepAliveTimeout": 30
+					}
 				},
 				"cells": [
 					{
@@ -7007,6 +7206,20 @@
 							"        result = \"Database dropped: \" + db_name\n",
 							"        logger.info(result)\n",
 							"        return result         \n",
+							"\n",
+							"    def create_sql_db(self, source_path, source_format='DELTA'):\n",
+							"        \"\"\" Creates the script for creating db based on the given path (assumes that every folder in the given path is a table).\n",
+							"            Note that a spark db that points to source data in the delta format can't be queried via SQL serverless pool. More info here: https://docs.microsoft.com/en-us/azure/synapse-analytics/sql/resources-self-help-sql-on-demand#delta-lake\n",
+							"        \"\"\"\n",
+							"        source_info = self.parse_source_path(source_path)\n",
+							"        db_name = f\"s{source_info['stage_num']}_{source_info['ss']}\"\n",
+							"        spark.sql(f\"CREATE DATABASE IF NOT EXISTS {db_name}\")\n",
+							"        dirs = self.get_folders(source_path)\n",
+							"        for table_name in dirs:\n",
+							"            spark.sql(f\"create table if not exists {db_name}.{table_name} using {source_format} location '{source_path}/{table_name}'\")\n",
+							"        result = \"Database created: \" + db_name\n",
+							"        logger.info(result)\n",
+							"        return result\n",
 							"\n",
 							"    # List installed packages\n",
 							"    def list_packages(self):\n",
@@ -7654,7 +7867,7 @@
 						"spark.dynamicAllocation.enabled": "false",
 						"spark.dynamicAllocation.minExecutors": "2",
 						"spark.dynamicAllocation.maxExecutors": "2",
-						"spark.autotune.trackingId": "35034574-1a7d-4b97-9f9e-3f73ed1bbcf5"
+						"spark.autotune.trackingId": "b8653d8f-0199-45e6-ae80-594e463dbb43"
 					}
 				},
 				"metadata": {
@@ -7666,13 +7879,11 @@
 					},
 					"language_info": {
 						"name": "python"
-					},
-					"sessionKeepAliveTimeout": 30
+					}
 				},
 				"cells": [
 					{
 						"cell_type": "code",
-						"metadata": {},
 						"source": [
 							"class ContosoSIS(BaseOEAModule):\n",
 							"    def __init__(self, oea, source_folder='contoso_sis', pseudonymize = True):\n",
@@ -9037,26 +9248,6 @@
 						"execution_count": 2
 					}
 				]
-			},
-			"dependsOn": []
-		},
-		{
-			"name": "[concat(parameters('workspaceName'), '/create_sql_db')]",
-			"type": "Microsoft.Synapse/workspaces/sqlscripts",
-			"apiVersion": "2019-06-01-preview",
-			"properties": {
-				"content": {
-					"query": "-- 1) Create a db via SQL serverless pool\nCREATE DATABASE s2sql_contoso_sis;\nGO\nUSE s2sql_contoso_sis;\nGO\n\n-- Always use UTF-8 collations.\n-- https://techcommunity.microsoft.com/t5/azure-synapse-analytics/always-use-utf-8-collations-to-read-utf-8-text-in-serverless-sql/ba-p/1883633\nALTER DATABASE s2sql_contoso_sis COLLATE Latin1_General_100_BIN2_UTF8;\n\n-- 2) set location info\nCREATE EXTERNAL DATA SOURCE DeltaLakeStorage\nWITH ( location = 'https://stoeacisd3gg1.dfs.core.windows.net/stage2np' );\nGO\nCREATE EXTERNAL FILE FORMAT DeltaLakeFormat WITH ( FORMAT_TYPE = DELTA );\nGO\n\n-- 3) Create an external table\n-- for info on data types: https://docs.microsoft.com/en-us/sql/t-sql/data-types/data-types-transact-sql?view=sql-server-ver15\n-- Note: this does not work for the columns used in partitioning the data because you always get null values (in this example you always get null for year and month). \n-- This is a known limitation: https://docs.microsoft.com/en-us/azure/synapse-analytics/sql/resources-self-help-sql-on-demand#partitioning-column-returns-null-values\nCREATE EXTERNAL TABLE TechActivity (\n     SignalType varchar(200),\n     StartTime datetime2,\n     UserAgent varchar(200),\n     SignalId varchar(200),\n     SisClassId varchar(200),\n     ClassId varchar(200),\n     ChannelId varchar(200),\n     AppName varchar(200),\n     ActorId varchar(200),\n     ActorRole varchar(200),\n     SchemaVersion varchar(50),\n     AssignmentId varchar(200),\n     SubmissionId varchar(200),\n     [Action] varchar(200),\n     DueDate datetime2,\n     ClassCreationDate datetime2,\n     Grade varchar(50),\n     SourceFileExtension varchar(50),\n     MeetingDuration int,\n     [year] smallint,\n     [month] tinyint\n) WITH (\n    LOCATION = '/ms_insights/TechActivity',\n    DATA_SOURCE = DeltaLakeStorage,\n    FILE_FORMAT = DeltaLakeFormat\n);\n\n\nselect * from TechActivity where year is not null",
-					"metadata": {
-						"language": "sql"
-					},
-					"currentConnection": {
-						"databaseName": "sql_s2_contoso_sis",
-						"poolName": "Built-in"
-					},
-					"resultLimit": 5000
-				},
-				"type": "SqlQuery"
 			},
 			"dependsOn": []
 		}
