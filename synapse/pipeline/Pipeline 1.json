@@ -18,7 +18,7 @@
 					"storedProcedureName": "[dbo].[sp_executesql]",
 					"storedProcedureParameters": {
 						"command": {
-							"value": "CREATE VIEW studentattendance AS\nSELECT * FROM OPENROWSET(\n    BULK 'https://stoeacisd3gg1.dfs.core.windows.net/stage2p/contoso_sis/studentattendance',\n    FORMAT='DELTA'\n) AS [r]",
+							"value": "CREATE OR ALTER VIEW studentattendance AS\nSELECT * FROM OPENROWSET(\n    BULK 'https://stoeacisd3gg1.dfs.core.windows.net/stage2p/contoso_sis/studentattendance',\n    FORMAT='DELTA'\n) AS [r]",
 							"type": "String"
 						}
 					}
