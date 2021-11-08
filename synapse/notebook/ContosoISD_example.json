@@ -17,7 +17,7 @@
 				"spark.dynamicAllocation.enabled": "false",
 				"spark.dynamicAllocation.minExecutors": "4",
 				"spark.dynamicAllocation.maxExecutors": "4",
-				"spark.autotune.trackingId": "a4892659-cfa4-47be-ba53-0a4bbb44c9c5"
+				"spark.autotune.trackingId": "16a64b45-d245-499f-a13a-e0515eab592b"
 			}
 		},
 		"metadata": {
@@ -89,7 +89,7 @@
 				"source": [
 					"%run /OEA_py"
 				],
-				"execution_count": 52
+				"execution_count": 2
 			},
 			{
 				"cell_type": "code",
@@ -108,7 +108,7 @@
 				"source": [
 					"%run /example_modules_py"
 				],
-				"execution_count": 53
+				"execution_count": 3
 			},
 			{
 				"cell_type": "code",
@@ -130,7 +130,47 @@
 					"m365 = M365(oea)\n",
 					"contoso_sis = ContosoSIS(oea)"
 				],
-				"execution_count": 54
+				"execution_count": 4
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					},
+					"collapsed": false
+				},
+				"source": [
+					"df = spark.read.load(f'{oea.stage2p}/contoso_sis/studentattendance', format='delta')\r\n",
+					"#display(df)\r\n",
+					"df.schema\r\n",
+					""
+				],
+				"execution_count": 10
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					""
+				],
+				"execution_count": null
 			},
 			{
 				"cell_type": "code",

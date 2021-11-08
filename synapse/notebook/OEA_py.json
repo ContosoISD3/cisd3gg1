@@ -13,7 +13,7 @@
 				"spark.dynamicAllocation.enabled": "false",
 				"spark.dynamicAllocation.minExecutors": "2",
 				"spark.dynamicAllocation.maxExecutors": "2",
-				"spark.autotune.trackingId": "28054ff3-2cc5-40dc-bd12-5efa5a59be70"
+				"spark.autotune.trackingId": "889aab1e-21c0-446f-90dc-168e22feb3eb"
 			}
 		},
 		"metadata": {
@@ -263,6 +263,20 @@
 					"        result = \"Database dropped: \" + db_name\n",
 					"        logger.info(result)\n",
 					"        return result         \n",
+					"\n",
+					"    def create_sql_db(self, source_path, source_format='DELTA'):\n",
+					"        \"\"\" Creates the script for creating db based on the given path (assumes that every folder in the given path is a table).\n",
+					"            Note that a spark db that points to source data in the delta format can't be queried via SQL serverless pool. More info here: https://docs.microsoft.com/en-us/azure/synapse-analytics/sql/resources-self-help-sql-on-demand#delta-lake\n",
+					"        \"\"\"\n",
+					"        source_info = self.parse_source_path(source_path)\n",
+					"        db_name = f\"s{source_info['stage_num']}_{source_info['ss']}\"\n",
+					"        spark.sql(f\"CREATE DATABASE IF NOT EXISTS {db_name}\")\n",
+					"        dirs = self.get_folders(source_path)\n",
+					"        for table_name in dirs:\n",
+					"            spark.sql(f\"create table if not exists {db_name}.{table_name} using {source_format} location '{source_path}/{table_name}'\")\n",
+					"        result = \"Database created: \" + db_name\n",
+					"        logger.info(result)\n",
+					"        return result\n",
 					"\n",
 					"    # List installed packages\n",
 					"    def list_packages(self):\n",

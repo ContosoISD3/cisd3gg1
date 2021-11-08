@@ -1,0 +1,34 @@
+{
+	"name": "Pipeline 1",
+	"properties": {
+		"activities": [
+			{
+				"name": "Stored procedure1",
+				"type": "SqlServerStoredProcedure",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"storedProcedureName": "[dbo].[sp_executesql]",
+					"storedProcedureParameters": {
+						"command": {
+							"value": "CREATE VIEW studentattendance AS\nSELECT * FROM OPENROWSET(\n    BULK 'https://stoeacisd3gg1.dfs.core.windows.net/stage2p/contoso_sis/studentattendance',\n    FORMAT='DELTA'\n) AS [r]",
+							"type": "String"
+						}
+					}
+				},
+				"linkedServiceName": {
+					"referenceName": "LS_SQL_Serverless_OEA",
+					"type": "LinkedServiceReference"
+				}
+			}
+		],
+		"annotations": []
+	}
+}
