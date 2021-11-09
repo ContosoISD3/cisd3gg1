@@ -85,7 +85,10 @@
 								"referenceName": "LS_SQL_Serverless_OEA",
 								"type": "LinkedServiceReference",
 								"parameters": {
-									"databaseName": "sql_s2_contoso_sis"
+									"databaseName": {
+										"value": "@pipeline().parameters.databaseName",
+										"type": "Expression"
+									}
 								}
 							}
 						}
