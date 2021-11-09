@@ -2564,7 +2564,7 @@
 						"spark.dynamicAllocation.enabled": "false",
 						"spark.dynamicAllocation.minExecutors": "4",
 						"spark.dynamicAllocation.maxExecutors": "4",
-						"spark.autotune.trackingId": "bf722fc5-3102-4e1f-8345-47c57dfb0639"
+						"spark.autotune.trackingId": "f79b402f-c102-419d-a012-c66ec53f0ac0"
 					}
 				},
 				"metadata": {
@@ -2634,7 +2634,7 @@
 							"%run /OEA_py"
 						],
 						"outputs": [],
-						"execution_count": 8
+						"execution_count": 26
 					},
 					{
 						"cell_type": "code",
@@ -2654,7 +2654,7 @@
 							"%run /ContosoSIS_py"
 						],
 						"outputs": [],
-						"execution_count": 9
+						"execution_count": 27
 					},
 					{
 						"cell_type": "code",
@@ -2676,7 +2676,7 @@
 							"contoso_sis = ContosoSIS(oea)"
 						],
 						"outputs": [],
-						"execution_count": 10
+						"execution_count": 28
 					},
 					{
 						"cell_type": "code",
@@ -2713,19 +2713,19 @@
 							"    query = query.start(p_destination_path)\r\n",
 							"    query.awaitTermination()   # block until query is terminated, with stop() or with error; A StreamingQueryException will be thrown if an exception occurs.\r\n",
 							"    logger.info(query.lastProgress)\r\n",
-							"\r\n",
+							"    print('-----------')\r\n",
+							"    print(df_lookup.columns)\r\n",
 							"    #if not df_lookup.first() == None:\r\n",
 							"    query2 = df_lookup.writeStream.format(\"delta\").outputMode(\"append\").trigger(once=True).option(\"checkpointLocation\", source_path + '/_checkpoints_np')\r\n",
-							"    query2.\r\n",
+							"    print(query2)\r\n",
 							"    query2 = query2.start(np_destination_path)\r\n",
 							"    query2.awaitTermination()   # block until query is terminated, with stop() or with error; A StreamingQueryException will be thrown if an exception occurs.\r\n",
 							"    logger.info(query2.lastProgress)\r\n",
 							"\r\n",
-							"#ingest_incremental_data(contoso_sis.stage1np, contoso_sis.schemas['studentattendance'], contoso_sis.stage2np, contoso_sis.stage2p)\r\n",
 							"ingest_incremental_csv_data('contoso_sis', 'studentattendance', contoso_sis.schemas['studentattendance'])"
 						],
 						"outputs": [],
-						"execution_count": 25
+						"execution_count": 34
 					},
 					{
 						"cell_type": "code",
@@ -2951,7 +2951,7 @@
 						"spark.dynamicAllocation.enabled": "false",
 						"spark.dynamicAllocation.minExecutors": "2",
 						"spark.dynamicAllocation.maxExecutors": "2",
-						"spark.autotune.trackingId": "660117ce-96e3-4eab-b726-665a22351486"
+						"spark.autotune.trackingId": "e4f2c576-3b9e-4bd9-bb07-50473fbe02a2"
 					}
 				},
 				"metadata": {
@@ -2974,7 +2974,7 @@
 							"class ContosoSIS(BaseOEAModule):\r\n",
 							"    def __init__(self, oea, source_folder='contoso_sis', pseudonymize = True):\r\n",
 							"        BaseOEAModule.__init__(self, oea, source_folder, pseudonymize)\r\n",
-							"        self.schemas['studentattendance'] = [['id', 'string', 'hash'],\r\n",
+							"        self.schemas['studentattendance'] = [['id', 'string', 'no-op'],\r\n",
 							"                                            ['student_id', 'string', 'hash-no-lookup'],\r\n",
 							"                                            ['school_year', 'integer', 'no-op'],\r\n",
 							"                                            ['school_id', 'string', 'no-op'],\r\n",
@@ -10535,6 +10535,162 @@
 				]
 			},
 			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('workspaceName'), '/reset_ingestion')]",
+			"type": "Microsoft.Synapse/workspaces/pipelines",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"description": "Deletes the ingestion for the specified system and table - in order to start over when testing during implementation.",
+				"activities": [
+					{
+						"name": "delete _checkpoints_p",
+						"type": "Delete",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"dataset": {
+								"referenceName": "DS_ADLS_binary_folder",
+								"type": "DatasetReference",
+								"parameters": {
+									"filesystem": "stage1np",
+									"directory": {
+										"value": "@{pipeline().parameters.sourceSystem}/@{pipeline().parameters.tablename}/_checkpoints_p",
+										"type": "Expression"
+									}
+								}
+							},
+							"enableLogging": false,
+							"storeSettings": {
+								"type": "AzureBlobFSReadSettings",
+								"recursive": true,
+								"enablePartitionDiscovery": false
+							}
+						}
+					},
+					{
+						"name": "delete _checkpoints_np",
+						"type": "Delete",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"dataset": {
+								"referenceName": "DS_ADLS_binary_folder",
+								"type": "DatasetReference",
+								"parameters": {
+									"filesystem": "stage1np",
+									"directory": {
+										"value": "@{pipeline().parameters.sourceSystem}/@{pipeline().parameters.tablename}/_checkpoints_np",
+										"type": "Expression"
+									}
+								}
+							},
+							"enableLogging": false,
+							"storeSettings": {
+								"type": "AzureBlobFSReadSettings",
+								"recursive": true,
+								"enablePartitionDiscovery": false
+							}
+						}
+					},
+					{
+						"name": "delete from stage2np",
+						"type": "Delete",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"dataset": {
+								"referenceName": "DS_ADLS_binary_folder",
+								"type": "DatasetReference",
+								"parameters": {
+									"filesystem": "stage2np",
+									"directory": {
+										"value": "@{pipeline().parameters.sourceSystem}/@{pipeline().parameters.tablename}",
+										"type": "Expression"
+									}
+								}
+							},
+							"enableLogging": false,
+							"storeSettings": {
+								"type": "AzureBlobFSReadSettings",
+								"recursive": true,
+								"enablePartitionDiscovery": false
+							}
+						}
+					},
+					{
+						"name": "delete from stage2p",
+						"type": "Delete",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"dataset": {
+								"referenceName": "DS_ADLS_binary_folder",
+								"type": "DatasetReference",
+								"parameters": {
+									"filesystem": "stage2p",
+									"directory": {
+										"value": "@{pipeline().parameters.sourceSystem}/@{pipeline().parameters.tablename}",
+										"type": "Expression"
+									}
+								}
+							},
+							"enableLogging": false,
+							"storeSettings": {
+								"type": "AzureBlobFSReadSettings",
+								"recursive": true,
+								"enablePartitionDiscovery": false
+							}
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {},
+					"cancelAfter": {}
+				},
+				"parameters": {
+					"sourceSystem": {
+						"type": "string",
+						"defaultValue": "contoso_sis"
+					},
+					"tablename": {
+						"type": "string",
+						"defaultValue": "studentattendance"
+					}
+				},
+				"annotations": []
+			},
+			"dependsOn": [
+				"[concat(variables('workspaceId'), '/datasets/DS_ADLS_binary_folder')]"
+			]
 		}
 	]
 }
