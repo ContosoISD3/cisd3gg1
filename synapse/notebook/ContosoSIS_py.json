@@ -13,7 +13,7 @@
 				"spark.dynamicAllocation.enabled": "false",
 				"spark.dynamicAllocation.minExecutors": "2",
 				"spark.dynamicAllocation.maxExecutors": "2",
-				"spark.autotune.trackingId": "0c9f48b1-8f88-4ba4-8622-bb8d063c7696"
+				"spark.autotune.trackingId": "0e129694-5b17-48fd-9796-4766ae71b045"
 			}
 		},
 		"metadata": {
@@ -60,6 +60,13 @@
 					"                                            ['credits_attempted', 'short', 'no-op'],\r\n",
 					"                                            ['credits_earned', 'short', 'no-op'],\r\n",
 					"                                            ['grad_credit_type', 'string', 'no-op']]\r\n",
+					"\r\n",
+					"        self.schemas['studentdemographics'] = [['SIS ID', 'string', 'hash'],\r\n",
+					"                                            ['FederalRaceCategory', 'string', 'no-op'],\r\n",
+					"                                            ['PrimaryLanguage', 'string', 'no-op'],\r\n",
+					"                                            ['ELLStatus', 'string', 'no-op'],\r\n",
+					"                                            ['SpecialEducation', 'string', 'no-op'],\r\n",
+					"                                            ['LowIncome', 'boolean', 'no-op']]                                            \r\n",
 					"\r\n",
 					"    def process_latest_from_stage1(self):\r\n",
 					"        latest = oea.get_latest_folder(self.stage1np)\r\n",
