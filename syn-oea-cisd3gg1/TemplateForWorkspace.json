@@ -914,121 +914,6 @@
 			]
 		},
 		{
-			"name": "[concat(parameters('workspaceName'), '/create_views')]",
-			"type": "Microsoft.Synapse/workspaces/pipelines",
-			"apiVersion": "2019-06-01-preview",
-			"properties": {
-				"activities": [
-					{
-						"name": "Stored procedure1",
-						"type": "SqlServerStoredProcedure",
-						"dependsOn": [
-							{
-								"activity": "create sql db",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							}
-						],
-						"policy": {
-							"timeout": "7.00:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"storedProcedureName": "[dbo].[sp_executesql]",
-							"storedProcedureParameters": {
-								"command": {
-									"value": "CREATE OR ALTER VIEW studentattendance AS\nSELECT * FROM OPENROWSET(\n    BULK 'https://stoeacisd3gg1.dfs.core.windows.net/stage2p/contoso_sis/studentattendance',\n    FORMAT='DELTA'\n) AS [r]",
-									"type": "String"
-								}
-							}
-						},
-						"linkedServiceName": {
-							"referenceName": "LS_SQL_Serverless_OEA",
-							"type": "LinkedServiceReference",
-							"parameters": {
-								"databaseName": "sql_s2_contoso_sis"
-							}
-						}
-					},
-					{
-						"name": "create sql db",
-						"type": "SqlServerStoredProcedure",
-						"dependsOn": [],
-						"policy": {
-							"timeout": "7.00:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [
-							{
-								"name": "sql",
-								"value": "\"IF NOT EXISTS (SELECT * FROM sys.databases WHERE name = '@{pipeline().parameters.databaseName}') BEGIN CREATE DATABASE @{pipeline().parameters.databaseName}; END;\""
-							}
-						],
-						"typeProperties": {
-							"storedProcedureName": "[dbo].[sp_executesql]",
-							"storedProcedureParameters": {
-								"command": {
-									"value": {
-										"value": "\"IF NOT EXISTS (SELECT * FROM sys.databases WHERE name = '@{pipeline().parameters.databaseName}') BEGIN CREATE DATABASE @{pipeline().parameters.databaseName}; END;\"",
-										"type": "Expression"
-									},
-									"type": "String"
-								}
-							}
-						},
-						"linkedServiceName": {
-							"referenceName": "LS_SQL_Serverless_OEA",
-							"type": "LinkedServiceReference",
-							"parameters": {
-								"databaseName": {
-									"value": "@pipeline().parameters.databaseName",
-									"type": "Expression"
-								}
-							}
-						}
-					}
-				],
-				"policy": {
-					"elapsedTimeMetric": {},
-					"cancelAfter": {}
-				},
-				"parameters": {
-					"storageAccount": {
-						"type": "string",
-						"defaultValue": "stoeacisd3gg1"
-					},
-					"filesystem": {
-						"type": "string",
-						"defaultValue": "stage2p"
-					},
-					"sourceDirectory": {
-						"type": "string",
-						"defaultValue": "contoso_sis"
-					},
-					"table": {
-						"type": "string",
-						"defaultValue": "studentattendance"
-					},
-					"databaseName": {
-						"type": "string",
-						"defaultValue": "sql_s2_contoso_sis"
-					}
-				},
-				"annotations": []
-			},
-			"dependsOn": [
-				"[concat(variables('workspaceId'), '/linkedServices/LS_SQL_Serverless_OEA')]"
-			]
-		},
-		{
 			"name": "[concat(parameters('workspaceName'), '/Push_to_SDS')]",
 			"type": "Microsoft.Synapse/workspaces/pipelines",
 			"apiVersion": "2019-06-01-preview",
@@ -1061,6 +946,141 @@
 			},
 			"dependsOn": [
 				"[concat(variables('workspaceId'), '/pipelines/Clever_land_in_s1')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('workspaceName'), '/create_views')]",
+			"type": "Microsoft.Synapse/workspaces/pipelines",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"activities": [
+					{
+						"name": "create sql db",
+						"type": "SqlServerStoredProcedure",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [
+							{
+								"name": "sql",
+								"value": "\"IF NOT EXISTS (SELECT * FROM sys.databases WHERE name = '@{pipeline().parameters.databaseName}') BEGIN CREATE DATABASE @{pipeline().parameters.databaseName}; END;\""
+							}
+						],
+						"typeProperties": {
+							"storedProcedureName": "[dbo].[sp_executesql]",
+							"storedProcedureParameters": {
+								"command": {
+									"value": {
+										"value": "IF NOT EXISTS (SELECT * FROM sys.databases WHERE name = '@{pipeline().parameters.databaseName}') \nBEGIN\n  CREATE DATABASE @{pipeline().parameters.databaseName}; \nEND;",
+										"type": "Expression"
+									},
+									"type": "String"
+								}
+							}
+						},
+						"linkedServiceName": {
+							"referenceName": "LS_SQL_Serverless_OEA",
+							"type": "LinkedServiceReference",
+							"parameters": {
+								"databaseName": {
+									"value": "@pipeline().parameters.databaseName",
+									"type": "Expression"
+								}
+							}
+						}
+					},
+					{
+						"name": "ForEach1",
+						"type": "ForEach",
+						"dependsOn": [
+							{
+								"activity": "create sql db",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"userProperties": [],
+						"typeProperties": {
+							"items": {
+								"value": "@pipeline().parameters.tables",
+								"type": "Expression"
+							},
+							"activities": [
+								{
+									"name": "Stored procedure1",
+									"type": "SqlServerStoredProcedure",
+									"dependsOn": [],
+									"policy": {
+										"timeout": "7.00:00:00",
+										"retry": 0,
+										"retryIntervalInSeconds": 30,
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"userProperties": [],
+									"typeProperties": {
+										"storedProcedureName": "[dbo].[sp_executesql]",
+										"storedProcedureParameters": {
+											"command": {
+												"value": {
+													"value": "CREATE OR ALTER VIEW studentattendance AS\nSELECT * FROM OPENROWSET(\n    BULK 'https://@{pipeline().parameters.storageAccount}.dfs.core.windows.net/@{pipeline().parameters.filesystem}/@{pipeline().parameters.sourceDirectory}/@{item()}',\n    FORMAT='DELTA'\n) AS [r]",
+													"type": "Expression"
+												},
+												"type": "String"
+											}
+										}
+									},
+									"linkedServiceName": {
+										"referenceName": "LS_SQL_Serverless_OEA",
+										"type": "LinkedServiceReference",
+										"parameters": {
+											"databaseName": "sql_s2_contoso_sis"
+										}
+									}
+								}
+							]
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {},
+					"cancelAfter": {}
+				},
+				"parameters": {
+					"storageAccount": {
+						"type": "string",
+						"defaultValue": "stoeacisd3gg1"
+					},
+					"filesystem": {
+						"type": "string",
+						"defaultValue": "stage2p"
+					},
+					"sourceDirectory": {
+						"type": "string",
+						"defaultValue": "contoso_sis"
+					},
+					"tables": {
+						"type": "array",
+						"defaultValue": [
+							"studentattendance",
+							"studentsectionmark"
+						]
+					},
+					"databaseName": {
+						"type": "string",
+						"defaultValue": "sql_s2_contoso_sis"
+					}
+				},
+				"annotations": []
+			},
+			"dependsOn": [
+				"[concat(variables('workspaceId'), '/linkedServices/LS_SQL_Serverless_OEA')]"
 			]
 		},
 		{
