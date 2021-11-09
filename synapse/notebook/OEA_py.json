@@ -13,7 +13,7 @@
 				"spark.dynamicAllocation.enabled": "false",
 				"spark.dynamicAllocation.minExecutors": "2",
 				"spark.dynamicAllocation.maxExecutors": "2",
-				"spark.autotune.trackingId": "f6fe8143-c9e0-41ae-a8f4-d047a171f2d4"
+				"spark.autotune.trackingId": "5532ea0a-76f7-41b5-a871-29a9b0af1e88"
 			}
 		},
 		"metadata": {
@@ -192,6 +192,8 @@
 					"                df_lookup = df_lookup.withColumn(col_name + \"_pseudonym\", F.sha2(F.concat(F.col(col_name), F.lit(self.salt)), 256))\n",
 					"            elif op == \"mask\" or op == 'm':\n",
 					"                df_pseudo = df_pseudo.withColumn(col_name, F.lit('*'))\n",
+					"            elif op == \"partition_by\":\n",
+					"                pass # make no changes for this column so that it will be in both dataframes and can be used for partitioning\n",
 					"            elif op == \"no-op\" or op == 'x':\n",
 					"                df_lookup = df_lookup.drop(col_name)\n",
 					"\n",

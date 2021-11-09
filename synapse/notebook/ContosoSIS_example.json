@@ -17,7 +17,7 @@
 				"spark.dynamicAllocation.enabled": "false",
 				"spark.dynamicAllocation.minExecutors": "4",
 				"spark.dynamicAllocation.maxExecutors": "4",
-				"spark.autotune.trackingId": "77e33bf7-b723-4212-ac57-4de95521c398"
+				"spark.autotune.trackingId": "d210dba9-0739-45e7-b9fa-596336ab0509"
 			}
 		},
 		"metadata": {
@@ -86,7 +86,7 @@
 				"source": [
 					"%run /OEA_py"
 				],
-				"execution_count": 56
+				"execution_count": 61
 			},
 			{
 				"cell_type": "code",
@@ -105,7 +105,7 @@
 				"source": [
 					"%run /ContosoSIS_py"
 				],
-				"execution_count": 57
+				"execution_count": 62
 			},
 			{
 				"cell_type": "code",
@@ -126,7 +126,7 @@
 					"oea = OEA()\n",
 					"contoso_sis = ContosoSIS(oea)"
 				],
-				"execution_count": 59
+				"execution_count": 63
 			},
 			{
 				"cell_type": "code",
@@ -144,57 +144,7 @@
 				"source": [
 					"contoso_sis.ingest()"
 				],
-				"execution_count": 60
-			},
-			{
-				"cell_type": "code",
-				"metadata": {
-					"jupyter": {
-						"source_hidden": false,
-						"outputs_hidden": false
-					},
-					"nteract": {
-						"transient": {
-							"deleting": false
-						}
-					}
-				},
-				"source": [
-					"def ingest_incremental_csv_data(source_system, tablename, schema, partition_by, primary_key='id', has_header=True):\r\n",
-					"    \"\"\" Processes incremental batch data from stage1 into stage2 \"\"\"\r\n",
-					"    source_path = f'{oea.stage1np}/{source_system}/{tablename}'\r\n",
-					"    p_destination_path = f'{oea.stage2p}/{source_system}/{tablename}'\r\n",
-					"    np_destination_path = f'{oea.stage2np}/{source_system}/{tablename}'\r\n",
-					"    logger.info(f'Processing incremental data from: {source_path} and writing out to: {p_destination_path}')\r\n",
-					"\r\n",
-					"    spark_schema = oea.to_spark_schema(schema)\r\n",
-					"    if has_header: header_flag = 'true'\r\n",
-					"    else: header_flag = 'false'\r\n",
-					"    df = spark.readStream.csv(source_path + '/**/*.csv', header=header_flag, schema=spark_schema)\r\n",
-					"    #df = spark.read.csv(source_path + '/**/*.csv', header=header_flag, schema=spark_schema)\r\n",
-					"    #display(df)\r\n",
-					"    df = df.dropDuplicates([primary_key])\r\n",
-					"    df_pseudo, df_lookup = oea.pseudonymize(df, schema)\r\n",
-					"\r\n",
-					"    if len(df_pseudo.columns) == 0:\r\n",
-					"        logger.info('No data to be written to stage2p')\r\n",
-					"    else:        \r\n",
-					"        query = df_pseudo.writeStream.format(\"delta\").outputMode(\"append\").trigger(once=True).option(\"checkpointLocation\", source_path + '/_checkpoints_p').partitionBy(partition_by)\r\n",
-					"        query = query.start(p_destination_path)\r\n",
-					"        query.awaitTermination()   # block until query is terminated, with stop() or with error; A StreamingQueryException will be thrown if an exception occurs.\r\n",
-					"        logger.info(query.lastProgress)\r\n",
-					"\r\n",
-					"    if len(df_lookup.columns) == 0:\r\n",
-					"        logger.info('No data to be written to stage2np')\r\n",
-					"    else:\r\n",
-					"        query2 = df_lookup.writeStream.format(\"delta\").outputMode(\"append\").trigger(once=True).option(\"checkpointLocation\", source_path + '/_checkpoints_np').partitionBy(partition_by)\r\n",
-					"        query2 = query2.start(np_destination_path)\r\n",
-					"        query2.awaitTermination()   # block until query is terminated, with stop() or with error; A StreamingQueryException will be thrown if an exception occurs.\r\n",
-					"        logger.info(query2.lastProgress)\r\n",
-					"\r\n",
-					"ingest_incremental_csv_data('contoso_sis', 'studentattendance', contoso_sis.schemas['studentattendance'], 'school_year', 'id')"
-				],
-				"execution_count": 43
+				"execution_count": 64
 			},
 			{
 				"cell_type": "code",
