@@ -13,7 +13,7 @@
 				"spark.dynamicAllocation.enabled": "false",
 				"spark.dynamicAllocation.minExecutors": "2",
 				"spark.dynamicAllocation.maxExecutors": "2",
-				"spark.autotune.trackingId": "0e129694-5b17-48fd-9796-4766ae71b045"
+				"spark.autotune.trackingId": "384d610d-eb7b-42ab-aa6f-86beaec905ff"
 			}
 		},
 		"metadata": {
@@ -68,13 +68,9 @@
 					"                                            ['SpecialEducation', 'string', 'no-op'],\r\n",
 					"                                            ['LowIncome', 'boolean', 'no-op']]                                            \r\n",
 					"\r\n",
-					"    def process_latest_from_stage1(self):\r\n",
-					"        latest = oea.get_latest_folder(self.stage1np)\r\n",
-					"        if latest == None:\r\n",
-					"            logger.info(\"No folders found in: \" + self.stage1np)\r\n",
-					"        else:\r\n",
-					"            self._process_entity_from_stage1(latest, 'studentattendance', 'csv', 'overwrite', 'true')\r\n",
-					"            self._process_entity_from_stage1(latest, 'studentsectionmark', 'csv', 'overwrite', 'true')\r\n",
+					"    def ingest(self):\r\n",
+					"        oea.ingest_incremental_csv_data(self.source_folder, 'studentattendance', self.schemas['studentattendance'], 'school_year', 'id')\r\n",
+					"        oea.ingest_incremental_csv_data(self.source_folder, 'studentsectionmark', self.schemas['studentsectionmark'], 'school_year', 'id')\r\n",
 					""
 				],
 				"execution_count": null
