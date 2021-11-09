@@ -68,7 +68,7 @@
 					"storedProcedureParameters": {
 						"command": {
 							"value": {
-								"value": "CREATE OR ALTER VIEW @{item()} AS\nSELECT * FROM OPENROWSET(\n    BULK 'https://@{pipeline().parameters.storageAccount}.dfs.core.windows.net/@{pipeline().parameters.filesystem}/@{pipeline().parameters.sourceDirectory}/@{item()}',\n    FORMAT='DELTA'\n) AS [r]",
+								"value": "CREATE OR ALTER VIEW @{pipeline().parameters.table} AS\nSELECT * FROM OPENROWSET(\n    BULK 'https://@{pipeline().parameters.storageAccount}.dfs.core.windows.net/@{pipeline().parameters.filesystem}/@{pipeline().parameters.sourceDirectory}/@{pipeline().parameters.table}',\n    FORMAT='DELTA'\n) AS [r]",
 								"type": "Expression"
 							},
 							"type": "String"
