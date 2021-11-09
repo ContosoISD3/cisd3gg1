@@ -2564,7 +2564,7 @@
 						"spark.dynamicAllocation.enabled": "false",
 						"spark.dynamicAllocation.minExecutors": "4",
 						"spark.dynamicAllocation.maxExecutors": "4",
-						"spark.autotune.trackingId": "ab91992c-4357-4318-b8d9-c504e9a07029"
+						"spark.autotune.trackingId": "fa3f1a67-79a4-460e-be13-2dd51e62109a"
 					}
 				},
 				"metadata": {
@@ -2634,7 +2634,7 @@
 							"%run /OEA_py"
 						],
 						"outputs": [],
-						"execution_count": 35
+						"execution_count": 45
 					},
 					{
 						"cell_type": "code",
@@ -2710,8 +2710,7 @@
 							"\r\n",
 							"    if len(df_pseudo.columns) == 0:\r\n",
 							"        logger.info('No data to be written to stage2p')\r\n",
-							"    else: \r\n",
-							"        #query = df_pseudo.writeStream.format(\"delta\").outputMode(\"append\").trigger(once=True).option(\"checkpointLocation\", source_path + '/_checkpoints_p')\r\n",
+							"    else:        \r\n",
 							"        query = df_pseudo.writeStream.format(\"delta\").outputMode(\"append\").trigger(once=True).option(\"checkpointLocation\", source_path + '/_checkpoints_p').partitionBy(partition_by)\r\n",
 							"        query = query.start(p_destination_path)\r\n",
 							"        query.awaitTermination()   # block until query is terminated, with stop() or with error; A StreamingQueryException will be thrown if an exception occurs.\r\n",
@@ -2954,7 +2953,7 @@
 						"spark.dynamicAllocation.enabled": "false",
 						"spark.dynamicAllocation.minExecutors": "2",
 						"spark.dynamicAllocation.maxExecutors": "2",
-						"spark.autotune.trackingId": "e4f2c576-3b9e-4bd9-bb07-50473fbe02a2"
+						"spark.autotune.trackingId": "25b2bd25-b094-4aca-809c-4bc1236df1a8"
 					}
 				},
 				"metadata": {
@@ -3003,13 +3002,16 @@
 							"                                            ['credits_earned', 'short', 'no-op'],\r\n",
 							"                                            ['grad_credit_type', 'string', 'no-op']]\r\n",
 							"\r\n",
-							"    def process_latest_from_stage1(self):\r\n",
-							"        latest = oea.get_latest_folder(self.stage1np)\r\n",
-							"        if latest == None:\r\n",
-							"            logger.info(\"No folders found in: \" + self.stage1np)\r\n",
-							"        else:\r\n",
-							"            self._process_entity_from_stage1(latest, 'studentattendance', 'csv', 'overwrite', 'true')\r\n",
-							"            self._process_entity_from_stage1(latest, 'studentsectionmark', 'csv', 'overwrite', 'true')\r\n",
+							"        self.schemas['studentdemographics'] = [['SIS ID', 'string', 'hash'],\r\n",
+							"                                            ['FederalRaceCategory', 'string', 'no-op'],\r\n",
+							"                                            ['PrimaryLanguage', 'string', 'no-op'],\r\n",
+							"                                            ['ELLStatus', 'string', 'no-op'],\r\n",
+							"                                            ['SpecialEducation', 'string', 'no-op'],\r\n",
+							"                                            ['LowIncome', 'boolean', 'no-op']]                                            \r\n",
+							"\r\n",
+							"    def ingest(self):\r\n",
+							"        oea.ingest_incremental_csv_data(self.source_folder, 'studentattendance', self.schemas['studentattendance'], 'school_year', 'id')\r\n",
+							"        oea.ingest_incremental_csv_data(self.source_folder, 'studentsectionmark', self.schemas['studentsectionmark'], 'school_year', 'id')\r\n",
 							""
 						],
 						"outputs": [],
@@ -8244,7 +8246,7 @@
 						"spark.dynamicAllocation.enabled": "false",
 						"spark.dynamicAllocation.minExecutors": "2",
 						"spark.dynamicAllocation.maxExecutors": "2",
-						"spark.autotune.trackingId": "cb375d4e-8c97-45ab-8dca-6002a99a9132"
+						"spark.autotune.trackingId": "fd2ba24c-296e-482d-888e-b824c717d97e"
 					}
 				},
 				"metadata": {
@@ -8371,6 +8373,38 @@
 							"            fields.append(StructField(col_name, globals()[dtype.lower().capitalize() + \"Type\"](), True))\n",
 							"        spark_schema = StructType(fields)\n",
 							"        return spark_schema\n",
+							"\n",
+							"    def ingest_incremental_csv_data(self, source_system, tablename, schema, partition_by, primary_key='id', has_header=True):\n",
+							"        \"\"\" Processes incremental batch data from stage1 into stage2 \"\"\"\n",
+							"        source_path = f'{self.stage1np}/{source_system}/{tablename}'\n",
+							"        p_destination_path = f'{self.stage2p}/{source_system}/{tablename}'\n",
+							"        np_destination_path = f'{self.stage2np}/{source_system}/{tablename}'\n",
+							"        logger.info(f'Processing incremental data from: {source_path} and writing out to: {p_destination_path}')\n",
+							"\n",
+							"        spark_schema = self.to_spark_schema(schema)\n",
+							"        if has_header: header_flag = 'true'\n",
+							"        else: header_flag = 'false'\n",
+							"        df = spark.readStream.csv(source_path + '/**/*.csv', header=header_flag, schema=spark_schema)\n",
+							"        #df = spark.read.csv(source_path + '/**/*.csv', header=header_flag, schema=spark_schema)\n",
+							"        #display(df)\n",
+							"        df = df.dropDuplicates([primary_key])\n",
+							"        df_pseudo, df_lookup = self.pseudonymize(df, schema)\n",
+							"\n",
+							"        if len(df_pseudo.columns) == 0:\n",
+							"            logger.info('No data to be written to stage2p')\n",
+							"        else:        \n",
+							"            query = df_pseudo.writeStream.format(\"delta\").outputMode(\"append\").trigger(once=True).option(\"checkpointLocation\", source_path + '/_checkpoints_p').partitionBy(partition_by)\n",
+							"            query = query.start(p_destination_path)\n",
+							"            query.awaitTermination()   # block until query is terminated, with stop() or with error; A StreamingQueryException will be thrown if an exception occurs.\n",
+							"            logger.info(query.lastProgress)\n",
+							"\n",
+							"        if len(df_lookup.columns) == 0:\n",
+							"            logger.info('No data to be written to stage2np')\n",
+							"        else:\n",
+							"            query2 = df_lookup.writeStream.format(\"delta\").outputMode(\"append\").trigger(once=True).option(\"checkpointLocation\", source_path + '/_checkpoints_np').partitionBy(partition_by)\n",
+							"            query2 = query2.start(np_destination_path)\n",
+							"            query2.awaitTermination()   # block until query is terminated, with stop() or with error; A StreamingQueryException will be thrown if an exception occurs.\n",
+							"            logger.info(query2.lastProgress)        \n",
 							"\n",
 							"    def pseudonymize(self, df, schema): #: list[list[str]]):\n",
 							"        \"\"\" Performs pseudonymization of the given dataframe based on the provided schema.\n",
