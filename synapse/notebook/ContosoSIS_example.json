@@ -17,7 +17,7 @@
 				"spark.dynamicAllocation.enabled": "false",
 				"spark.dynamicAllocation.minExecutors": "4",
 				"spark.dynamicAllocation.maxExecutors": "4",
-				"spark.autotune.trackingId": "6bc6060f-0f49-4432-895c-2d8f0cf00d8a"
+				"spark.autotune.trackingId": "7cceabd8-c62b-4ced-9ce0-3df3f7358ec7"
 			}
 		},
 		"metadata": {
@@ -66,10 +66,7 @@
 					"\n",
 					"2) Click on \"Run all\" at the top of this tab (and wait for the processing to complete - which can take around 5 to 10 minutes).\n",
 					"\n",
-					"3) Open the dashboard in Power BI desktop and point it to your newly setup data lake (you can download the pbix from here: [techInequityDashboardContoso v2.pbix](https://github.com/microsoft/OpenEduAnalytics/blob/main/packages/ContosoISD/power_bi/techInequityDashboardContoso%20v2.pbix) )\n",
-					"\n",
-					"# More info\n",
-					"See [OEA Solution Guide](https://github.com/microsoft/OpenEduAnalytics/blob/main/docs/OpenEduAnalyticsSolutionGuide.pdf) for more details on this example."
+					"3) Open the dashboard in Power BI desktop and point it to your newly setup data lake (you can download the pbix from here: [techInequityDashboardContoso v2.pbix](https://github.com/microsoft/OpenEduAnalytics/blob/main/packages/ContosoISD/power_bi/techInequityDashboardContoso%20v2.pbix) )"
 				]
 			},
 			{
@@ -127,7 +124,6 @@
 				"source": [
 					"# 1) Initialize the OEA framework and modules needed.\n",
 					"oea = OEA()\n",
-					"m365 = M365(oea)\n",
 					"contoso_sis = ContosoSIS(oea)"
 				],
 				"execution_count": 4
@@ -153,24 +149,6 @@
 					""
 				],
 				"execution_count": 10
-			},
-			{
-				"cell_type": "code",
-				"metadata": {
-					"jupyter": {
-						"source_hidden": false,
-						"outputs_hidden": false
-					},
-					"nteract": {
-						"transient": {
-							"deleting": false
-						}
-					}
-				},
-				"source": [
-					""
-				],
-				"execution_count": null
 			},
 			{
 				"cell_type": "code",
