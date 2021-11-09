@@ -9329,9 +9329,47 @@
 						"userProperties": [],
 						"typeProperties": {
 							"items": {
-								"value": "@activity('Get Metadata1').output",
+								"value": "@activity('Get Metadata1').output.childItems",
 								"type": "Expression"
-							}
+							},
+							"isSequential": false,
+							"activities": [
+								{
+									"name": "create_view",
+									"type": "ExecutePipeline",
+									"dependsOn": [],
+									"userProperties": [],
+									"typeProperties": {
+										"pipeline": {
+											"referenceName": "create_view",
+											"type": "PipelineReference"
+										},
+										"waitOnCompletion": true,
+										"parameters": {
+											"storageAccount": {
+												"value": "@pipeline().parameters.storageAccount",
+												"type": "Expression"
+											},
+											"filesystem": {
+												"value": "@pipeline().parameters.filesystem",
+												"type": "Expression"
+											},
+											"sourceDirectory": {
+												"value": "@pipeline().parameters.sourceDirectory",
+												"type": "Expression"
+											},
+											"table": {
+												"value": "@item().name",
+												"type": "Expression"
+											},
+											"databaseName": {
+												"value": "@pipeline().parameters.databaseName",
+												"type": "Expression"
+											}
+										}
+									}
+								}
+							]
 						}
 					}
 				],
@@ -9339,10 +9377,33 @@
 					"elapsedTimeMetric": {},
 					"cancelAfter": {}
 				},
+				"parameters": {
+					"storageAccount": {
+						"type": "string",
+						"defaultValue": "stoeacisd3gg1"
+					},
+					"filesystem": {
+						"type": "string",
+						"defaultValue": "stage2p"
+					},
+					"sourceDirectory": {
+						"type": "string",
+						"defaultValue": "contoso_sis"
+					},
+					"table": {
+						"type": "string",
+						"defaultValue": "studentattendance"
+					},
+					"databaseName": {
+						"type": "string",
+						"defaultValue": "sqls2_contoso_sis"
+					}
+				},
 				"annotations": []
 			},
 			"dependsOn": [
-				"[concat(variables('workspaceId'), '/datasets/DS_ADLS_binary_folder')]"
+				"[concat(variables('workspaceId'), '/datasets/DS_ADLS_binary_folder')]",
+				"[concat(variables('workspaceId'), '/pipelines/create_view')]"
 			]
 		},
 		{
