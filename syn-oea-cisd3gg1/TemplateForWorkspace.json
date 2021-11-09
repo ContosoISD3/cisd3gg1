@@ -2220,7 +2220,7 @@
 						"spark.dynamicAllocation.enabled": "false",
 						"spark.dynamicAllocation.minExecutors": "4",
 						"spark.dynamicAllocation.maxExecutors": "4",
-						"spark.autotune.trackingId": "a7a0b6f4-1dc8-4b6e-be33-e39631707e2b"
+						"spark.autotune.trackingId": "d43e1475-d25d-42cf-bea3-ea32593bc000"
 					}
 				},
 				"metadata": {
@@ -2566,7 +2566,7 @@
 						"spark.dynamicAllocation.enabled": "false",
 						"spark.dynamicAllocation.minExecutors": "4",
 						"spark.dynamicAllocation.maxExecutors": "4",
-						"spark.autotune.trackingId": "85fbb6d8-ccfe-4988-9fe8-d967b9594712"
+						"spark.autotune.trackingId": "b8f3e8e0-dd70-45d8-a052-327bf3027eb8"
 					}
 				},
 				"metadata": {
@@ -2636,7 +2636,7 @@
 							"%run /OEA_py"
 						],
 						"outputs": [],
-						"execution_count": 46
+						"execution_count": 50
 					},
 					{
 						"cell_type": "code",
@@ -2656,7 +2656,7 @@
 							"%run /ContosoSIS_py"
 						],
 						"outputs": [],
-						"execution_count": 47
+						"execution_count": 51
 					},
 					{
 						"cell_type": "code",
@@ -2678,7 +2678,7 @@
 							"contoso_sis = ContosoSIS(oea)"
 						],
 						"outputs": [],
-						"execution_count": 48
+						"execution_count": 52
 					},
 					{
 						"cell_type": "code",
@@ -2697,7 +2697,7 @@
 							"contoso_sis.ingest()"
 						],
 						"outputs": [],
-						"execution_count": 49
+						"execution_count": 53
 					},
 					{
 						"cell_type": "code",
@@ -2974,7 +2974,7 @@
 						"spark.dynamicAllocation.enabled": "false",
 						"spark.dynamicAllocation.minExecutors": "2",
 						"spark.dynamicAllocation.maxExecutors": "2",
-						"spark.autotune.trackingId": "0b70c7ec-c813-43d0-bb7f-2e68230f2098"
+						"spark.autotune.trackingId": "edcf7d96-3d3d-428d-86a0-353f1ec8f046"
 					}
 				},
 				"metadata": {
@@ -2998,7 +2998,7 @@
 							"    def __init__(self, oea, source_folder='contoso_sis', pseudonymize = True):\r\n",
 							"        BaseOEAModule.__init__(self, oea, source_folder, pseudonymize)\r\n",
 							"        self.schemas['studentattendance'] = [['id', 'string', 'no-op'],\r\n",
-							"                                            ['student_id', 'string', 'hash-no-lookup'],\r\n",
+							"                                            ['student_id', 'string', 'hash'],\r\n",
 							"                                            ['school_year', 'integer', 'no-op'],\r\n",
 							"                                            ['school_id', 'string', 'no-op'],\r\n",
 							"                                            ['attendance_date', 'timestamp', 'no-op'],\r\n",
@@ -3012,7 +3012,7 @@
 							"                                            ['attendance_sequence', 'short', 'no-op']]\r\n",
 							"\r\n",
 							"        self.schemas['studentsectionmark'] = [['id', 'string', 'no-op'],\r\n",
-							"                                            ['student_id', 'string', 'hash-no-lookup'],\r\n",
+							"                                            ['student_id', 'string', 'hash'],\r\n",
 							"                                            ['section_id', 'string', 'no-op'],\r\n",
 							"                                            ['school_year', 'string', 'no-op'],\r\n",
 							"                                            ['term_id', 'string', 'no-op'],\r\n",
@@ -8267,7 +8267,7 @@
 						"spark.dynamicAllocation.enabled": "false",
 						"spark.dynamicAllocation.minExecutors": "2",
 						"spark.dynamicAllocation.maxExecutors": "2",
-						"spark.autotune.trackingId": "c2723856-f066-4d9a-b302-27563922c3f5"
+						"spark.autotune.trackingId": "440d1b0f-f711-48ba-85a6-7b8731e0856a"
 					}
 				},
 				"metadata": {
