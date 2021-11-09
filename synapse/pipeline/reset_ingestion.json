@@ -1,6 +1,7 @@
 {
 	"name": "reset_ingestion",
 	"properties": {
+		"description": "Deletes the ingestion for the specified system and table - in order to start over when testing during implementation.",
 		"activities": [
 			{
 				"name": "delete _checkpoints_p",
