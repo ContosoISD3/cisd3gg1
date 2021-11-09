@@ -1,0 +1,114 @@
+{
+	"name": "create_view",
+	"properties": {
+		"activities": [
+			{
+				"name": "create sql db unless it already exists",
+				"type": "SqlServerStoredProcedure",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [
+					{
+						"name": "sql",
+						"value": "\"IF NOT EXISTS (SELECT * FROM sys.databases WHERE name = '@{pipeline().parameters.databaseName}') BEGIN CREATE DATABASE @{pipeline().parameters.databaseName}; END;\""
+					}
+				],
+				"typeProperties": {
+					"storedProcedureName": "[dbo].[sp_executesql]",
+					"storedProcedureParameters": {
+						"command": {
+							"value": {
+								"value": "IF NOT EXISTS (SELECT * FROM sys.databases WHERE name = '@{pipeline().parameters.databaseName}') \nBEGIN\n  CREATE DATABASE @{pipeline().parameters.databaseName}; \nEND;",
+								"type": "Expression"
+							},
+							"type": "String"
+						}
+					}
+				},
+				"linkedServiceName": {
+					"referenceName": "LS_SQL_Serverless_OEA",
+					"type": "LinkedServiceReference",
+					"parameters": {
+						"databaseName": "master"
+					}
+				}
+			},
+			{
+				"name": "create view",
+				"type": "SqlServerStoredProcedure",
+				"dependsOn": [
+					{
+						"activity": "create sql db unless it already exists",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [
+					{
+						"name": "sql",
+						"value": "CREATE OR ALTER VIEW @{item()} AS SELECT * FROM OPENROWSET(     BULK 'https://@{pipeline().parameters.storageAccount}.dfs.core.windows.net/@{pipeline().parameters.filesystem}/@{pipeline().parameters.sourceDirectory}/@{item()}',     FORMAT='DELTA' ) AS [r]"
+					}
+				],
+				"typeProperties": {
+					"storedProcedureName": "[dbo].[sp_executesql]",
+					"storedProcedureParameters": {
+						"command": {
+							"value": {
+								"value": "CREATE OR ALTER VIEW @{item()} AS\nSELECT * FROM OPENROWSET(\n    BULK 'https://@{pipeline().parameters.storageAccount}.dfs.core.windows.net/@{pipeline().parameters.filesystem}/@{pipeline().parameters.sourceDirectory}/@{item()}',\n    FORMAT='DELTA'\n) AS [r]",
+								"type": "Expression"
+							},
+							"type": "String"
+						}
+					}
+				},
+				"linkedServiceName": {
+					"referenceName": "LS_SQL_Serverless_OEA",
+					"type": "LinkedServiceReference",
+					"parameters": {
+						"databaseName": {
+							"value": "@pipeline().parameters.databaseName",
+							"type": "Expression"
+						}
+					}
+				}
+			}
+		],
+		"parameters": {
+			"storageAccount": {
+				"type": "string",
+				"defaultValue": "stoeacisd3gg1"
+			},
+			"filesystem": {
+				"type": "string",
+				"defaultValue": "stage2p"
+			},
+			"sourceDirectory": {
+				"type": "string",
+				"defaultValue": "contoso_sis"
+			},
+			"table": {
+				"type": "string",
+				"defaultValue": "studentattendance"
+			},
+			"databaseName": {
+				"type": "string",
+				"defaultValue": "sqls2_contoso_sis"
+			}
+		},
+		"annotations": []
+	}
+}
