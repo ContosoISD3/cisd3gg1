@@ -17,7 +17,7 @@
 				"spark.dynamicAllocation.enabled": "false",
 				"spark.dynamicAllocation.minExecutors": "4",
 				"spark.dynamicAllocation.maxExecutors": "4",
-				"spark.autotune.trackingId": "4f7992b6-b9fa-4ecb-ad64-e53310aaca16"
+				"spark.autotune.trackingId": "1387b02f-a025-46c5-9fb0-b3767c610067"
 			}
 		},
 		"metadata": {
@@ -86,7 +86,7 @@
 				"source": [
 					"%run /OEA_py"
 				],
-				"execution_count": 3
+				"execution_count": 8
 			},
 			{
 				"cell_type": "code",
@@ -105,7 +105,7 @@
 				"source": [
 					"%run /ContosoSIS_py"
 				],
-				"execution_count": 4
+				"execution_count": 9
 			},
 			{
 				"cell_type": "code",
@@ -126,7 +126,7 @@
 					"oea = OEA()\n",
 					"contoso_sis = ContosoSIS(oea)"
 				],
-				"execution_count": 5
+				"execution_count": 10
 			},
 			{
 				"cell_type": "code",
@@ -142,26 +142,37 @@
 					}
 				},
 				"source": [
-					"def ingest_incremental_data(source_system, tablename, schema):\r\n",
+					"def ingest_incremental_csv_data(source_system, tablename, schema, has_header=True):\r\n",
 					"    \"\"\" Processes incremental batch data from stage1 into stage2 \"\"\"\r\n",
-					"    source_path = f'{oea.stage1np}/{source_system}'\r\n",
-					"    destination_path = f'{oea.stage2np}/{source_system}'\r\n",
-					"    logger.info(\"Processing incremental data from: stage1np/\" + source_folder + \" and writing out to: stage2(p&np)/\" + source_folder)\r\n",
+					"    source_path = f'{oea.stage1np}/{source_system}/{tablename}'\r\n",
+					"    p_destination_path = f'{oea.stage2p}/{source_system}/{tablename}'\r\n",
+					"    np_destination_path = f'{oea.stage2np}/{source_system}/{tablename}'\r\n",
+					"    logger.info(f'Processing incremental data from: {source_path} and writing out to: {p_destination_path}')\r\n",
 					"\r\n",
 					"    spark_schema = oea.to_spark_schema(schema)\r\n",
-					"    df = spark.readStream.csv(source_path, header='true', schema=spark_schema)\r\n",
+					"    if has_header: header_flag = 'true'\r\n",
+					"    else: header_flag = 'false'\r\n",
+					"    df = spark.readStream.csv(source_path + '/**/*.csv', header=header_flag, schema=spark_schema)\r\n",
+					"    #df = spark.read.csv(source_path + '/**/*.csv', header=header_flag, schema=spark_schema)\r\n",
 					"    df = df.dropDuplicates(['id'])\r\n",
+					"    #display(df)\r\n",
 					"    #df = df.withColumn('year', F.year(F.col('StartTime'))).withColumn('month', F.month(F.col('StartTime')))\r\n",
 					"    df_pseudo, df_lookup = oea.pseudonymize(df, schema)\r\n",
-					"\r\n",
-					"    query = df_pseudo.writeStream.format(\"delta\").outputMode(\"append\").trigger(once=True).option(\"checkpointLocation\", source_path + '/_checkpoints').partitionBy('school_year')\r\n",
-					"    query = query.start(destination_path.stage2p + '/TechActivity')\r\n",
+					"    #display(df_lookup)\r\n",
+					"    query = df_pseudo.writeStream.format(\"delta\").outputMode(\"append\").trigger(once=True).option(\"checkpointLocation\", source_path + '/_checkpoints_p')\r\n",
+					"    query = query.start(p_destination_path)\r\n",
 					"    query.awaitTermination()   # block until query is terminated, with stop() or with error; A StreamingQueryException will be thrown if an exception occurs.\r\n",
 					"    logger.info(query.lastProgress)\r\n",
 					"\r\n",
-					"ingest_incremental_data(contoso_sis.stage1np, contoso_sis.schemas['studentattendance'], contoso_sis.stage2np, contoso_sis.stage2p)"
+					"    #query2 = df_lookup.writeStream.format(\"delta\").outputMode(\"append\").trigger(once=True).option(\"checkpointLocation\", source_path + '/_checkpoints_np')\r\n",
+					"    #query2 = query2.start(np_destination_path)\r\n",
+					"    #query2.awaitTermination()   # block until query is terminated, with stop() or with error; A StreamingQueryException will be thrown if an exception occurs.\r\n",
+					"    #logger.info(query2.lastProgress)\r\n",
+					"\r\n",
+					"#ingest_incremental_data(contoso_sis.stage1np, contoso_sis.schemas['studentattendance'], contoso_sis.stage2np, contoso_sis.stage2p)\r\n",
+					"ingest_incremental_csv_data('contoso_sis', 'studentattendance', contoso_sis.schemas['studentattendance'])"
 				],
-				"execution_count": null
+				"execution_count": 21
 			},
 			{
 				"cell_type": "code",
@@ -177,7 +188,7 @@
 					}
 				},
 				"source": [
-					"ingest_incremental_data(contoso_sis.stage1np)"
+					"ingest_incremental_csv_data('contoso_sis', 'studentattendance', contoso_sis.schemas['studentattendance'])"
 				],
 				"execution_count": null
 			},
