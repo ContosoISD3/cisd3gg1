@@ -25,7 +25,10 @@
 					"storedProcedureName": "[dbo].[sp_executesql]",
 					"storedProcedureParameters": {
 						"command": {
-							"value": "CREATE OR ALTER VIEW studentattendance AS\nSELECT * FROM OPENROWSET(\n    BULK 'https://stoeacisd3gg1.dfs.core.windows.net/stage2p/contoso_sis/studentattendance',\n    FORMAT='DELTA'\n) AS [r]",
+							"value": {
+								"value": "CREATE OR ALTER VIEW studentattendance AS\nSELECT * FROM OPENROWSET(\n    BULK 'https://@{pipeline().parameters.storageAccount}.dfs.core.windows.net/@{pipeline().parameters.filesystem}/@{pipeline().parameters.sourceDirectory}/@{pipeline().parameters.table}',\n    FORMAT='DELTA'\n) AS [r]",
+								"type": "Expression"
+							},
 							"type": "String"
 						}
 					}
@@ -60,7 +63,7 @@
 					"storedProcedureParameters": {
 						"command": {
 							"value": {
-								"value": "\"IF NOT EXISTS (SELECT * FROM sys.databases WHERE name = '@{pipeline().parameters.databaseName}') BEGIN CREATE DATABASE @{pipeline().parameters.databaseName}; END;\"",
+								"value": "IF NOT EXISTS (SELECT * FROM sys.databases WHERE name = '@{pipeline().parameters.databaseName}') \nBEGIN\n  CREATE DATABASE @{pipeline().parameters.databaseName}; \nEND;",
 								"type": "Expression"
 							},
 							"type": "String"
