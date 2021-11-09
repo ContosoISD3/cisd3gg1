@@ -17,7 +17,7 @@
 				"spark.dynamicAllocation.enabled": "false",
 				"spark.dynamicAllocation.minExecutors": "4",
 				"spark.dynamicAllocation.maxExecutors": "4",
-				"spark.autotune.trackingId": "713f9ee8-c60d-4876-9e4a-0d5318f6197f"
+				"spark.autotune.trackingId": "d5b665d2-bd92-4568-ab38-cb6b3af8c781"
 			}
 		},
 		"metadata": {
@@ -142,20 +142,22 @@
 					}
 				},
 				"source": [
-					"        \"\"\" Processes activity data from stage1 into stage2 using structured streaming. \"\"\"\r\n",
-					"        logger.info(\"Processing ms_insights activity data from: \" + self.stage1np_activity)\r\n",
+					"def ingest_incremental_data():\r\n",
+					"    \"\"\" Processes incremental batch data from stage1 into stage2 \"\"\"\r\n",
 					"\r\n",
-					"        spark_schema = self.oea.to_spark_schema(self.schemas['TechActivity'])\r\n",
-					"        df = spark.readStream.csv(self.stage1np_activity + '/*/*.csv', header='false', schema=spark_schema)\r\n",
-					"        df = df.dropDuplicates(['SignalId'])\r\n",
-					"        df = df.withColumn('year', F.year(F.col('StartTime'))).withColumn('month', F.month(F.col('StartTime')))\r\n",
+					"    logger.info(\"Processing ms_insights activity data from: \" + self.stage1np_activity)\r\n",
 					"\r\n",
-					"        df_pseudo, df_lookup = self.oea.pseudonymize(df, self.schemas['TechActivity'])\r\n",
+					"    spark_schema = self.oea.to_spark_schema(self.schemas['TechActivity'])\r\n",
+					"    df = spark.readStream.csv(self.stage1np_activity + '/*/*.csv', header='false', schema=spark_schema)\r\n",
+					"    df = df.dropDuplicates(['SignalId'])\r\n",
+					"    df = df.withColumn('year', F.year(F.col('StartTime'))).withColumn('month', F.month(F.col('StartTime')))\r\n",
 					"\r\n",
-					"        query = df_pseudo.writeStream.format(\"delta\").outputMode(\"append\").trigger(once=True).option(\"checkpointLocation\", self.stage1np_activity + '/_checkpoints').partitionBy('year', 'month')\r\n",
-					"        query = query.start(self.stage2p + '/TechActivity')\r\n",
-					"        query.awaitTermination()   # block until query is terminated, with stop() or with error; A StreamingQueryException will be thrown if an exception occurs.\r\n",
-					"        logger.info(query.lastProgress)"
+					"    df_pseudo, df_lookup = self.oea.pseudonymize(df, self.schemas['TechActivity'])\r\n",
+					"\r\n",
+					"    query = df_pseudo.writeStream.format(\"delta\").outputMode(\"append\").trigger(once=True).option(\"checkpointLocation\", self.stage1np_activity + '/_checkpoints').partitionBy('year', 'month')\r\n",
+					"    query = query.start(self.stage2p + '/TechActivity')\r\n",
+					"    query.awaitTermination()   # block until query is terminated, with stop() or with error; A StreamingQueryException will be thrown if an exception occurs.\r\n",
+					"    logger.info(query.lastProgress)"
 				],
 				"execution_count": null
 			},
