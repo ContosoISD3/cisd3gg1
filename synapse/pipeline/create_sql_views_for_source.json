@@ -1,5 +1,5 @@
 {
-	"name": "Pipeline 1",
+	"name": "create_sql_views_for_source",
 	"properties": {
 		"activities": [
 			{
@@ -19,8 +19,14 @@
 						"referenceName": "DS_ADLS_binary_folder",
 						"type": "DatasetReference",
 						"parameters": {
-							"filesystem": "stage2p",
-							"directory": "contoso_sis"
+							"filesystem": {
+								"value": "@pipeline().parameters.filesystem1",
+								"type": "Expression"
+							},
+							"directory": {
+								"value": "@pipeline().parameters.sourceDirectory",
+								"type": "Expression"
+							}
 						}
 					},
 					"fieldList": [
@@ -52,6 +58,7 @@
 						"value": "@activity('Get Metadata1').output.childItems",
 						"type": "Expression"
 					},
+					"isSequential": false,
 					"activities": [
 						{
 							"name": "create_view",
@@ -70,7 +77,103 @@
 										"type": "Expression"
 									},
 									"filesystem": {
-										"value": "@pipeline().parameters.filesystem",
+										"value": "@pipeline().parameters.filesystem1",
+										"type": "Expression"
+									},
+									"sourceDirectory": {
+										"value": "@pipeline().parameters.sourceDirectory",
+										"type": "Expression"
+									},
+									"table": {
+										"value": "@item().name",
+										"type": "Expression"
+									},
+									"databaseName": {
+										"value": "@pipeline().parameters.databaseName",
+										"type": "Expression"
+									}
+								}
+							}
+						}
+					]
+				}
+			},
+			{
+				"name": "Get Metadata1_copy1",
+				"type": "GetMetadata",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"dataset": {
+						"referenceName": "DS_ADLS_binary_folder",
+						"type": "DatasetReference",
+						"parameters": {
+							"filesystem": {
+								"value": "@pipeline().parameters.filesystem2",
+								"type": "Expression"
+							},
+							"directory": {
+								"value": "@pipeline().parameters.sourceDirectory",
+								"type": "Expression"
+							}
+						}
+					},
+					"fieldList": [
+						"childItems"
+					],
+					"storeSettings": {
+						"type": "AzureBlobFSReadSettings",
+						"enablePartitionDiscovery": false
+					},
+					"formatSettings": {
+						"type": "BinaryReadSettings"
+					}
+				}
+			},
+			{
+				"name": "ForEach1_copy1",
+				"type": "ForEach",
+				"dependsOn": [
+					{
+						"activity": "Get Metadata1_copy1",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"items": {
+						"value": "@activity('Get Metadata1').output.childItems",
+						"type": "Expression"
+					},
+					"isSequential": false,
+					"activities": [
+						{
+							"name": "create_view_copy1",
+							"type": "ExecutePipeline",
+							"dependsOn": [],
+							"userProperties": [],
+							"typeProperties": {
+								"pipeline": {
+									"referenceName": "create_view",
+									"type": "PipelineReference"
+								},
+								"waitOnCompletion": true,
+								"parameters": {
+									"storageAccount": {
+										"value": "@pipeline().parameters.storageAccount",
+										"type": "Expression"
+									},
+									"filesystem": {
+										"value": "@pipeline().parameters.filesystem2",
 										"type": "Expression"
 									},
 									"sourceDirectory": {
@@ -97,17 +200,17 @@
 				"type": "string",
 				"defaultValue": "stoeacisd3gg1"
 			},
-			"filesystem": {
+			"filesystem1": {
 				"type": "string",
 				"defaultValue": "stage2p"
+			},
+			"filesystem2": {
+				"type": "string",
+				"defaultValue": "stage2np"
 			},
 			"sourceDirectory": {
 				"type": "string",
 				"defaultValue": "contoso_sis"
-			},
-			"table": {
-				"type": "string",
-				"defaultValue": "studentattendance"
 			},
 			"databaseName": {
 				"type": "string",
