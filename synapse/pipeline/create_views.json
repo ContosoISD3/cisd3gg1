@@ -118,7 +118,7 @@
 			},
 			"databaseName": {
 				"type": "string",
-				"defaultValue": "sql_s2_contoso_sis"
+				"defaultValue": "sqls2_contoso_sis"
 			}
 		},
 		"annotations": []
