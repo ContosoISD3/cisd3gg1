@@ -1,0 +1,29 @@
+{
+	"name": "Contoso_SIS",
+	"properties": {
+		"activities": [
+			{
+				"name": "Copy_from_each_URL - SIS test data",
+				"type": "ExecutePipeline",
+				"dependsOn": [],
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "Copy_from_each_URL",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true,
+					"parameters": {
+						"endpoints": {
+							"value": "@json('[{\"URL\": \"https://raw.githubusercontent.com/microsoft/OpenEduAnalytics/main/modules/Contoso_SIS/test_data/studentattendance.csv\",\"sinkDirectory\": \"contoso_sis\",\"sinkFilename\": \"studentattendance/studentattendance.csv\"}, {\"URL\": \"https://raw.githubusercontent.com/microsoft/OpenEduAnalytics/main/modules/Contoso_SIS/test_data/studentdemographics.csv\",\"sinkDirectory\": \"contoso_sis\",\"sinkFilename\": \"studentdemographics/studentdemographics.csv\"}, {\"URL\": \"https://raw.githubusercontent.com/microsoft/OpenEduAnalytics/main/modules/Contoso_SIS/test_data/studentsectionmark.csv\",\"sinkDirectory\": \"contoso_sis\",\"sinkFilename\": \"studentsectionmark/studentsectionmark.csv\"}]')",
+							"type": "Expression"
+						},
+						"sinkFilesystem": "stage1np",
+						"timezone": "Eastern Standard Time"
+					}
+				}
+			}
+		],
+		"annotations": []
+	}
+}
