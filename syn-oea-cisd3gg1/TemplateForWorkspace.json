@@ -2220,7 +2220,7 @@
 						"spark.dynamicAllocation.enabled": "false",
 						"spark.dynamicAllocation.minExecutors": "4",
 						"spark.dynamicAllocation.maxExecutors": "4",
-						"spark.autotune.trackingId": "16a64b45-d245-499f-a13a-e0515eab592b"
+						"spark.autotune.trackingId": "a7a0b6f4-1dc8-4b6e-be33-e39631707e2b"
 					}
 				},
 				"metadata": {
@@ -2245,8 +2245,10 @@
 						"sparkVersion": "3.1",
 						"nodeCount": 10,
 						"cores": 4,
-						"memory": 28
-					}
+						"memory": 28,
+						"automaticScaleJobs": false
+					},
+					"sessionKeepAliveTimeout": 30
 				},
 				"cells": [
 					{
@@ -2564,7 +2566,7 @@
 						"spark.dynamicAllocation.enabled": "false",
 						"spark.dynamicAllocation.minExecutors": "4",
 						"spark.dynamicAllocation.maxExecutors": "4",
-						"spark.autotune.trackingId": "fa3f1a67-79a4-460e-be13-2dd51e62109a"
+						"spark.autotune.trackingId": "85fbb6d8-ccfe-4988-9fe8-d967b9594712"
 					}
 				},
 				"metadata": {
@@ -2634,7 +2636,7 @@
 							"%run /OEA_py"
 						],
 						"outputs": [],
-						"execution_count": 45
+						"execution_count": 46
 					},
 					{
 						"cell_type": "code",
@@ -2654,7 +2656,7 @@
 							"%run /ContosoSIS_py"
 						],
 						"outputs": [],
-						"execution_count": 36
+						"execution_count": 47
 					},
 					{
 						"cell_type": "code",
@@ -2676,7 +2678,26 @@
 							"contoso_sis = ContosoSIS(oea)"
 						],
 						"outputs": [],
-						"execution_count": 37
+						"execution_count": 48
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"jupyter": {
+								"source_hidden": false,
+								"outputs_hidden": false
+							},
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							}
+						},
+						"source": [
+							"contoso_sis.ingest()"
+						],
+						"outputs": [],
+						"execution_count": 49
 					},
 					{
 						"cell_type": "code",
@@ -2953,7 +2974,7 @@
 						"spark.dynamicAllocation.enabled": "false",
 						"spark.dynamicAllocation.minExecutors": "2",
 						"spark.dynamicAllocation.maxExecutors": "2",
-						"spark.autotune.trackingId": "25b2bd25-b094-4aca-809c-4bc1236df1a8"
+						"spark.autotune.trackingId": "0b70c7ec-c813-43d0-bb7f-2e68230f2098"
 					}
 				},
 				"metadata": {
@@ -8246,7 +8267,7 @@
 						"spark.dynamicAllocation.enabled": "false",
 						"spark.dynamicAllocation.minExecutors": "2",
 						"spark.dynamicAllocation.maxExecutors": "2",
-						"spark.autotune.trackingId": "fd2ba24c-296e-482d-888e-b824c717d97e"
+						"spark.autotune.trackingId": "c2723856-f066-4d9a-b302-27563922c3f5"
 					}
 				},
 				"metadata": {
@@ -8576,6 +8597,7 @@
 							"class BaseOEAModule:\n",
 							"    \"\"\" Provides data processing methods for Contoso SIS data (the student information system for the fictional Contoso school district).  \"\"\"\n",
 							"    def __init__(self, oea, source_folder, pseudonymize = True):\n",
+							"        self.source_folder = source_folder\n",
 							"        self.pseudonymize = pseudonymize\n",
 							"        self.oea = oea\n",
 							"        self.stage1np = f\"{oea.stage1np}/{source_folder}\"\n",
