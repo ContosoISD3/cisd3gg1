@@ -2220,7 +2220,7 @@
 						"spark.dynamicAllocation.enabled": "false",
 						"spark.dynamicAllocation.minExecutors": "4",
 						"spark.dynamicAllocation.maxExecutors": "4",
-						"spark.autotune.trackingId": "d43e1475-d25d-42cf-bea3-ea32593bc000"
+						"spark.autotune.trackingId": "a23763c4-d2a7-46fc-9741-6ae1ff699374"
 					}
 				},
 				"metadata": {
@@ -2566,7 +2566,7 @@
 						"spark.dynamicAllocation.enabled": "false",
 						"spark.dynamicAllocation.minExecutors": "4",
 						"spark.dynamicAllocation.maxExecutors": "4",
-						"spark.autotune.trackingId": "b8f3e8e0-dd70-45d8-a052-327bf3027eb8"
+						"spark.autotune.trackingId": "3732eec3-0992-4244-b893-d937b63da77e"
 					}
 				},
 				"metadata": {
@@ -2636,7 +2636,7 @@
 							"%run /OEA_py"
 						],
 						"outputs": [],
-						"execution_count": 50
+						"execution_count": 61
 					},
 					{
 						"cell_type": "code",
@@ -2656,7 +2656,7 @@
 							"%run /ContosoSIS_py"
 						],
 						"outputs": [],
-						"execution_count": 51
+						"execution_count": 62
 					},
 					{
 						"cell_type": "code",
@@ -2678,7 +2678,7 @@
 							"contoso_sis = ContosoSIS(oea)"
 						],
 						"outputs": [],
-						"execution_count": 52
+						"execution_count": 63
 					},
 					{
 						"cell_type": "code",
@@ -2697,174 +2697,7 @@
 							"contoso_sis.ingest()"
 						],
 						"outputs": [],
-						"execution_count": 53
-					},
-					{
-						"cell_type": "code",
-						"metadata": {
-							"jupyter": {
-								"source_hidden": false,
-								"outputs_hidden": false
-							},
-							"nteract": {
-								"transient": {
-									"deleting": false
-								}
-							}
-						},
-						"source": [
-							"def ingest_incremental_csv_data(source_system, tablename, schema, partition_by, primary_key='id', has_header=True):\r\n",
-							"    \"\"\" Processes incremental batch data from stage1 into stage2 \"\"\"\r\n",
-							"    source_path = f'{oea.stage1np}/{source_system}/{tablename}'\r\n",
-							"    p_destination_path = f'{oea.stage2p}/{source_system}/{tablename}'\r\n",
-							"    np_destination_path = f'{oea.stage2np}/{source_system}/{tablename}'\r\n",
-							"    logger.info(f'Processing incremental data from: {source_path} and writing out to: {p_destination_path}')\r\n",
-							"\r\n",
-							"    spark_schema = oea.to_spark_schema(schema)\r\n",
-							"    if has_header: header_flag = 'true'\r\n",
-							"    else: header_flag = 'false'\r\n",
-							"    df = spark.readStream.csv(source_path + '/**/*.csv', header=header_flag, schema=spark_schema)\r\n",
-							"    #df = spark.read.csv(source_path + '/**/*.csv', header=header_flag, schema=spark_schema)\r\n",
-							"    #display(df)\r\n",
-							"    df = df.dropDuplicates([primary_key])\r\n",
-							"    df_pseudo, df_lookup = oea.pseudonymize(df, schema)\r\n",
-							"\r\n",
-							"    if len(df_pseudo.columns) == 0:\r\n",
-							"        logger.info('No data to be written to stage2p')\r\n",
-							"    else:        \r\n",
-							"        query = df_pseudo.writeStream.format(\"delta\").outputMode(\"append\").trigger(once=True).option(\"checkpointLocation\", source_path + '/_checkpoints_p').partitionBy(partition_by)\r\n",
-							"        query = query.start(p_destination_path)\r\n",
-							"        query.awaitTermination()   # block until query is terminated, with stop() or with error; A StreamingQueryException will be thrown if an exception occurs.\r\n",
-							"        logger.info(query.lastProgress)\r\n",
-							"\r\n",
-							"    if len(df_lookup.columns) == 0:\r\n",
-							"        logger.info('No data to be written to stage2np')\r\n",
-							"    else:\r\n",
-							"        query2 = df_lookup.writeStream.format(\"delta\").outputMode(\"append\").trigger(once=True).option(\"checkpointLocation\", source_path + '/_checkpoints_np').partitionBy(partition_by)\r\n",
-							"        query2 = query2.start(np_destination_path)\r\n",
-							"        query2.awaitTermination()   # block until query is terminated, with stop() or with error; A StreamingQueryException will be thrown if an exception occurs.\r\n",
-							"        logger.info(query2.lastProgress)\r\n",
-							"\r\n",
-							"ingest_incremental_csv_data('contoso_sis', 'studentattendance', contoso_sis.schemas['studentattendance'], 'school_year', 'id')"
-						],
-						"outputs": [],
-						"execution_count": 43
-					},
-					{
-						"cell_type": "code",
-						"metadata": {
-							"jupyter": {
-								"source_hidden": false,
-								"outputs_hidden": false
-							},
-							"nteract": {
-								"transient": {
-									"deleting": false
-								}
-							}
-						},
-						"source": [
-							"ingest_incremental_csv_data('contoso_sis', 'studentattendance', contoso_sis.schemas['studentattendance'])"
-						],
-						"outputs": [],
-						"execution_count": null
-					},
-					{
-						"cell_type": "code",
-						"metadata": {
-							"jupyter": {
-								"source_hidden": false,
-								"outputs_hidden": false
-							},
-							"nteract": {
-								"transient": {
-									"deleting": false
-								}
-							},
-							"collapsed": false
-						},
-						"source": [
-							"df = spark.read.load(f'{oea.stage2p}/contoso_sis/studentattendance', format='delta')\r\n",
-							"#display(df)\r\n",
-							"df.schema\r\n",
-							""
-						],
-						"outputs": [],
-						"execution_count": 10
-					},
-					{
-						"cell_type": "code",
-						"metadata": {
-							"jupyter": {
-								"outputs_hidden": false,
-								"source_hidden": false
-							},
-							"nteract": {
-								"transient": {
-									"deleting": false
-								}
-							},
-							"collapsed": true
-						},
-						"source": [
-							"# 2) Process the raw data (csv format) from stage1 into stage2 (adds schema details and writes out in parquet format).\n",
-							"#    [Note: we're not performing pseudonymization in this example, so everything is written to container stage2np.]\n",
-							"m365.process_latest_roster_from_stage1()\n",
-							"contoso_sis.process_latest_from_stage1()\n",
-							"m365.process_activity_data_from_stage1()"
-						],
-						"outputs": [],
-						"execution_count": 57
-					},
-					{
-						"cell_type": "code",
-						"metadata": {
-							"jupyter": {
-								"outputs_hidden": false,
-								"source_hidden": false
-							},
-							"nteract": {
-								"transient": {
-									"deleting": false
-								}
-							},
-							"collapsed": true
-						},
-						"source": [
-							"# 3) Run additional prep on the data to create a unified dataset that can be used in a Power BI report\n",
-							"\n",
-							"# Process sectionmark data. Convert id values to use the Person.Id and Section.Id values set in the m365 data.\n",
-							"sqlContext.registerDataFrameAsTable(spark.read.format('delta').load(oea.stage2p + '/contoso_sis/studentsectionmark'), 'SectionMark')\n",
-							"sqlContext.registerDataFrameAsTable(spark.read.format('delta').load(oea.stage2np + '/m365/Person'), 'Person')\n",
-							"sqlContext.registerDataFrameAsTable(spark.read.format('delta').load(oea.stage2np + '/m365/Section'), 'Section')\n",
-							"df = spark.sql(\"select sm.id Id, p.Id PersonId, s.Id SectionId, cast(sm.numeric_grade_earned as int) NumericGrade, \\\n",
-							"sm.alpha_grade_earned AlphaGrade, sm.is_final_grade IsFinalGrade, cast(sm.credits_attempted as int) CreditsAttempted, cast(sm.credits_earned as int) CreditsEarned, \\\n",
-							"sm.grad_credit_type GraduationCreditType, sm.id ExternalId, CURRENT_TIMESTAMP CreateDate, CURRENT_TIMESTAMP LastModifiedDate, true IsActive \\\n",
-							"from SectionMark sm, Person p, Section s \\\n",
-							"where sm.student_id = p.ExternalId \\\n",
-							"and sm.section_id = s.ExternalId\")\n",
-							"df.write.format('delta').mode('overwrite').save(oea.stage2np + '/ContosoISD/SectionMark')\n",
-							"\n",
-							"# Repeat the above process, this time for student attendance\n",
-							"# Convert id values to use the Person.Id, Org.Id and Section.Id values\n",
-							"sqlContext.registerDataFrameAsTable(spark.read.format('delta').load(oea.stage2np + '/contoso_sis/studentattendance'), 'Attendance')\n",
-							"sqlContext.registerDataFrameAsTable(spark.read.format('delta').load(oea.stage2np + '/m365/Org'), 'Org')\n",
-							"df = spark.sql(\"select att.id Id, p.Id PersonId, att.school_year SchoolYear, o.Id OrgId, to_date(att.attendance_date,'MM/dd/yyyy') AttendanceDate, \\\n",
-							"att.all_day AllDay, att.Period Period, s.Id SectionId, att.AttendanceCode AttendanceCode, att.PresenceFlag PresenceFlag, \\\n",
-							"att.attendance_status AttendanceStatus, att.attendance_type AttendanceType, att.attendance_sequence AttendanceSequence \\\n",
-							"from Attendance att, Org o, Person p, Section s \\\n",
-							"where att.student_id = p.ExternalId \\\n",
-							"and att.school_id = o.ExternalId \\\n",
-							"and att.section_id = s.ExternalId\")\n",
-							"df.write.format('delta').mode('overwrite').save(oea.stage2np +'/ContosoISD/Attendance')\n",
-							"\n",
-							"# Add 'Department' column to Course (hardcoded to \"Math\" for this Contoso example)\n",
-							"sqlContext.registerDataFrameAsTable(spark.read.format('delta').load(oea.stage2np + '/m365/Course'), 'Course')\n",
-							"df = spark.sql(\"select Id, Name, Code, Description, ExternalId, CreateDate, LastModifiedDate, IsActive, CalendarId, 'Math' Department from Course\")\n",
-							"df.write.format('delta').mode('overwrite').save(oea.stage2np + '/ContosoISD/Course')"
-						],
-						"outputs": [],
-						"execution_count": 58
+						"execution_count": 64
 					},
 					{
 						"cell_type": "code",
@@ -2882,27 +2715,7 @@
 						},
 						"source": [
 							"# 4) Create spark db's that point to the data in the data lake to allow for connecting via Power BI through use of the Serverless SQL endpoint.\n",
-							"contoso_sis.create_stage2_db('PARQUET')\n",
-							"m365.create_stage2_db('PARQUET')\n",
-							"\n",
-							"spark.sql('CREATE DATABASE IF NOT EXISTS s2_ContosoISD')\n",
-							"spark.sql(\"create table if not exists s2_ContosoISD.Activity using PARQUET location '\" + oea.stage2np + \"/m365/TechActivity'\")\n",
-							"spark.sql(\"create table if not exists s2_ContosoISD.Calendar using PARQUET location '\" + oea.stage2np + \"/m365/Calendar'\")\n",
-							"spark.sql(\"create table if not exists s2_ContosoISD.Org using PARQUET location '\" + oea.stage2np + \"/m365/Org'\")\n",
-							"spark.sql(\"create table if not exists s2_ContosoISD.Person using PARQUET location '\" + oea.stage2np + \"/m365/Person'\")\n",
-							"spark.sql(\"create table if not exists s2_ContosoISD.PersonIdentifier using PARQUET location '\" + oea.stage2np + \"/m365/PersonIdentifier'\")\n",
-							"spark.sql(\"create table if not exists s2_ContosoISD.RefDefinition using PARQUET location '\" + oea.stage2np + \"/m365/RefDefinition'\")\n",
-							"spark.sql(\"create table if not exists s2_ContosoISD.Section using PARQUET location '\" + oea.stage2np + \"/m365/Section'\")\n",
-							"spark.sql(\"create table if not exists s2_ContosoISD.Session using PARQUET location '\" + oea.stage2np + \"/m365/Session'\")\n",
-							"spark.sql(\"create table if not exists s2_ContosoISD.StaffOrgAffiliation using PARQUET location '\" + oea.stage2np + \"/m365/StaffOrgAffiliation'\")\n",
-							"spark.sql(\"create table if not exists s2_ContosoISD.StaffSectionMembership using PARQUET location '\" + oea.stage2np + \"/m365/StaffSectionMembership'\")\n",
-							"spark.sql(\"create table if not exists s2_ContosoISD.StudentOrgAffiliation using PARQUET location '\" + oea.stage2np + \"/m365/StudentOrgAffiliation'\")\n",
-							"spark.sql(\"create table if not exists s2_ContosoISD.StudentSectionMembership using PARQUET location '\" + oea.stage2np + \"/m365/StudentSectionMembership'\")\n",
-							"spark.sql(\"create table if not exists s2_ContosoISD.Course using PARQUET location '\" + oea.stage2np + \"/ContosoISD/Course'\")\n",
-							"spark.sql(\"create table if not exists s2_ContosoISD.Attendance using PARQUET location '\" + oea.stage2np + \"/ContosoISD/Attendance'\")\n",
-							"spark.sql(\"create table if not exists s2_ContosoISD.SectionMark using PARQUET location '\" + oea.stage2np + \"/ContosoISD/SectionMark'\")\n",
-							"\n",
-							"print(f\"Created spark db's.\\nYou can now open the 'techInequityDashboardContoso v2.pbix' dashboard and change the datasource to point to: {oea.serverless_sql_endpoint}\")"
+							"contoso_sis.create_stage2_db()"
 						],
 						"outputs": [],
 						"execution_count": null
@@ -2974,7 +2787,7 @@
 						"spark.dynamicAllocation.enabled": "false",
 						"spark.dynamicAllocation.minExecutors": "2",
 						"spark.dynamicAllocation.maxExecutors": "2",
-						"spark.autotune.trackingId": "edcf7d96-3d3d-428d-86a0-353f1ec8f046"
+						"spark.autotune.trackingId": "822f1778-8e5a-41b4-a535-2c99060037eb"
 					}
 				},
 				"metadata": {
@@ -2999,7 +2812,7 @@
 							"        BaseOEAModule.__init__(self, oea, source_folder, pseudonymize)\r\n",
 							"        self.schemas['studentattendance'] = [['id', 'string', 'no-op'],\r\n",
 							"                                            ['student_id', 'string', 'hash'],\r\n",
-							"                                            ['school_year', 'integer', 'no-op'],\r\n",
+							"                                            ['school_year', 'integer', 'partition-by'],\r\n",
 							"                                            ['school_id', 'string', 'no-op'],\r\n",
 							"                                            ['attendance_date', 'timestamp', 'no-op'],\r\n",
 							"                                            ['all_day', 'string', 'no-op'],\r\n",
@@ -3014,7 +2827,7 @@
 							"        self.schemas['studentsectionmark'] = [['id', 'string', 'no-op'],\r\n",
 							"                                            ['student_id', 'string', 'hash'],\r\n",
 							"                                            ['section_id', 'string', 'no-op'],\r\n",
-							"                                            ['school_year', 'string', 'no-op'],\r\n",
+							"                                            ['school_year', 'string', 'partition-by'],\r\n",
 							"                                            ['term_id', 'string', 'no-op'],\r\n",
 							"                                            ['numeric_grade_earned', 'short', 'no-op'],\r\n",
 							"                                            ['alpha_grade_earned', 'string', 'no-op'],\r\n",
@@ -8267,7 +8080,7 @@
 						"spark.dynamicAllocation.enabled": "false",
 						"spark.dynamicAllocation.minExecutors": "2",
 						"spark.dynamicAllocation.maxExecutors": "2",
-						"spark.autotune.trackingId": "440d1b0f-f711-48ba-85a6-7b8731e0856a"
+						"spark.autotune.trackingId": "c78f0fa0-361b-442c-a026-857c22c61bcc"
 					}
 				},
 				"metadata": {
@@ -8446,6 +8259,8 @@
 							"                df_lookup = df_lookup.withColumn(col_name + \"_pseudonym\", F.sha2(F.concat(F.col(col_name), F.lit(self.salt)), 256))\n",
 							"            elif op == \"mask\" or op == 'm':\n",
 							"                df_pseudo = df_pseudo.withColumn(col_name, F.lit('*'))\n",
+							"            elif op == \"partition-by\":\n",
+							"                pass # make no changes for this column so that it will be in both dataframes and can be used for partitioning\n",
 							"            elif op == \"no-op\" or op == 'x':\n",
 							"                df_lookup = df_lookup.drop(col_name)\n",
 							"\n",
