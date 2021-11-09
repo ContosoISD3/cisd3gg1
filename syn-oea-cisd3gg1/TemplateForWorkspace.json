@@ -104,7 +104,7 @@
 						],
 						"outputs": [
 							{
-								"referenceName": "DS_ADLS_binary",
+								"referenceName": "DS_ADLS_binary_file",
 								"type": "DatasetReference",
 								"parameters": {
 									"filesystem": "stage1np",
@@ -144,7 +144,7 @@
 			},
 			"dependsOn": [
 				"[concat(variables('workspaceId'), '/datasets/DS_HTTP_binary')]",
-				"[concat(variables('workspaceId'), '/datasets/DS_ADLS_binary')]"
+				"[concat(variables('workspaceId'), '/datasets/DS_ADLS_binary_file')]"
 			]
 		},
 		{
@@ -614,7 +614,7 @@
 						],
 						"outputs": [
 							{
-								"referenceName": "DS_ADLS_binary",
+								"referenceName": "DS_ADLS_binary_file",
 								"type": "DatasetReference",
 								"parameters": {
 									"filesystem": {
@@ -656,7 +656,7 @@
 			},
 			"dependsOn": [
 				"[concat(variables('workspaceId'), '/datasets/DS_HTTP_binary')]",
-				"[concat(variables('workspaceId'), '/datasets/DS_ADLS_binary')]"
+				"[concat(variables('workspaceId'), '/datasets/DS_ADLS_binary_file')]"
 			]
 		},
 		{
@@ -799,7 +799,7 @@
 						"userProperties": [],
 						"typeProperties": {
 							"dataset": {
-								"referenceName": "DS_ADLS_binary",
+								"referenceName": "DS_ADLS_binary_file",
 								"type": "DatasetReference",
 								"parameters": {
 									"filesystem": "stage1np",
@@ -909,7 +909,7 @@
 				"lastPublishTime": "2021-07-16T20:23:32Z"
 			},
 			"dependsOn": [
-				"[concat(variables('workspaceId'), '/datasets/DS_ADLS_binary')]",
+				"[concat(variables('workspaceId'), '/datasets/DS_ADLS_binary_file')]",
 				"[concat(variables('workspaceId'), '/notebooks/M365_roster_v0p3_s1_to_s2')]"
 			]
 		},
@@ -955,7 +955,7 @@
 			"properties": {
 				"activities": [
 					{
-						"name": "create sql db",
+						"name": "create sql db unless it already exists",
 						"type": "SqlServerStoredProcedure",
 						"dependsOn": [],
 						"policy": {
@@ -992,11 +992,11 @@
 						}
 					},
 					{
-						"name": "ForEach1",
+						"name": "for each table",
 						"type": "ForEach",
 						"dependsOn": [
 							{
-								"activity": "create sql db",
+								"activity": "create sql db unless it already exists",
 								"dependencyConditions": [
 									"Succeeded"
 								]
@@ -1010,7 +1010,7 @@
 							},
 							"activities": [
 								{
-									"name": "Stored procedure1",
+									"name": "create view",
 									"type": "SqlServerStoredProcedure",
 									"dependsOn": [],
 									"policy": {
@@ -1089,7 +1089,7 @@
 			]
 		},
 		{
-			"name": "[concat(parameters('workspaceName'), '/DS_ADLS_binary')]",
+			"name": "[concat(parameters('workspaceName'), '/DS_ADLS_binary_file')]",
 			"type": "Microsoft.Synapse/workspaces/datasets",
 			"apiVersion": "2019-06-01-preview",
 			"properties": {
@@ -9275,6 +9275,238 @@
 				]
 			},
 			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('workspaceName'), '/Pipeline 1')]",
+			"type": "Microsoft.Synapse/workspaces/pipelines",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"activities": [
+					{
+						"name": "Get Metadata1",
+						"type": "GetMetadata",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"dataset": {
+								"referenceName": "DS_ADLS_binary_folder",
+								"type": "DatasetReference",
+								"parameters": {
+									"filesystem": "stage2p",
+									"directory": "contoso_sis"
+								}
+							},
+							"fieldList": [
+								"childItems"
+							],
+							"storeSettings": {
+								"type": "AzureBlobFSReadSettings",
+								"enablePartitionDiscovery": false
+							},
+							"formatSettings": {
+								"type": "BinaryReadSettings"
+							}
+						}
+					},
+					{
+						"name": "ForEach1",
+						"type": "ForEach",
+						"dependsOn": [
+							{
+								"activity": "Get Metadata1",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"userProperties": [],
+						"typeProperties": {
+							"items": {
+								"value": "@activity('Get Metadata1').output",
+								"type": "Expression"
+							}
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {},
+					"cancelAfter": {}
+				},
+				"annotations": []
+			},
+			"dependsOn": [
+				"[concat(variables('workspaceId'), '/datasets/DS_ADLS_binary_folder')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('workspaceName'), '/DS_ADLS_binary_folder')]",
+			"type": "Microsoft.Synapse/workspaces/datasets",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "LS_ADLS_OEA",
+					"type": "LinkedServiceReference"
+				},
+				"parameters": {
+					"filesystem": {
+						"type": "string"
+					},
+					"directory": {
+						"type": "string"
+					}
+				},
+				"folder": {
+					"name": "OEA_Framework"
+				},
+				"annotations": [],
+				"type": "Binary",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobFSLocation",
+						"folderPath": {
+							"value": "@dataset().directory",
+							"type": "Expression"
+						},
+						"fileSystem": {
+							"value": "@dataset().filesystem",
+							"type": "Expression"
+						}
+					}
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('workspaceId'), '/linkedServices/LS_ADLS_OEA')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('workspaceName'), '/create_view')]",
+			"type": "Microsoft.Synapse/workspaces/pipelines",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"activities": [
+					{
+						"name": "create sql db unless it already exists",
+						"type": "SqlServerStoredProcedure",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [
+							{
+								"name": "sql",
+								"value": "\"IF NOT EXISTS (SELECT * FROM sys.databases WHERE name = '@{pipeline().parameters.databaseName}') BEGIN CREATE DATABASE @{pipeline().parameters.databaseName}; END;\""
+							}
+						],
+						"typeProperties": {
+							"storedProcedureName": "[dbo].[sp_executesql]",
+							"storedProcedureParameters": {
+								"command": {
+									"value": {
+										"value": "IF NOT EXISTS (SELECT * FROM sys.databases WHERE name = '@{pipeline().parameters.databaseName}') \nBEGIN\n  CREATE DATABASE @{pipeline().parameters.databaseName}; \nEND;",
+										"type": "Expression"
+									},
+									"type": "String"
+								}
+							}
+						},
+						"linkedServiceName": {
+							"referenceName": "LS_SQL_Serverless_OEA",
+							"type": "LinkedServiceReference",
+							"parameters": {
+								"databaseName": "master"
+							}
+						}
+					},
+					{
+						"name": "create view",
+						"type": "SqlServerStoredProcedure",
+						"dependsOn": [
+							{
+								"activity": "create sql db unless it already exists",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [
+							{
+								"name": "sql",
+								"value": "CREATE OR ALTER VIEW @{item()} AS SELECT * FROM OPENROWSET(     BULK 'https://@{pipeline().parameters.storageAccount}.dfs.core.windows.net/@{pipeline().parameters.filesystem}/@{pipeline().parameters.sourceDirectory}/@{item()}',     FORMAT='DELTA' ) AS [r]"
+							}
+						],
+						"typeProperties": {
+							"storedProcedureName": "[dbo].[sp_executesql]",
+							"storedProcedureParameters": {
+								"command": {
+									"value": {
+										"value": "CREATE OR ALTER VIEW @{pipeline().parameters.table} AS\nSELECT * FROM OPENROWSET(\n    BULK 'https://@{pipeline().parameters.storageAccount}.dfs.core.windows.net/@{pipeline().parameters.filesystem}/@{pipeline().parameters.sourceDirectory}/@{pipeline().parameters.table}',\n    FORMAT='DELTA'\n) AS [r]",
+										"type": "Expression"
+									},
+									"type": "String"
+								}
+							}
+						},
+						"linkedServiceName": {
+							"referenceName": "LS_SQL_Serverless_OEA",
+							"type": "LinkedServiceReference",
+							"parameters": {
+								"databaseName": {
+									"value": "@pipeline().parameters.databaseName",
+									"type": "Expression"
+								}
+							}
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {},
+					"cancelAfter": {}
+				},
+				"parameters": {
+					"storageAccount": {
+						"type": "string",
+						"defaultValue": "stoeacisd3gg1"
+					},
+					"filesystem": {
+						"type": "string",
+						"defaultValue": "stage2p"
+					},
+					"sourceDirectory": {
+						"type": "string",
+						"defaultValue": "contoso_sis"
+					},
+					"table": {
+						"type": "string",
+						"defaultValue": "studentattendance"
+					},
+					"databaseName": {
+						"type": "string",
+						"defaultValue": "sqls2_contoso_sis"
+					}
+				},
+				"annotations": []
+			},
+			"dependsOn": [
+				"[concat(variables('workspaceId'), '/linkedServices/LS_SQL_Serverless_OEA')]"
+			]
 		}
 	]
 }
