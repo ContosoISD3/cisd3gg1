@@ -43,7 +43,7 @@
 										"type": "Expression"
 									},
 									"sinkFilename": {
-										"value": "@{item().sinkDirectory}/@{variables('currentDateTime')}/@{item().sinkFilename}",
+										"value": "@{item().sinkDirectory}/@{item().sinkFilename}/@{variables('currentDateTime')}",
 										"type": "Expression"
 									}
 								}

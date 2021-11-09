@@ -17,7 +17,7 @@
 				"spark.dynamicAllocation.enabled": "false",
 				"spark.dynamicAllocation.minExecutors": "4",
 				"spark.dynamicAllocation.maxExecutors": "4",
-				"spark.autotune.trackingId": "1613f121-60f4-47a5-9d7c-60698439f4fd"
+				"spark.autotune.trackingId": "4f7992b6-b9fa-4ecb-ad64-e53310aaca16"
 			}
 		},
 		"metadata": {
@@ -142,9 +142,11 @@
 					}
 				},
 				"source": [
-					"def ingest_incremental_data(source_path, schema, destination_path):\r\n",
+					"def ingest_incremental_data(source_system, tablename, schema):\r\n",
 					"    \"\"\" Processes incremental batch data from stage1 into stage2 \"\"\"\r\n",
-					"    logger.info(\"Processing incremental data from: \" + source_path + \" and writing out to: \" + destination_path)\r\n",
+					"    source_path = f'{oea.stage1np}/{source_system}'\r\n",
+					"    destination_path = f'{oea.stage2np}/{source_system}'\r\n",
+					"    logger.info(\"Processing incremental data from: stage1np/\" + source_folder + \" and writing out to: stage2(p&np)/\" + source_folder)\r\n",
 					"\r\n",
 					"    spark_schema = oea.to_spark_schema(schema)\r\n",
 					"    df = spark.readStream.csv(source_path, header='true', schema=spark_schema)\r\n",
