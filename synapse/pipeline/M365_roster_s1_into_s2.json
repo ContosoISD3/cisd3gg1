@@ -17,7 +17,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"dataset": {
-						"referenceName": "DS_ADLS_binary",
+						"referenceName": "DS_ADLS_binary_file",
 						"type": "DatasetReference",
 						"parameters": {
 							"filesystem": "stage1np",
