@@ -1023,7 +1023,7 @@
 									"userProperties": [
 										{
 											"name": "sql",
-											"value": "CREATE OR ALTER VIEW studentattendance AS SELECT * FROM OPENROWSET(     BULK 'https://@{pipeline().parameters.storageAccount}.dfs.core.windows.net/@{pipeline().parameters.filesystem}/@{pipeline().parameters.sourceDirectory}/@{item()}',     FORMAT='DELTA' ) AS [r]"
+											"value": "CREATE OR ALTER VIEW @{item()} AS SELECT * FROM OPENROWSET(     BULK 'https://@{pipeline().parameters.storageAccount}.dfs.core.windows.net/@{pipeline().parameters.filesystem}/@{pipeline().parameters.sourceDirectory}/@{item()}',     FORMAT='DELTA' ) AS [r]"
 										}
 									],
 									"typeProperties": {
@@ -1031,7 +1031,7 @@
 										"storedProcedureParameters": {
 											"command": {
 												"value": {
-													"value": "CREATE OR ALTER VIEW studentattendance AS\nSELECT * FROM OPENROWSET(\n    BULK 'https://@{pipeline().parameters.storageAccount}.dfs.core.windows.net/@{pipeline().parameters.filesystem}/@{pipeline().parameters.sourceDirectory}/@{item()}',\n    FORMAT='DELTA'\n) AS [r]",
+													"value": "CREATE OR ALTER VIEW @{item()} AS\nSELECT * FROM OPENROWSET(\n    BULK 'https://@{pipeline().parameters.storageAccount}.dfs.core.windows.net/@{pipeline().parameters.filesystem}/@{pipeline().parameters.sourceDirectory}/@{item()}',\n    FORMAT='DELTA'\n) AS [r]",
 													"type": "Expression"
 												},
 												"type": "String"
