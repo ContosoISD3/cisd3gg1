@@ -744,7 +744,7 @@
 												"type": "Expression"
 											},
 											"sinkFilename": {
-												"value": "@{item().sinkDirectory}/@{item().sinkFilename}/@{variables('currentDateTime')}",
+												"value": "@{item().sinkDirectory}/@{variables('currentDateTime')}/@{item().sinkFilename}",
 												"type": "Expression"
 											}
 										}
@@ -2564,7 +2564,7 @@
 						"spark.dynamicAllocation.enabled": "false",
 						"spark.dynamicAllocation.minExecutors": "4",
 						"spark.dynamicAllocation.maxExecutors": "4",
-						"spark.autotune.trackingId": "49bf203d-bc49-4a44-be2b-eb137b2664ac"
+						"spark.autotune.trackingId": "c14d7fbe-d4a4-4439-b06b-74d0bc835af1"
 					}
 				},
 				"metadata": {
@@ -2938,7 +2938,7 @@
 						"spark.dynamicAllocation.enabled": "false",
 						"spark.dynamicAllocation.minExecutors": "2",
 						"spark.dynamicAllocation.maxExecutors": "2",
-						"spark.autotune.trackingId": "8c3971ea-4f5b-4c91-863d-3fa64f1813bc"
+						"spark.autotune.trackingId": "5add7ec3-146f-4adf-a43c-0aa37d07d558"
 					}
 				},
 				"metadata": {
@@ -6854,7 +6854,7 @@
 						"spark.dynamicAllocation.enabled": "false",
 						"spark.dynamicAllocation.minExecutors": "2",
 						"spark.dynamicAllocation.maxExecutors": "2",
-						"spark.autotune.trackingId": "3c40de6b-25ee-4c95-8aa1-2a271431ef3b"
+						"spark.autotune.trackingId": "cd833062-0991-449c-ab02-fae02364d842"
 					}
 				},
 				"metadata": {
@@ -8228,7 +8228,7 @@
 						"spark.dynamicAllocation.enabled": "false",
 						"spark.dynamicAllocation.minExecutors": "2",
 						"spark.dynamicAllocation.maxExecutors": "2",
-						"spark.autotune.trackingId": "7f65cb47-77d3-43b2-96d8-ae3bad6f9e28"
+						"spark.autotune.trackingId": "8ca5b81b-4803-4c86-bae4-e8ff77cf147e"
 					}
 				},
 				"metadata": {
