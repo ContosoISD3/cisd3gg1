@@ -17,7 +17,7 @@
 				"spark.dynamicAllocation.enabled": "false",
 				"spark.dynamicAllocation.minExecutors": "4",
 				"spark.dynamicAllocation.maxExecutors": "4",
-				"spark.autotune.trackingId": "d5b665d2-bd92-4568-ab38-cb6b3af8c781"
+				"spark.autotune.trackingId": "1613f121-60f4-47a5-9d7c-60698439f4fd"
 			}
 		},
 		"metadata": {
@@ -86,7 +86,7 @@
 				"source": [
 					"%run /OEA_py"
 				],
-				"execution_count": 1
+				"execution_count": 3
 			},
 			{
 				"cell_type": "code",
@@ -105,7 +105,7 @@
 				"source": [
 					"%run /ContosoSIS_py"
 				],
-				"execution_count": 2
+				"execution_count": 4
 			},
 			{
 				"cell_type": "code",
@@ -126,7 +126,7 @@
 					"oea = OEA()\n",
 					"contoso_sis = ContosoSIS(oea)"
 				],
-				"execution_count": 4
+				"execution_count": 5
 			},
 			{
 				"cell_type": "code",
@@ -142,22 +142,40 @@
 					}
 				},
 				"source": [
-					"def ingest_incremental_data():\r\n",
+					"def ingest_incremental_data(source_path, schema, destination_path):\r\n",
 					"    \"\"\" Processes incremental batch data from stage1 into stage2 \"\"\"\r\n",
+					"    logger.info(\"Processing incremental data from: \" + source_path + \" and writing out to: \" + destination_path)\r\n",
 					"\r\n",
-					"    logger.info(\"Processing ms_insights activity data from: \" + self.stage1np_activity)\r\n",
+					"    spark_schema = oea.to_spark_schema(schema)\r\n",
+					"    df = spark.readStream.csv(source_path, header='true', schema=spark_schema)\r\n",
+					"    df = df.dropDuplicates(['id'])\r\n",
+					"    #df = df.withColumn('year', F.year(F.col('StartTime'))).withColumn('month', F.month(F.col('StartTime')))\r\n",
+					"    df_pseudo, df_lookup = oea.pseudonymize(df, schema)\r\n",
 					"\r\n",
-					"    spark_schema = self.oea.to_spark_schema(self.schemas['TechActivity'])\r\n",
-					"    df = spark.readStream.csv(self.stage1np_activity + '/*/*.csv', header='false', schema=spark_schema)\r\n",
-					"    df = df.dropDuplicates(['SignalId'])\r\n",
-					"    df = df.withColumn('year', F.year(F.col('StartTime'))).withColumn('month', F.month(F.col('StartTime')))\r\n",
-					"\r\n",
-					"    df_pseudo, df_lookup = self.oea.pseudonymize(df, self.schemas['TechActivity'])\r\n",
-					"\r\n",
-					"    query = df_pseudo.writeStream.format(\"delta\").outputMode(\"append\").trigger(once=True).option(\"checkpointLocation\", self.stage1np_activity + '/_checkpoints').partitionBy('year', 'month')\r\n",
-					"    query = query.start(self.stage2p + '/TechActivity')\r\n",
+					"    query = df_pseudo.writeStream.format(\"delta\").outputMode(\"append\").trigger(once=True).option(\"checkpointLocation\", source_path + '/_checkpoints').partitionBy('school_year')\r\n",
+					"    query = query.start(destination_path.stage2p + '/TechActivity')\r\n",
 					"    query.awaitTermination()   # block until query is terminated, with stop() or with error; A StreamingQueryException will be thrown if an exception occurs.\r\n",
-					"    logger.info(query.lastProgress)"
+					"    logger.info(query.lastProgress)\r\n",
+					"\r\n",
+					"ingest_incremental_data(contoso_sis.stage1np, contoso_sis.schemas['studentattendance'], contoso_sis.stage2np, contoso_sis.stage2p)"
+				],
+				"execution_count": null
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					"ingest_incremental_data(contoso_sis.stage1np)"
 				],
 				"execution_count": null
 			},

@@ -13,7 +13,7 @@
 				"spark.dynamicAllocation.enabled": "false",
 				"spark.dynamicAllocation.minExecutors": "2",
 				"spark.dynamicAllocation.maxExecutors": "2",
-				"spark.autotune.trackingId": "889aab1e-21c0-446f-90dc-168e22feb3eb"
+				"spark.autotune.trackingId": "bb1bde62-6386-4c2e-8083-0530f91f0e7f"
 			}
 		},
 		"metadata": {
@@ -233,9 +233,9 @@
 					"        return (m.group(1), m.group(2))\n",
 					"\n",
 					"    def parse_source_path(self, path):\n",
-					"        \"\"\" Parses a path that looks like this: abfss://stage2@stoeacisd3ggimpl3.dfs.core.windows.net/ms_insights\n",
+					"        \"\"\" Parses a path that looks like this: abfss://stage2p@stoeacisd3ggimpl3.dfs.core.windows.net/ms_insights\n",
 					"            and returns a dictionary like this: {'stage_num': '2', 'ss': 'ms_insights'}\n",
-					"            Note that it will also return a 'stage_num' of 2 if the path is stage2p - this is by design because the spark db with the s2 prefix will be used for data in stage2 and stage2p.\n",
+					"            Note that it will also return a 'stage_num' of 2 if the path is stage2p or stage2np - this is by design because the spark db with the s2 prefix will be used for data in stage2 and stage2p.\n",
 					"        \"\"\"\n",
 					"        m = re.match(r\".*:\\/\\/stage(?P<stage_num>\\d+)[n]?[p]?@[^/]+\\/(?P<ss>[^/]+)\", path)\n",
 					"        return m.groupdict()\n",
