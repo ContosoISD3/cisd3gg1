@@ -35,10 +35,7 @@
 					"referenceName": "LS_SQL_Serverless_OEA",
 					"type": "LinkedServiceReference",
 					"parameters": {
-						"databaseName": {
-							"value": "@pipeline().parameters.databaseName",
-							"type": "Expression"
-						}
+						"databaseName": "master"
 					}
 				}
 			},
