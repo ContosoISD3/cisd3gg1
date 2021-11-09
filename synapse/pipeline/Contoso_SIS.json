@@ -15,7 +15,7 @@
 					"waitOnCompletion": true,
 					"parameters": {
 						"endpoints": {
-							"value": "@json('[{\"URL\": \"https://raw.githubusercontent.com/microsoft/OpenEduAnalytics/main/modules/Contoso_SIS/test_data/studentattendance.csv\",\"sinkDirectory\": \"contoso_sis\",\"sinkFilename\": \"studentattendance/studentattendance.csv\"}, {\"URL\": \"https://raw.githubusercontent.com/microsoft/OpenEduAnalytics/main/modules/Contoso_SIS/test_data/studentdemographics.csv\",\"sinkDirectory\": \"contoso_sis\",\"sinkFilename\": \"studentdemographics/studentdemographics.csv\"}, {\"URL\": \"https://raw.githubusercontent.com/microsoft/OpenEduAnalytics/main/modules/Contoso_SIS/test_data/studentsectionmark.csv\",\"sinkDirectory\": \"contoso_sis\",\"sinkFilename\": \"studentsectionmark/studentsectionmark.csv\"}]')",
+							"value": "@json('[{\"URL\": \"https://raw.githubusercontent.com/microsoft/OpenEduAnalytics/main/modules/Contoso_SIS/test_data/batch1/studentattendance.csv\",\"sinkDirectory\": \"contoso_sis\",\"sinkFilename\": \"studentattendance/part1.csv\"}, {\"URL\": \"https://raw.githubusercontent.com/microsoft/OpenEduAnalytics/main/modules/Contoso_SIS/test_data/batch1/studentdemographics.csv\",\"sinkDirectory\": \"contoso_sis\",\"sinkFilename\": \"studentdemographics/part1.csv\"}, {\"URL\": \"https://raw.githubusercontent.com/microsoft/OpenEduAnalytics/main/modules/Contoso_SIS/test_data/batch1/studentsectionmark.csv\",\"sinkDirectory\": \"contoso_sis\",\"sinkFilename\": \"studentsectionmark/part1.csv\"}]')",
 							"type": "Expression"
 						},
 						"sinkFilesystem": "stage1np",
