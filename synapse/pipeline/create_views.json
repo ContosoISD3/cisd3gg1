@@ -3,7 +3,7 @@
 	"properties": {
 		"activities": [
 			{
-				"name": "create sql db",
+				"name": "create sql db unless it already exists",
 				"type": "SqlServerStoredProcedure",
 				"dependsOn": [],
 				"policy": {
@@ -40,11 +40,11 @@
 				}
 			},
 			{
-				"name": "ForEach1",
+				"name": "for each table",
 				"type": "ForEach",
 				"dependsOn": [
 					{
-						"activity": "create sql db",
+						"activity": "create sql db unless it already exists",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -58,7 +58,7 @@
 					},
 					"activities": [
 						{
-							"name": "Stored procedure1",
+							"name": "create view",
 							"type": "SqlServerStoredProcedure",
 							"dependsOn": [],
 							"policy": {
