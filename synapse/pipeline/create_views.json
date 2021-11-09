@@ -68,7 +68,12 @@
 								"secureOutput": false,
 								"secureInput": false
 							},
-							"userProperties": [],
+							"userProperties": [
+								{
+									"name": "sql",
+									"value": "CREATE OR ALTER VIEW studentattendance AS SELECT * FROM OPENROWSET(     BULK 'https://@{pipeline().parameters.storageAccount}.dfs.core.windows.net/@{pipeline().parameters.filesystem}/@{pipeline().parameters.sourceDirectory}/@{item()}',     FORMAT='DELTA' ) AS [r]"
+								}
+							],
 							"typeProperties": {
 								"storedProcedureName": "[dbo].[sp_executesql]",
 								"storedProcedureParameters": {
