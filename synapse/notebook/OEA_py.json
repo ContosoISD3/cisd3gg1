@@ -13,7 +13,7 @@
 				"spark.dynamicAllocation.enabled": "false",
 				"spark.dynamicAllocation.minExecutors": "2",
 				"spark.dynamicAllocation.maxExecutors": "2",
-				"spark.autotune.trackingId": "e40d3413-3baa-49ec-8df3-9a7b30eb4c69"
+				"spark.autotune.trackingId": "f6fe8143-c9e0-41ae-a8f4-d047a171f2d4"
 			}
 		},
 		"metadata": {
@@ -343,6 +343,7 @@
 					"class BaseOEAModule:\n",
 					"    \"\"\" Provides data processing methods for Contoso SIS data (the student information system for the fictional Contoso school district).  \"\"\"\n",
 					"    def __init__(self, oea, source_folder, pseudonymize = True):\n",
+					"        self.source_folder = source_folder\n",
 					"        self.pseudonymize = pseudonymize\n",
 					"        self.oea = oea\n",
 					"        self.stage1np = f\"{oea.stage1np}/{source_folder}\"\n",
