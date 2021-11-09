@@ -744,7 +744,7 @@
 												"type": "Expression"
 											},
 											"sinkFilename": {
-												"value": "@{item().sinkDirectory}/@{variables('currentDateTime')}/@{item().sinkFilename}",
+												"value": "@{item().sinkDirectory}/@{item().sinkFilename}/@{variables('currentDateTime')}",
 												"type": "Expression"
 											}
 										}
@@ -2564,7 +2564,7 @@
 						"spark.dynamicAllocation.enabled": "false",
 						"spark.dynamicAllocation.minExecutors": "4",
 						"spark.dynamicAllocation.maxExecutors": "4",
-						"spark.autotune.trackingId": "df349a49-393a-46e2-8a74-a706e3139214"
+						"spark.autotune.trackingId": "49bf203d-bc49-4a44-be2b-eb137b2664ac"
 					}
 				},
 				"metadata": {
@@ -2634,7 +2634,7 @@
 							"%run /OEA_py"
 						],
 						"outputs": [],
-						"execution_count": 1
+						"execution_count": 3
 					},
 					{
 						"cell_type": "code",
@@ -2654,7 +2654,7 @@
 							"%run /ContosoSIS_py"
 						],
 						"outputs": [],
-						"execution_count": 2
+						"execution_count": 4
 					},
 					{
 						"cell_type": "code",
@@ -2676,7 +2676,7 @@
 							"contoso_sis = ContosoSIS(oea)"
 						],
 						"outputs": [],
-						"execution_count": 4
+						"execution_count": 5
 					},
 					{
 						"cell_type": "code",
@@ -2692,20 +2692,43 @@
 							}
 						},
 						"source": [
-							"        \"\"\" Processes activity data from stage1 into stage2 using structured streaming. \"\"\"\r\n",
-							"        logger.info(\"Processing ms_insights activity data from: \" + self.stage1np_activity)\r\n",
+							"def ingest_incremental_data(source_system, tablename, schema):\r\n",
+							"    \"\"\" Processes incremental batch data from stage1 into stage2 \"\"\"\r\n",
+							"    source_path = f'{oea.stage1np}/{source_system}'\r\n",
+							"    destination_path = f'{oea.stage2np}/{source_system}'\r\n",
+							"    logger.info(\"Processing incremental data from: stage1np/\" + source_folder + \" and writing out to: stage2(p&np)/\" + source_folder)\r\n",
 							"\r\n",
-							"        spark_schema = self.oea.to_spark_schema(self.schemas['TechActivity'])\r\n",
-							"        df = spark.readStream.csv(self.stage1np_activity + '/*/*.csv', header='false', schema=spark_schema)\r\n",
-							"        df = df.dropDuplicates(['SignalId'])\r\n",
-							"        df = df.withColumn('year', F.year(F.col('StartTime'))).withColumn('month', F.month(F.col('StartTime')))\r\n",
+							"    spark_schema = oea.to_spark_schema(schema)\r\n",
+							"    df = spark.readStream.csv(source_path, header='true', schema=spark_schema)\r\n",
+							"    df = df.dropDuplicates(['id'])\r\n",
+							"    #df = df.withColumn('year', F.year(F.col('StartTime'))).withColumn('month', F.month(F.col('StartTime')))\r\n",
+							"    df_pseudo, df_lookup = oea.pseudonymize(df, schema)\r\n",
 							"\r\n",
-							"        df_pseudo, df_lookup = self.oea.pseudonymize(df, self.schemas['TechActivity'])\r\n",
+							"    query = df_pseudo.writeStream.format(\"delta\").outputMode(\"append\").trigger(once=True).option(\"checkpointLocation\", source_path + '/_checkpoints').partitionBy('school_year')\r\n",
+							"    query = query.start(destination_path.stage2p + '/TechActivity')\r\n",
+							"    query.awaitTermination()   # block until query is terminated, with stop() or with error; A StreamingQueryException will be thrown if an exception occurs.\r\n",
+							"    logger.info(query.lastProgress)\r\n",
 							"\r\n",
-							"        query = df_pseudo.writeStream.format(\"delta\").outputMode(\"append\").trigger(once=True).option(\"checkpointLocation\", self.stage1np_activity + '/_checkpoints').partitionBy('year', 'month')\r\n",
-							"        query = query.start(self.stage2p + '/TechActivity')\r\n",
-							"        query.awaitTermination()   # block until query is terminated, with stop() or with error; A StreamingQueryException will be thrown if an exception occurs.\r\n",
-							"        logger.info(query.lastProgress)"
+							"ingest_incremental_data(contoso_sis.stage1np, contoso_sis.schemas['studentattendance'], contoso_sis.stage2np, contoso_sis.stage2p)"
+						],
+						"outputs": [],
+						"execution_count": null
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"jupyter": {
+								"source_hidden": false,
+								"outputs_hidden": false
+							},
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							}
+						},
+						"source": [
+							"ingest_incremental_data(contoso_sis.stage1np)"
 						],
 						"outputs": [],
 						"execution_count": null
@@ -2915,7 +2938,7 @@
 						"spark.dynamicAllocation.enabled": "false",
 						"spark.dynamicAllocation.minExecutors": "2",
 						"spark.dynamicAllocation.maxExecutors": "2",
-						"spark.autotune.trackingId": "0e1a58e2-5f22-497f-8efc-04ae845d573e"
+						"spark.autotune.trackingId": "8c3971ea-4f5b-4c91-863d-3fa64f1813bc"
 					}
 				},
 				"metadata": {
@@ -6831,7 +6854,7 @@
 						"spark.dynamicAllocation.enabled": "false",
 						"spark.dynamicAllocation.minExecutors": "2",
 						"spark.dynamicAllocation.maxExecutors": "2",
-						"spark.autotune.trackingId": "db932b24-fcfb-461d-80f4-fa97c8a39b85"
+						"spark.autotune.trackingId": "3c40de6b-25ee-4c95-8aa1-2a271431ef3b"
 					}
 				},
 				"metadata": {
@@ -8205,7 +8228,7 @@
 						"spark.dynamicAllocation.enabled": "false",
 						"spark.dynamicAllocation.minExecutors": "2",
 						"spark.dynamicAllocation.maxExecutors": "2",
-						"spark.autotune.trackingId": "889aab1e-21c0-446f-90dc-168e22feb3eb"
+						"spark.autotune.trackingId": "7f65cb47-77d3-43b2-96d8-ae3bad6f9e28"
 					}
 				},
 				"metadata": {
@@ -8217,7 +8240,8 @@
 					},
 					"language_info": {
 						"name": "python"
-					}
+					},
+					"sessionKeepAliveTimeout": 30
 				},
 				"cells": [
 					{
@@ -8424,9 +8448,9 @@
 							"        return (m.group(1), m.group(2))\n",
 							"\n",
 							"    def parse_source_path(self, path):\n",
-							"        \"\"\" Parses a path that looks like this: abfss://stage2@stoeacisd3ggimpl3.dfs.core.windows.net/ms_insights\n",
+							"        \"\"\" Parses a path that looks like this: abfss://stage2p@stoeacisd3ggimpl3.dfs.core.windows.net/ms_insights\n",
 							"            and returns a dictionary like this: {'stage_num': '2', 'ss': 'ms_insights'}\n",
-							"            Note that it will also return a 'stage_num' of 2 if the path is stage2p - this is by design because the spark db with the s2 prefix will be used for data in stage2 and stage2p.\n",
+							"            Note that it will also return a 'stage_num' of 2 if the path is stage2p or stage2np - this is by design because the spark db with the s2 prefix will be used for data in stage2 and stage2p.\n",
 							"        \"\"\"\n",
 							"        m = re.match(r\".*:\\/\\/stage(?P<stage_num>\\d+)[n]?[p]?@[^/]+\\/(?P<ss>[^/]+)\", path)\n",
 							"        return m.groupdict()\n",
