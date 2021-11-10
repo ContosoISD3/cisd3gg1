@@ -3432,7 +3432,7 @@
 						"spark.dynamicAllocation.enabled": "false",
 						"spark.dynamicAllocation.minExecutors": "4",
 						"spark.dynamicAllocation.maxExecutors": "4",
-						"spark.autotune.trackingId": "877bd805-aaf4-475d-86c8-d7457ed3e548"
+						"spark.autotune.trackingId": "83f66a8d-9eae-42d3-ac43-4a2117a25d52"
 					}
 				},
 				"metadata": {
@@ -3497,7 +3497,7 @@
 							"%run /OEA_py"
 						],
 						"outputs": [],
-						"execution_count": 52
+						"execution_count": 2
 					},
 					{
 						"cell_type": "code",
@@ -3517,29 +3517,30 @@
 							"%run /ContosoSIS_py"
 						],
 						"outputs": [],
-						"execution_count": 53
+						"execution_count": 3
 					},
 					{
 						"cell_type": "code",
 						"metadata": {
 							"jupyter": {
-								"outputs_hidden": false,
-								"source_hidden": false
+								"source_hidden": false,
+								"outputs_hidden": false
 							},
 							"nteract": {
 								"transient": {
 									"deleting": false
 								}
 							},
-							"collapsed": true
+							"tags": [
+								"parameters"
+							]
 						},
 						"source": [
-							"# Initialize the OEA framework, the ContosoSIS module, and ingest the data from stage1 into stage2\n",
-							"#oea = OEA()\n",
-							"#contoso_sis = ContosoSIS(oea)"
+							"module_name = 'ContosoSIS'\r\n",
+							"method_to_call = 'sayhi'"
 						],
 						"outputs": [],
-						"execution_count": 54
+						"execution_count": 4
 					},
 					{
 						"cell_type": "code",
@@ -3555,70 +3556,10 @@
 							}
 						},
 						"source": [
-							"oea.call_module_method('ContosoSIS', 'sayhi')"
+							"oea.call_module_method(module_name, method_to_call)"
 						],
 						"outputs": [],
-						"execution_count": 59
-					},
-					{
-						"cell_type": "code",
-						"metadata": {
-							"jupyter": {
-								"source_hidden": false,
-								"outputs_hidden": false
-							},
-							"nteract": {
-								"transient": {
-									"deleting": false
-								}
-							}
-						},
-						"source": [
-							"contoso_sis.ingest()"
-						],
-						"outputs": [],
-						"execution_count": null
-					},
-					{
-						"cell_type": "code",
-						"metadata": {
-							"jupyter": {
-								"source_hidden": false,
-								"outputs_hidden": false
-							},
-							"nteract": {
-								"transient": {
-									"deleting": false
-								}
-							}
-						},
-						"source": [
-							"def mytest():\r\n",
-							"    print('hi')\r\n",
-							"\r\n",
-							""
-						],
-						"outputs": [],
-						"execution_count": null
-					},
-					{
-						"cell_type": "code",
-						"metadata": {
-							"jupyter": {
-								"source_hidden": false,
-								"outputs_hidden": false
-							},
-							"nteract": {
-								"transient": {
-									"deleting": false
-								}
-							}
-						},
-						"source": [
-							"getattr(None, 'sayhi')()"
-						],
-						"outputs": [],
-						"execution_count": 58
+						"execution_count": 5
 					}
 				]
 			},
@@ -3641,7 +3582,7 @@
 						"spark.dynamicAllocation.enabled": "false",
 						"spark.dynamicAllocation.minExecutors": "2",
 						"spark.dynamicAllocation.maxExecutors": "2",
-						"spark.autotune.trackingId": "cd1c757f-9b2b-4ffc-bbd9-8997998eed9a"
+						"spark.autotune.trackingId": "0b85a745-46f4-4d1c-b8da-724b9cc774cc"
 					}
 				},
 				"metadata": {
@@ -3662,7 +3603,7 @@
 						"metadata": {},
 						"source": [
 							"class ContosoSIS(BaseOEAModule):\r\n",
-							"    def __init__(self, oea, source_folder='contoso_sis', pseudonymize = True):\r\n",
+							"    def __init__(self, source_folder='contoso_sis', pseudonymize = True):\r\n",
 							"        BaseOEAModule.__init__(self, oea, source_folder, pseudonymize)\r\n",
 							"        self.schemas['studentattendance'] = [['id', 'string', 'no-op'],\r\n",
 							"                                            ['student_id', 'string', 'hash'],\r\n",
@@ -3696,10 +3637,6 @@
 							"                                            ['ELLStatus', 'string', 'no-op'],\r\n",
 							"                                            ['SpecialEducation', 'string', 'no-op'],\r\n",
 							"                                            ['LowIncome', 'boolean', 'no-op']]                                            \r\n",
-							"\r\n",
-							"    def sayhi(self):\r\n",
-							"        print('hi there')\r\n",
-							"        return 10\r\n",
 							"\r\n",
 							"    def ingest(self):\r\n",
 							"        oea.ingest_incremental_csv_data(self.source_folder, 'studentattendance', self.schemas['studentattendance'], 'school_year', 'id')\r\n",
@@ -8939,7 +8876,7 @@
 						"spark.dynamicAllocation.enabled": "false",
 						"spark.dynamicAllocation.minExecutors": "2",
 						"spark.dynamicAllocation.maxExecutors": "2",
-						"spark.autotune.trackingId": "f7ca00ef-3af5-4779-9acb-59b6c4102204"
+						"spark.autotune.trackingId": "8ed09c73-d1f1-4a97-8e31-5bafaab4dcef"
 					}
 				},
 				"metadata": {
@@ -9287,10 +9224,9 @@
 							"\n",
 							"class BaseOEAModule:\n",
 							"    \"\"\" Provides data processing methods for Contoso SIS data (the student information system for the fictional Contoso school district).  \"\"\"\n",
-							"    def __init__(self, oea, source_folder, pseudonymize = True):\n",
+							"    def __init__(self, source_folder, pseudonymize = True):\n",
 							"        self.source_folder = source_folder\n",
 							"        self.pseudonymize = pseudonymize\n",
-							"        self.oea = oea\n",
 							"        self.stage1np = f\"{oea.stage1np}/{source_folder}\"\n",
 							"        self.stage2np = f\"{oea.stage2np}/{source_folder}\"\n",
 							"        self.stage2p = f\"{oea.stage2p}/{source_folder}\"\n",
@@ -9298,31 +9234,31 @@
 							"        self.stage3p = f\"{oea.stage3p}/{source_folder}\"\n",
 							"        self.module_path = f\"{oea.framework_path}/modules/{source_folder}\"\n",
 							"        self.schemas = {}\n",
-							"        self.oea.register_module(self)\n",
+							"        oea.register_module(self)\n",
 							"   \n",
 							"    def _process_entity_from_stage1(self, path, entity_name, format='csv', write_mode='overwrite', header='true'):\n",
-							"        spark_schema = self.oea.to_spark_schema(self.schemas[entity_name])\n",
+							"        spark_schema = oea.to_spark_schema(self.schemas[entity_name])\n",
 							"        df = spark.read.format(format).load(f\"{self.stage1np}/{path}/{entity_name}\", header=header, schema=spark_schema)\n",
 							"\n",
 							"        if self.pseudonymize:\n",
-							"            df_pseudo, df_lookup = self.oea.pseudonymize(df, self.schemas[entity_name])\n",
+							"            df_pseudo, df_lookup = oea.pseudonymize(df, self.schemas[entity_name])\n",
 							"            df_pseudo.write.format('delta').mode(write_mode).save(f\"{self.stage2p}/{entity_name}\")\n",
 							"            if len(df_lookup.columns) > 0:\n",
 							"                df_lookup.write.format('delta').mode(write_mode).save(f\"{self.stage2np}/{entity_name}_lookup\")\n",
 							"        else:\n",
-							"            df = self.oea.fix_column_names(df)   \n",
+							"            df = oea.fix_column_names(df)   \n",
 							"            df.write.format('delta').mode(write_mode).save(f\"{self.stage2np}/{entity_name}\")\n",
 							"\n",
 							"    def delete_stage1(self):\n",
-							"        self.oea.rm_if_exists(self.stage1np)\n",
+							"        oea.rm_if_exists(self.stage1np)\n",
 							"\n",
 							"    def delete_stage2(self):\n",
-							"        self.oea.rm_if_exists(self.stage2np)\n",
-							"        self.oea.rm_if_exists(self.stage2p)\n",
+							"        oea.rm_if_exists(self.stage2np)\n",
+							"        oea.rm_if_exists(self.stage2p)\n",
 							"\n",
 							"    def delete_stage3(self):\n",
-							"        self.oea.rm_if_exists(self.stage3np)\n",
-							"        self.oea.rm_if_exists(self.stage3p)                \n",
+							"        oea.rm_if_exists(self.stage3np)\n",
+							"        oea.rm_if_exists(self.stage3p)                \n",
 							"\n",
 							"    def delete_all_stages(self):\n",
 							"        self.delete_stage1()\n",
@@ -9330,12 +9266,12 @@
 							"        self.delete_stage3()\n",
 							"\n",
 							"    def create_stage2_lake_db(self, format='DELTA'):\n",
-							"        self.oea.create_lake_db(self.stage2p, format)\n",
-							"        self.oea.create_lake_db(self.stage2np, format)\n",
+							"        oea.create_lake_db(self.stage2p, format)\n",
+							"        oea.create_lake_db(self.stage2np, format)\n",
 							"\n",
 							"    def create_stage3_lake_db(self, format='DELTA'):\n",
-							"        self.oea.create_lake_db(self.stage3p, format)\n",
-							"        self.oea.create_lake_db(self.stage3np, format)\n",
+							"        oea.create_lake_db(self.stage3p, format)\n",
+							"        oea.create_lake_db(self.stage3np, format)\n",
 							"\n",
 							"    def copy_test_data_to_stage1(self):\n",
 							"        mssparkutils.fs.cp(self.module_path + '/test_data', self.stage1np, True)   \n",
