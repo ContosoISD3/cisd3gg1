@@ -17,7 +17,7 @@
 				"spark.dynamicAllocation.enabled": "false",
 				"spark.dynamicAllocation.minExecutors": "4",
 				"spark.dynamicAllocation.maxExecutors": "4",
-				"spark.autotune.trackingId": "cd5c7380-4c7d-4963-926c-b4249b2571fb"
+				"spark.autotune.trackingId": "ca677188-64cd-4caa-ae5a-7f3daa2c71b5"
 			}
 		},
 		"metadata": {
@@ -142,6 +142,7 @@
 					}
 				},
 				"source": [
+					"# 2) Ingest data from stage1np into stage2p and stage2np\r\n",
 					"contoso_sis.ingest()"
 				],
 				"execution_count": 5
@@ -161,7 +162,7 @@
 					"collapsed": true
 				},
 				"source": [
-					"# 4) Create spark db's that point to the data in the data lake to allow for connecting via Power BI through use of the Serverless SQL endpoint.\n",
+					"# 3) Create spark db's that point to the data in the delta lake.\n",
 					"contoso_sis.create_stage2_db()"
 				],
 				"execution_count": 69

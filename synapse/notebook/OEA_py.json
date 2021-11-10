@@ -13,7 +13,7 @@
 				"spark.dynamicAllocation.enabled": "false",
 				"spark.dynamicAllocation.minExecutors": "2",
 				"spark.dynamicAllocation.maxExecutors": "2",
-				"spark.autotune.trackingId": "66ca4c37-9842-4b9e-a281-87e253b75b82"
+				"spark.autotune.trackingId": "7035919b-dd43-4679-b39d-d6f0504a8109"
 			}
 		},
 		"metadata": {
@@ -274,7 +274,7 @@
 					"        m = re.match(r\".*:\\/\\/stage(?P<stage_num>\\d+)[n]?[p]?@[^/]+\\/(?P<ss>[^/]+)\", path)\n",
 					"        return m.groupdict()\n",
 					"    \n",
-					"    def create_db(self, source_path, source_format='DELTA'):\n",
+					"    def create_lake_db(self, source_path, source_format='DELTA'):\n",
 					"        \"\"\" Creates a spark db based on the given path (assumes that every folder in the given path is a table).\n",
 					"            Note that a spark db that points to source data in the delta format can't be queried via SQL serverless pool. More info here: https://docs.microsoft.com/en-us/azure/synapse-analytics/sql/resources-self-help-sql-on-demand#delta-lake\n",
 					"        \"\"\"\n",
@@ -385,13 +385,13 @@
 					"        self.delete_stage2()\n",
 					"        self.delete_stage3()\n",
 					"\n",
-					"    def create_stage2_db(self, format='DELTA'):\n",
-					"        self.oea.create_db(self.stage2p, format)\n",
-					"        self.oea.create_db(self.stage2np, format)\n",
+					"    def create_stage2_lake_db(self, format='DELTA'):\n",
+					"        self.oea.create_lake_db(self.stage2p, format)\n",
+					"        self.oea.create_lake_db(self.stage2np, format)\n",
 					"\n",
-					"    def create_stage3_db(self, format='DELTA'):\n",
-					"        self.oea.create_db(self.stage3p, format)\n",
-					"        self.oea.create_db(self.stage3np, format)\n",
+					"    def create_stage3_lake_db(self, format='DELTA'):\n",
+					"        self.oea.create_lake_db(self.stage3p, format)\n",
+					"        self.oea.create_lake_db(self.stage3np, format)\n",
 					"\n",
 					"    def copy_test_data_to_stage1(self):\n",
 					"        mssparkutils.fs.cp(self.module_path + '/test_data', self.stage1np, True)   \n",
