@@ -17,7 +17,7 @@
 				"spark.dynamicAllocation.enabled": "false",
 				"spark.dynamicAllocation.minExecutors": "4",
 				"spark.dynamicAllocation.maxExecutors": "4",
-				"spark.autotune.trackingId": "d210dba9-0739-45e7-b9fa-596336ab0509"
+				"spark.autotune.trackingId": "aefd5eae-71d2-4dbc-a754-93d181304752"
 			}
 		},
 		"metadata": {
@@ -86,7 +86,7 @@
 				"source": [
 					"%run /OEA_py"
 				],
-				"execution_count": 61
+				"execution_count": 65
 			},
 			{
 				"cell_type": "code",
@@ -105,7 +105,7 @@
 				"source": [
 					"%run /ContosoSIS_py"
 				],
-				"execution_count": 62
+				"execution_count": 66
 			},
 			{
 				"cell_type": "code",
@@ -126,7 +126,7 @@
 					"oea = OEA()\n",
 					"contoso_sis = ContosoSIS(oea)"
 				],
-				"execution_count": 63
+				"execution_count": 67
 			},
 			{
 				"cell_type": "code",
@@ -144,7 +144,7 @@
 				"source": [
 					"contoso_sis.ingest()"
 				],
-				"execution_count": 64
+				"execution_count": 68
 			},
 			{
 				"cell_type": "code",
@@ -164,7 +164,7 @@
 					"# 4) Create spark db's that point to the data in the data lake to allow for connecting via Power BI through use of the Serverless SQL endpoint.\n",
 					"contoso_sis.create_stage2_db()"
 				],
-				"execution_count": null
+				"execution_count": 69
 			},
 			{
 				"cell_type": "markdown",
