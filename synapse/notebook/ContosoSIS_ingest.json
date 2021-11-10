@@ -17,7 +17,7 @@
 				"spark.dynamicAllocation.enabled": "false",
 				"spark.dynamicAllocation.minExecutors": "4",
 				"spark.dynamicAllocation.maxExecutors": "4",
-				"spark.autotune.trackingId": "a4100421-7c76-44d4-937a-a137f5cc9d12"
+				"spark.autotune.trackingId": "22a52754-5a69-4ecb-a67a-c5e49e9aeca1"
 			}
 		},
 		"metadata": {
@@ -81,7 +81,7 @@
 				"source": [
 					"%run /OEA_py"
 				],
-				"execution_count": 8
+				"execution_count": 10
 			},
 			{
 				"cell_type": "code",
@@ -100,7 +100,7 @@
 				"source": [
 					"%run /ContosoSIS_py"
 				],
-				"execution_count": null
+				"execution_count": 11
 			},
 			{
 				"cell_type": "code",
@@ -121,7 +121,7 @@
 					"oea = OEA()\n",
 					"contoso_sis = ContosoSIS(oea)"
 				],
-				"execution_count": null
+				"execution_count": 12
 			},
 			{
 				"cell_type": "code",
@@ -137,7 +137,7 @@
 					}
 				},
 				"source": [
-					"method"
+					"oea.call_module_method(contoso_sis, 'sayhi')"
 				],
 				"execution_count": null
 			},
