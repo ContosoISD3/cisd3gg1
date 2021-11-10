@@ -13,7 +13,7 @@
 				"spark.dynamicAllocation.enabled": "false",
 				"spark.dynamicAllocation.minExecutors": "2",
 				"spark.dynamicAllocation.maxExecutors": "2",
-				"spark.autotune.trackingId": "3e2c2273-7b7e-4a31-b12e-f63a81c6480a"
+				"spark.autotune.trackingId": "392eaa13-424a-478b-b146-effb83db2380"
 			}
 		},
 		"metadata": {
@@ -419,7 +419,9 @@
 					"        self.root_destination = root_destination\n",
 					"\n",
 					"    def write(self, path_and_filename, data_str, format='csv'):\n",
-					"        mssparkutils.fs.append(f\"{self.root_destination}/{path_and_filename}\", data_str, True) # Set the last parameter as True to create the file if it does not exist"
+					"        mssparkutils.fs.append(f\"{self.root_destination}/{path_and_filename}\", data_str, True) # Set the last parameter as True to create the file if it does not exist\n",
+					"\n",
+					"oea = OEA()"
 				],
 				"execution_count": null
 			}
