@@ -2783,7 +2783,7 @@
 						"spark.dynamicAllocation.enabled": "false",
 						"spark.dynamicAllocation.minExecutors": "4",
 						"spark.dynamicAllocation.maxExecutors": "4",
-						"spark.autotune.trackingId": "aefd5eae-71d2-4dbc-a754-93d181304752"
+						"spark.autotune.trackingId": "25f22053-32f7-432e-8fb6-39ccd6d4dfbf"
 					}
 				},
 				"metadata": {
@@ -2808,8 +2808,10 @@
 						"sparkVersion": "3.1",
 						"nodeCount": 10,
 						"cores": 4,
-						"memory": 28
-					}
+						"memory": 28,
+						"automaticScaleJobs": false
+					},
+					"sessionKeepAliveTimeout": 30
 				},
 				"cells": [
 					{
@@ -2851,7 +2853,7 @@
 							"%run /OEA_py"
 						],
 						"outputs": [],
-						"execution_count": 65
+						"execution_count": 1
 					},
 					{
 						"cell_type": "code",
@@ -3002,7 +3004,7 @@
 						"spark.dynamicAllocation.enabled": "false",
 						"spark.dynamicAllocation.minExecutors": "2",
 						"spark.dynamicAllocation.maxExecutors": "2",
-						"spark.autotune.trackingId": "e7e8aa6f-2d03-45cb-9649-d361fb5b31ab"
+						"spark.autotune.trackingId": "cda3d6f5-9647-4264-9183-3de711889b80"
 					}
 				},
 				"metadata": {
@@ -3014,11 +3016,13 @@
 					},
 					"language_info": {
 						"name": "python"
-					}
+					},
+					"sessionKeepAliveTimeout": 30
 				},
 				"cells": [
 					{
 						"cell_type": "code",
+						"metadata": {},
 						"source": [
 							"class ContosoSIS(BaseOEAModule):\r\n",
 							"    def __init__(self, oea, source_folder='contoso_sis', pseudonymize = True):\r\n",
@@ -8291,7 +8295,7 @@
 						"spark.dynamicAllocation.enabled": "false",
 						"spark.dynamicAllocation.minExecutors": "2",
 						"spark.dynamicAllocation.maxExecutors": "2",
-						"spark.autotune.trackingId": "2d73c84e-64ae-4828-8de9-7b8560e40638"
+						"spark.autotune.trackingId": "0a4343b8-f10c-4350-a955-b40738fc86d3"
 					}
 				},
 				"metadata": {
@@ -8303,7 +8307,8 @@
 					},
 					"language_info": {
 						"name": "python"
-					}
+					},
+					"sessionKeepAliveTimeout": 30
 				},
 				"cells": [
 					{
@@ -8421,8 +8426,8 @@
 							"    def ingest_incremental_csv_data(self, source_system, tablename, schema, partition_by, primary_key='id', has_header=True):\n",
 							"        \"\"\" Processes incremental batch data from stage1 into stage2 \"\"\"\n",
 							"        source_path = f'{self.stage1np}/{source_system}/{tablename}'\n",
-							"        p_destination_path = f'{self.stage2p}/{source_system}/{tablename}'\n",
-							"        np_destination_path = f'{self.stage2np}/{source_system}/{tablename}'\n",
+							"        p_destination_path = f'{self.stage2p}/{source_system}/{tablename}_pseudo'\n",
+							"        np_destination_path = f'{self.stage2np}/{source_system}/{tablename}_lookup'\n",
 							"        logger.info(f'Processing incremental data from: {source_path} and writing out to: {p_destination_path}')\n",
 							"\n",
 							"        spark_schema = self.to_spark_schema(schema)\n",
