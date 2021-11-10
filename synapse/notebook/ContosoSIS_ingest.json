@@ -1,5 +1,5 @@
 {
-	"name": "ContosoSIS_example",
+	"name": "ContosoSIS_ingest",
 	"properties": {
 		"nbformat": 4,
 		"nbformat_minor": 2,
@@ -17,7 +17,7 @@
 				"spark.dynamicAllocation.enabled": "false",
 				"spark.dynamicAllocation.minExecutors": "4",
 				"spark.dynamicAllocation.maxExecutors": "4",
-				"spark.autotune.trackingId": "caf29fb5-3ec1-4882-a19c-7bd8f05d6a3a"
+				"spark.autotune.trackingId": "429126c7-9012-48ff-b874-14710ece83a0"
 			}
 		},
 		"metadata": {
