@@ -1,5 +1,5 @@
 {
-	"name": "reset_ingestion",
+	"name": "reset_ingestion_of_table",
 	"properties": {
 		"description": "Deletes the ingestion for the specified system and table - in order to start over when testing during implementation.",
 		"activities": [
