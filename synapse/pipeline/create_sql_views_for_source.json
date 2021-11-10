@@ -246,56 +246,6 @@
 				}
 			},
 			{
-				"name": "ForEach1_copy2",
-				"type": "ForEach",
-				"dependsOn": [],
-				"userProperties": [],
-				"typeProperties": {
-					"items": {
-						"value": "@activity('Get folder list 1').output.childItems",
-						"type": "Expression"
-					},
-					"isSequential": false,
-					"activities": [
-						{
-							"name": "create_view_copy2",
-							"type": "ExecutePipeline",
-							"dependsOn": [],
-							"userProperties": [],
-							"typeProperties": {
-								"pipeline": {
-									"referenceName": "create_view",
-									"type": "PipelineReference"
-								},
-								"waitOnCompletion": true,
-								"parameters": {
-									"storageAccount": {
-										"value": "@pipeline().parameters.storageAccount",
-										"type": "Expression"
-									},
-									"filesystem": {
-										"value": "@pipeline().parameters.filesystem1",
-										"type": "Expression"
-									},
-									"sourceDirectory": {
-										"value": "@pipeline().parameters.sourceDirectory",
-										"type": "Expression"
-									},
-									"table": {
-										"value": "@item().name",
-										"type": "Expression"
-									},
-									"databaseName": {
-										"value": "@pipeline().parameters.databaseName",
-										"type": "Expression"
-									}
-								}
-							}
-						}
-					]
-				}
-			},
-			{
 				"name": "create sql db unless it already exists",
 				"type": "SqlServerStoredProcedure",
 				"dependsOn": [],
