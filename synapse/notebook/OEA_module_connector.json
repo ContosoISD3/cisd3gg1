@@ -17,7 +17,7 @@
 				"spark.dynamicAllocation.enabled": "false",
 				"spark.dynamicAllocation.minExecutors": "4",
 				"spark.dynamicAllocation.maxExecutors": "4",
-				"spark.autotune.trackingId": "30cf4fa2-4ea0-40b8-97d2-162c1c7deed6"
+				"spark.autotune.trackingId": "bfaa64d4-6c53-44f1-b530-1475535a0732"
 			}
 		},
 		"metadata": {
@@ -118,7 +118,7 @@
 				},
 				"source": [
 					"module_name = 'MyModule'\r\n",
-					"method_to_call = 'method_name'"
+					"method_name = 'ingest'"
 				],
 				"execution_count": 4
 			},
@@ -136,7 +136,7 @@
 					}
 				},
 				"source": [
-					"oea.call_module_method(module_name, method_to_call)"
+					"oea.call_module_method(module_name, method_name)"
 				],
 				"execution_count": 5
 			}

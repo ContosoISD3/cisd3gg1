@@ -47,6 +47,16 @@
 						"referenceName": "OEA_module_connector",
 						"type": "NotebookReference"
 					},
+					"parameters": {
+						"module_name": {
+							"value": "ContosoSIS",
+							"type": "string"
+						},
+						"method_name": {
+							"value": "ingest",
+							"type": "string"
+						}
+					},
 					"snapshot": true
 				}
 			},
