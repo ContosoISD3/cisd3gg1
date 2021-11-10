@@ -3448,7 +3448,7 @@
 						"spark.dynamicAllocation.enabled": "false",
 						"spark.dynamicAllocation.minExecutors": "4",
 						"spark.dynamicAllocation.maxExecutors": "4",
-						"spark.autotune.trackingId": "fe583433-e0e6-40a1-9836-23497031b2a0"
+						"spark.autotune.trackingId": "94043ec9-0832-41ed-b38d-a49a82d86572"
 					}
 				},
 				"metadata": {
@@ -3547,7 +3547,7 @@
 							"collapsed": true
 						},
 						"source": [
-							"#%run /ContosoSIS_py"
+							"%run /ContosoSIS_py"
 						],
 						"outputs": [],
 						"execution_count": 3
@@ -3615,7 +3615,7 @@
 						"spark.dynamicAllocation.enabled": "false",
 						"spark.dynamicAllocation.minExecutors": "2",
 						"spark.dynamicAllocation.maxExecutors": "2",
-						"spark.autotune.trackingId": "92855845-2000-43a8-a772-e836387a86f2"
+						"spark.autotune.trackingId": "616c32c8-39a9-491b-96dc-efe2d7cf8b34"
 					}
 				},
 				"metadata": {
@@ -8912,7 +8912,7 @@
 						"spark.dynamicAllocation.enabled": "false",
 						"spark.dynamicAllocation.minExecutors": "2",
 						"spark.dynamicAllocation.maxExecutors": "2",
-						"spark.autotune.trackingId": "d618de94-9096-4f3d-a2d2-0177c89df881"
+						"spark.autotune.trackingId": "3fcd7c9a-8e54-465c-b1b7-fe99df294a66"
 					}
 				},
 				"metadata": {
