@@ -3376,7 +3376,7 @@
 						"spark.dynamicAllocation.enabled": "false",
 						"spark.dynamicAllocation.minExecutors": "4",
 						"spark.dynamicAllocation.maxExecutors": "4",
-						"spark.autotune.trackingId": "cd5c7380-4c7d-4963-926c-b4249b2571fb"
+						"spark.autotune.trackingId": "1aca2e46-cb44-4e98-a918-7d9812e5ec36"
 					}
 				},
 				"metadata": {
@@ -3401,8 +3401,10 @@
 						"sparkVersion": "3.1",
 						"nodeCount": 10,
 						"cores": 4,
-						"memory": 28
-					}
+						"memory": 28,
+						"automaticScaleJobs": false
+					},
+					"sessionKeepAliveTimeout": 30
 				},
 				"cells": [
 					{
@@ -3502,6 +3504,7 @@
 							}
 						},
 						"source": [
+							"# 2) Ingest data from stage1np into stage2p and stage2np\r\n",
 							"contoso_sis.ingest()"
 						],
 						"outputs": [],
@@ -3522,7 +3525,7 @@
 							"collapsed": true
 						},
 						"source": [
-							"# 4) Create spark db's that point to the data in the data lake to allow for connecting via Power BI through use of the Serverless SQL endpoint.\n",
+							"# 3) Create spark db's that point to the data in the delta lake.\n",
 							"contoso_sis.create_stage2_db()"
 						],
 						"outputs": [],
@@ -3595,7 +3598,7 @@
 						"spark.dynamicAllocation.enabled": "false",
 						"spark.dynamicAllocation.minExecutors": "2",
 						"spark.dynamicAllocation.maxExecutors": "2",
-						"spark.autotune.trackingId": "e7e8aa6f-2d03-45cb-9649-d361fb5b31ab"
+						"spark.autotune.trackingId": "7d562311-9a1b-4463-bb6a-81e67bd1c596"
 					}
 				},
 				"metadata": {
@@ -3607,11 +3610,13 @@
 					},
 					"language_info": {
 						"name": "python"
-					}
+					},
+					"sessionKeepAliveTimeout": 30
 				},
 				"cells": [
 					{
 						"cell_type": "code",
+						"metadata": {},
 						"source": [
 							"class ContosoSIS(BaseOEAModule):\r\n",
 							"    def __init__(self, oea, source_folder='contoso_sis', pseudonymize = True):\r\n",
@@ -8884,7 +8889,7 @@
 						"spark.dynamicAllocation.enabled": "false",
 						"spark.dynamicAllocation.minExecutors": "2",
 						"spark.dynamicAllocation.maxExecutors": "2",
-						"spark.autotune.trackingId": "66ca4c37-9842-4b9e-a281-87e253b75b82"
+						"spark.autotune.trackingId": "85c5b9c7-6ef8-4d67-b351-5474d05fa76e"
 					}
 				},
 				"metadata": {
@@ -8896,7 +8901,8 @@
 					},
 					"language_info": {
 						"name": "python"
-					}
+					},
+					"sessionKeepAliveTimeout": 30
 				},
 				"cells": [
 					{
@@ -9144,7 +9150,7 @@
 							"        m = re.match(r\".*:\\/\\/stage(?P<stage_num>\\d+)[n]?[p]?@[^/]+\\/(?P<ss>[^/]+)\", path)\n",
 							"        return m.groupdict()\n",
 							"    \n",
-							"    def create_db(self, source_path, source_format='DELTA'):\n",
+							"    def create_lake_db(self, source_path, source_format='DELTA'):\n",
 							"        \"\"\" Creates a spark db based on the given path (assumes that every folder in the given path is a table).\n",
 							"            Note that a spark db that points to source data in the delta format can't be queried via SQL serverless pool. More info here: https://docs.microsoft.com/en-us/azure/synapse-analytics/sql/resources-self-help-sql-on-demand#delta-lake\n",
 							"        \"\"\"\n",
@@ -9255,13 +9261,13 @@
 							"        self.delete_stage2()\n",
 							"        self.delete_stage3()\n",
 							"\n",
-							"    def create_stage2_db(self, format='DELTA'):\n",
-							"        self.oea.create_db(self.stage2p, format)\n",
-							"        self.oea.create_db(self.stage2np, format)\n",
+							"    def create_stage2_lake_db(self, format='DELTA'):\n",
+							"        self.oea.create_lake_db(self.stage2p, format)\n",
+							"        self.oea.create_lake_db(self.stage2np, format)\n",
 							"\n",
-							"    def create_stage3_db(self, format='DELTA'):\n",
-							"        self.oea.create_db(self.stage3p, format)\n",
-							"        self.oea.create_db(self.stage3np, format)\n",
+							"    def create_stage3_lake_db(self, format='DELTA'):\n",
+							"        self.oea.create_lake_db(self.stage3p, format)\n",
+							"        self.oea.create_lake_db(self.stage3np, format)\n",
 							"\n",
 							"    def copy_test_data_to_stage1(self):\n",
 							"        mssparkutils.fs.cp(self.module_path + '/test_data', self.stage1np, True)   \n",
