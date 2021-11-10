@@ -17,7 +17,7 @@
 				"spark.dynamicAllocation.enabled": "false",
 				"spark.dynamicAllocation.minExecutors": "4",
 				"spark.dynamicAllocation.maxExecutors": "4",
-				"spark.autotune.trackingId": "db7cc05e-9776-4712-95bb-4a3ca4eaaeec"
+				"spark.autotune.trackingId": "961ec4c9-f9e6-431d-b9d4-e62b4dadae6a"
 			}
 		},
 		"metadata": {
@@ -81,7 +81,7 @@
 				"source": [
 					"%run /OEA_py"
 				],
-				"execution_count": 52
+				"execution_count": 2
 			},
 			{
 				"cell_type": "code",
@@ -100,28 +100,29 @@
 				"source": [
 					"%run /ContosoSIS_py"
 				],
-				"execution_count": 53
+				"execution_count": 3
 			},
 			{
 				"cell_type": "code",
 				"metadata": {
 					"jupyter": {
-						"outputs_hidden": false,
-						"source_hidden": false
+						"source_hidden": false,
+						"outputs_hidden": false
 					},
 					"nteract": {
 						"transient": {
 							"deleting": false
 						}
 					},
-					"collapsed": true
+					"tags": [
+						"parameters"
+					]
 				},
 				"source": [
-					"# Initialize the OEA framework, the ContosoSIS module, and ingest the data from stage1 into stage2\n",
-					"#oea = OEA()\n",
-					"#contoso_sis = ContosoSIS(oea)"
+					"module_name = 'ContosoSIS'\r\n",
+					"method_to_call = 'sayhi'"
 				],
-				"execution_count": 54
+				"execution_count": 4
 			},
 			{
 				"cell_type": "code",
@@ -137,66 +138,9 @@
 					}
 				},
 				"source": [
-					"oea.call_module_method('ContosoSIS', 'sayhi')"
+					"oea.call_module_method(module_name, method_to_call)"
 				],
-				"execution_count": 59
-			},
-			{
-				"cell_type": "code",
-				"metadata": {
-					"jupyter": {
-						"source_hidden": false,
-						"outputs_hidden": false
-					},
-					"nteract": {
-						"transient": {
-							"deleting": false
-						}
-					}
-				},
-				"source": [
-					"contoso_sis.ingest()"
-				],
-				"execution_count": null
-			},
-			{
-				"cell_type": "code",
-				"metadata": {
-					"jupyter": {
-						"source_hidden": false,
-						"outputs_hidden": false
-					},
-					"nteract": {
-						"transient": {
-							"deleting": false
-						}
-					}
-				},
-				"source": [
-					"def mytest():\r\n",
-					"    print('hi')\r\n",
-					"\r\n",
-					""
-				],
-				"execution_count": null
-			},
-			{
-				"cell_type": "code",
-				"metadata": {
-					"jupyter": {
-						"source_hidden": false,
-						"outputs_hidden": false
-					},
-					"nteract": {
-						"transient": {
-							"deleting": false
-						}
-					}
-				},
-				"source": [
-					"getattr(None, 'sayhi')()"
-				],
-				"execution_count": 58
+				"execution_count": 5
 			}
 		]
 	}
