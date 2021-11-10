@@ -17,7 +17,7 @@
 				"spark.dynamicAllocation.enabled": "false",
 				"spark.dynamicAllocation.minExecutors": "4",
 				"spark.dynamicAllocation.maxExecutors": "4",
-				"spark.autotune.trackingId": "5b85bbe0-f050-4904-83fb-c4a6486d9d70"
+				"spark.autotune.trackingId": "a4100421-7c76-44d4-937a-a137f5cc9d12"
 			}
 		},
 		"metadata": {
@@ -81,7 +81,7 @@
 				"source": [
 					"%run /OEA_py"
 				],
-				"execution_count": null
+				"execution_count": 8
 			},
 			{
 				"cell_type": "code",
@@ -119,8 +119,64 @@
 				"source": [
 					"# Initialize the OEA framework, the ContosoSIS module, and ingest the data from stage1 into stage2\n",
 					"oea = OEA()\n",
-					"contoso_sis = ContosoSIS(oea)\n",
+					"contoso_sis = ContosoSIS(oea)"
+				],
+				"execution_count": null
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					"method"
+				],
+				"execution_count": null
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
 					"contoso_sis.ingest()"
+				],
+				"execution_count": null
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					"def mytest():\r\n",
+					"    print('hi')\r\n",
+					"\r\n",
+					""
 				],
 				"execution_count": null
 			}

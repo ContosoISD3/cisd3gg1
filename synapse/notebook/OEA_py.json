@@ -13,7 +13,7 @@
 				"spark.dynamicAllocation.enabled": "false",
 				"spark.dynamicAllocation.minExecutors": "2",
 				"spark.dynamicAllocation.maxExecutors": "2",
-				"spark.autotune.trackingId": "3c658b42-6b13-4c2e-bc13-b45aebbc9e25"
+				"spark.autotune.trackingId": "2b11ff73-1cd3-4145-9854-30083fbc187d"
 			}
 		},
 		"metadata": {
@@ -69,6 +69,7 @@
 					"        self.stage3np = 'abfss://stage3np@' + self.storage_account + '.dfs.core.windows.net'\n",
 					"        self.stage3p = 'abfss://stage3p@' + self.storage_account + '.dfs.core.windows.net'\n",
 					"        self.framework_path = 'abfss://oea-framework@' + self.storage_account + '.dfs.core.windows.net'\n",
+					"        self.registered_modules = []\n",
 					"\n",
 					"        logger.debug(\"OEA initialized.\")\n",
 					"\n",
@@ -84,6 +85,12 @@
 					"        formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')\n",
 					"        handler.setFormatter(formatter)\n",
 					"        logger.addHandler(handler) \n",
+					"\n",
+					"    def register_module(module):\n",
+					"        modules[type(module).__name__] = module\n",
+					"\n",
+					"    def call_module_method(module_name, method_name):\n",
+					"        getattr(modules[module_name], method_name)()\n",
 					"\n",
 					"    def load(self, folder, table, stage=None, data_format='delta'):\n",
 					"        \"\"\" Loads a dataframe based on the path specified in the given args \"\"\"\n",
@@ -361,6 +368,7 @@
 					"        self.stage3p = f\"{oea.stage3p}/{source_folder}\"\n",
 					"        self.module_path = f\"{oea.framework_path}/modules/{source_folder}\"\n",
 					"        self.schemas = {}\n",
+					"        oea.register_module(self)\n",
 					"   \n",
 					"    def _process_entity_from_stage1(self, path, entity_name, format='csv', write_mode='overwrite', header='true'):\n",
 					"        spark_schema = self.oea.to_spark_schema(self.schemas[entity_name])\n",
