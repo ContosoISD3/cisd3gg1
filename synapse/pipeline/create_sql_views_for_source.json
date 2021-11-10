@@ -290,7 +290,7 @@
 			},
 			"filesystem1": {
 				"type": "string",
-				"defaultValue": "stage2np"
+				"defaultValue": "stage2p"
 			},
 			"filesystem2": {
 				"type": "string",
@@ -302,7 +302,7 @@
 			},
 			"databaseName": {
 				"type": "string",
-				"defaultValue": "sqls2c_contoso_sis"
+				"defaultValue": "sqls2e_contoso_sis"
 			}
 		},
 		"annotations": []
