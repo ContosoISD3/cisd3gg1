@@ -69,26 +69,6 @@
 					},
 					"waitOnCompletion": true
 				}
-			},
-			{
-				"name": "create_stage2_lake_db",
-				"type": "ExecutePipeline",
-				"dependsOn": [
-					{
-						"activity": "Contoso_SIS_ingest",
-						"dependencyConditions": [
-							"Succeeded"
-						]
-					}
-				],
-				"userProperties": [],
-				"typeProperties": {
-					"pipeline": {
-						"referenceName": "create_stage2_lake_db",
-						"type": "PipelineReference"
-					},
-					"waitOnCompletion": true
-				}
 			}
 		],
 		"annotations": []

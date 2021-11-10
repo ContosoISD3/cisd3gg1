@@ -3,7 +3,7 @@
 	"properties": {
 		"activities": [
 			{
-				"name": "Set variable1",
+				"name": "set sqlDBName",
 				"type": "SetVariable",
 				"dependsOn": [],
 				"userProperties": [],
@@ -20,7 +20,7 @@
 				"type": "SqlServerStoredProcedure",
 				"dependsOn": [
 					{
-						"activity": "Set variable1",
+						"activity": "set sqlDBName",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -55,7 +55,7 @@
 				}
 			},
 			{
-				"name": "Get Metadata1",
+				"name": "get folders in stage2p",
 				"type": "GetMetadata",
 				"dependsOn": [
 					{
@@ -103,7 +103,7 @@
 				"type": "ForEach",
 				"dependsOn": [
 					{
-						"activity": "Get Metadata1",
+						"activity": "get folders in stage2p",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -112,12 +112,12 @@
 				"userProperties": [],
 				"typeProperties": {
 					"items": {
-						"value": "@activity('Get Metadata1').output.childItems",
+						"value": "@activity('get folders in stage2p').output.childItems",
 						"type": "Expression"
 					},
 					"activities": [
 						{
-							"name": "Stored procedure2",
+							"name": "create or alter view for pseduonymized tables",
 							"type": "SqlServerStoredProcedure",
 							"dependsOn": [],
 							"policy": {
@@ -155,7 +155,7 @@
 				}
 			},
 			{
-				"name": "Get Metadata1_copy1",
+				"name": "get folders in stage2np",
 				"type": "GetMetadata",
 				"dependsOn": [
 					{
@@ -203,7 +203,7 @@
 				"type": "ForEach",
 				"dependsOn": [
 					{
-						"activity": "Get Metadata1_copy1",
+						"activity": "get folders in stage2np",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -212,12 +212,12 @@
 				"userProperties": [],
 				"typeProperties": {
 					"items": {
-						"value": "@activity('Get Metadata1_copy1').output.childItems",
+						"value": "@activity('get folders in stage2np').output.childItems",
 						"type": "Expression"
 					},
 					"activities": [
 						{
-							"name": "Stored procedure2_copy1",
+							"name": "create or alter view for lookup tables",
 							"type": "SqlServerStoredProcedure",
 							"dependsOn": [],
 							"policy": {
