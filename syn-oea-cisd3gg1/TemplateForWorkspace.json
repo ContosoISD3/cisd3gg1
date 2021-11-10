@@ -183,13 +183,13 @@
 			]
 		},
 		{
-			"name": "[concat(parameters('workspaceName'), '/Contoso_SIS')]",
+			"name": "[concat(parameters('workspaceName'), '/Contoso_SIS_main')]",
 			"type": "Microsoft.Synapse/workspaces/pipelines",
 			"apiVersion": "2019-06-01-preview",
 			"properties": {
 				"activities": [
 					{
-						"name": "Copy_from_each_URL - SIS test data",
+						"name": "Copy_from_each_URL - SIS data",
 						"type": "ExecutePipeline",
 						"dependsOn": [],
 						"userProperties": [],
@@ -208,20 +208,73 @@
 								"timezone": "Eastern Standard Time"
 							}
 						}
+					},
+					{
+						"name": "Contoso_SIS_ingest",
+						"type": "SynapseNotebook",
+						"dependsOn": [
+							{
+								"activity": "Copy_from_each_URL - SIS data",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"notebook": {
+								"referenceName": "ContosoSIS_ingest",
+								"type": "NotebookReference"
+							},
+							"snapshot": true
+						}
+					},
+					{
+						"name": "create_stage2_sql_db",
+						"type": "ExecutePipeline",
+						"dependsOn": [
+							{
+								"activity": "Contoso_SIS_ingest",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"userProperties": [],
+						"typeProperties": {
+							"pipeline": {
+								"referenceName": "create_stage2_sql_db",
+								"type": "PipelineReference"
+							},
+							"waitOnCompletion": true,
+							"parameters": {}
+						}
 					}
 				],
 				"policy": {
 					"elapsedTimeMetric": {},
 					"cancelAfter": {}
 				},
+				"folder": {
+					"name": "OEA_Modules"
+				},
 				"annotations": []
 			},
 			"dependsOn": [
-				"[concat(variables('workspaceId'), '/pipelines/Copy_from_each_URL')]"
+				"[concat(variables('workspaceId'), '/pipelines/Copy_from_each_URL')]",
+				"[concat(variables('workspaceId'), '/notebooks/ContosoSIS_ingest')]",
+				"[concat(variables('workspaceId'), '/pipelines/create_stage2_sql_db')]"
 			]
 		},
 		{
-			"name": "[concat(parameters('workspaceName'), '/Copy_Contoso_test_data')]",
+			"name": "[concat(parameters('workspaceName'), '/Contoso_ISD_package')]",
 			"type": "Microsoft.Synapse/workspaces/pipelines",
 			"apiVersion": "2019-06-01-preview",
 			"properties": {
@@ -1239,13 +1292,13 @@
 			]
 		},
 		{
-			"name": "[concat(parameters('workspaceName'), '/Pipeline 1')]",
+			"name": "[concat(parameters('workspaceName'), '/create_stage2_sql_db')]",
 			"type": "Microsoft.Synapse/workspaces/pipelines",
 			"apiVersion": "2019-06-01-preview",
 			"properties": {
 				"activities": [
 					{
-						"name": "Set variable1",
+						"name": "set sqlDBName",
 						"type": "SetVariable",
 						"dependsOn": [],
 						"userProperties": [],
@@ -1262,7 +1315,7 @@
 						"type": "SqlServerStoredProcedure",
 						"dependsOn": [
 							{
-								"activity": "Set variable1",
+								"activity": "set sqlDBName",
 								"dependencyConditions": [
 									"Succeeded"
 								]
@@ -1297,7 +1350,7 @@
 						}
 					},
 					{
-						"name": "Get Metadata1",
+						"name": "get folders in stage2p",
 						"type": "GetMetadata",
 						"dependsOn": [
 							{
@@ -1345,7 +1398,7 @@
 						"type": "ForEach",
 						"dependsOn": [
 							{
-								"activity": "Get Metadata1",
+								"activity": "get folders in stage2p",
 								"dependencyConditions": [
 									"Succeeded"
 								]
@@ -1354,12 +1407,12 @@
 						"userProperties": [],
 						"typeProperties": {
 							"items": {
-								"value": "@activity('Get Metadata1').output.childItems",
+								"value": "@activity('get folders in stage2p').output.childItems",
 								"type": "Expression"
 							},
 							"activities": [
 								{
-									"name": "Stored procedure2",
+									"name": "create or alter view for pseduonymized tables",
 									"type": "SqlServerStoredProcedure",
 									"dependsOn": [],
 									"policy": {
@@ -1397,7 +1450,7 @@
 						}
 					},
 					{
-						"name": "Get Metadata1_copy1",
+						"name": "get folders in stage2np",
 						"type": "GetMetadata",
 						"dependsOn": [
 							{
@@ -1445,7 +1498,7 @@
 						"type": "ForEach",
 						"dependsOn": [
 							{
-								"activity": "Get Metadata1_copy1",
+								"activity": "get folders in stage2np",
 								"dependencyConditions": [
 									"Succeeded"
 								]
@@ -1454,12 +1507,12 @@
 						"userProperties": [],
 						"typeProperties": {
 							"items": {
-								"value": "@activity('Get Metadata1_copy1').output.childItems",
+								"value": "@activity('get folders in stage2np').output.childItems",
 								"type": "Expression"
 							},
 							"activities": [
 								{
-									"name": "Stored procedure2_copy1",
+									"name": "create or alter view for lookup tables",
 									"type": "SqlServerStoredProcedure",
 									"dependsOn": [],
 									"policy": {
@@ -1516,6 +1569,9 @@
 						"type": "String",
 						"defaultValue": "sqls2_mydb"
 					}
+				},
+				"folder": {
+					"name": "OEA_Framework/Ingest"
 				},
 				"annotations": []
 			},
@@ -3356,7 +3412,7 @@
 			"dependsOn": []
 		},
 		{
-			"name": "[concat(parameters('workspaceName'), '/ContosoSIS_example')]",
+			"name": "[concat(parameters('workspaceName'), '/ContosoSIS_ingest')]",
 			"type": "Microsoft.Synapse/workspaces/notebooks",
 			"apiVersion": "2019-06-01-preview",
 			"properties": {
@@ -3376,7 +3432,7 @@
 						"spark.dynamicAllocation.enabled": "false",
 						"spark.dynamicAllocation.minExecutors": "4",
 						"spark.dynamicAllocation.maxExecutors": "4",
-						"spark.autotune.trackingId": "1aca2e46-cb44-4e98-a918-7d9812e5ec36"
+						"spark.autotune.trackingId": "c8c2db3f-9e24-4ea4-84bd-229f141469e1"
 					}
 				},
 				"metadata": {
@@ -3417,15 +3473,10 @@
 							}
 						},
 						"source": [
-							"# ContosoSIS Example\n",
-							"This example demonstrates how to use the OEA framework and modules to process incoming data, perform data prep, and view the data in an example Power BI dashboard.\n",
+							"# ContosoSIS Module\n",
+							"This is an example module that demonstrates data extraction and ingestion of data for a fictional data source utilizing the standard OEA approach.\n",
 							"\n",
-							"# Running the example\n",
-							"1) Run the Copy_Contoso_SIS_data pipeline in order to land test data in your data lake. Do this by clicking on \"Integrate\" in the left navigation, then click on Copy_Contoso_test_data, then click on \"Add Trigger\" and then \"Trigger Now\".\n",
-							"\n",
-							"2) Click on \"Run all\" at the top of this tab (and wait for the processing to complete - which can take around 5 to 10 minutes).\n",
-							"\n",
-							"3) Open the dashboard in Power BI desktop and point it to your newly setup data lake (you can download the pbix from here: [techInequityDashboardContoso v2.pbix](https://github.com/microsoft/OpenEduAnalytics/blob/main/packages/ContosoISD/power_bi/techInequityDashboardContoso%20v2.pbix) )"
+							"Check the github repo for more info: [Contoso SIS module](https://github.com/microsoft/OpenEduAnalytics/tree/main/modules/Contoso_SIS)"
 						]
 					},
 					{
@@ -3446,7 +3497,7 @@
 							"%run /OEA_py"
 						],
 						"outputs": [],
-						"execution_count": 2
+						"execution_count": 8
 					},
 					{
 						"cell_type": "code",
@@ -3466,7 +3517,7 @@
 							"%run /ContosoSIS_py"
 						],
 						"outputs": [],
-						"execution_count": 3
+						"execution_count": null
 					},
 					{
 						"cell_type": "code",
@@ -3483,12 +3534,12 @@
 							"collapsed": true
 						},
 						"source": [
-							"# 1) Initialize the OEA framework and modules needed.\n",
+							"# Initialize the OEA framework, the ContosoSIS module, and ingest the data from stage1 into stage2\n",
 							"oea = OEA()\n",
 							"contoso_sis = ContosoSIS(oea)"
 						],
 						"outputs": [],
-						"execution_count": 4
+						"execution_count": null
 					},
 					{
 						"cell_type": "code",
@@ -3504,36 +3555,18 @@
 							}
 						},
 						"source": [
-							"# 2) Ingest data from stage1np into stage2p and stage2np\r\n",
-							"contoso_sis.ingest()"
+							"method"
 						],
 						"outputs": [],
-						"execution_count": 5
+						"execution_count": null
 					},
 					{
 						"cell_type": "code",
 						"metadata": {
 							"jupyter": {
-								"outputs_hidden": false,
-								"source_hidden": false
+								"source_hidden": false,
+								"outputs_hidden": false
 							},
-							"nteract": {
-								"transient": {
-									"deleting": false
-								}
-							},
-							"collapsed": true
-						},
-						"source": [
-							"# 3) Create spark db's that point to the data in the delta lake.\n",
-							"contoso_sis.create_stage2_db()"
-						],
-						"outputs": [],
-						"execution_count": 69
-					},
-					{
-						"cell_type": "markdown",
-						"metadata": {
 							"nteract": {
 								"transient": {
 									"deleting": false
@@ -3541,38 +3574,29 @@
 							}
 						},
 						"source": [
-							"# Reset everything\n",
-							"You can uncomment line 11 in the cell below and run the cell to reset everything and walk through the process again from the top (starting from running the pipeline to bring test data into stage1np).\n",
-							"\n",
-							"Note: remember to comment out line 11 again to prevent accidental resetting of the example"
-						]
+							"contoso_sis.ingest()"
+						],
+						"outputs": [],
+						"execution_count": null
 					},
 					{
 						"cell_type": "code",
 						"metadata": {
 							"jupyter": {
-								"outputs_hidden": false,
-								"source_hidden": false
+								"source_hidden": false,
+								"outputs_hidden": false
 							},
 							"nteract": {
 								"transient": {
 									"deleting": false
 								}
-							},
-							"collapsed": true
+							}
 						},
 						"source": [
-							"def reset_all_processing():\n",
-							"    contoso_sis.delete_all_stages()\n",
-							"    m365.delete_all_stages()\n",
-							"    oea.rm_if_exists(oea.stage2np + '/ContosoISD')\n",
-							"\n",
-							"    oea.drop_db('s2_contoso_sis')\n",
-							"    oea.drop_db('s2_contosoisd')\n",
-							"    oea.drop_db('s2_m365')\n",
-							"\n",
-							"# Uncomment the following line and run this cell to reset everything if you want to walk through the process again.\n",
-							"#reset_all_processing()"
+							"def mytest():\r\n",
+							"    print('hi')\r\n",
+							"\r\n",
+							""
 						],
 						"outputs": [],
 						"execution_count": null
@@ -3598,7 +3622,7 @@
 						"spark.dynamicAllocation.enabled": "false",
 						"spark.dynamicAllocation.minExecutors": "2",
 						"spark.dynamicAllocation.maxExecutors": "2",
-						"spark.autotune.trackingId": "7d562311-9a1b-4463-bb6a-81e67bd1c596"
+						"spark.autotune.trackingId": "1b0a9d7d-09e6-43b6-b6e6-f21542f40233"
 					}
 				},
 				"metadata": {
@@ -3654,9 +3678,14 @@
 							"                                            ['SpecialEducation', 'string', 'no-op'],\r\n",
 							"                                            ['LowIncome', 'boolean', 'no-op']]                                            \r\n",
 							"\r\n",
+							"    def sayhi(self):\r\n",
+							"        print('hi there')\r\n",
+							"        \r\n",
 							"    def ingest(self):\r\n",
 							"        oea.ingest_incremental_csv_data(self.source_folder, 'studentattendance', self.schemas['studentattendance'], 'school_year', 'id')\r\n",
 							"        oea.ingest_incremental_csv_data(self.source_folder, 'studentsectionmark', self.schemas['studentsectionmark'], 'school_year', 'id')\r\n",
+							"        #oea.ingest_snapshot_csv_data(self.source_folder, 'studentsectionmark', self.schemas['studentsectionmark'], 'school_year', 'id')\r\n",
+							"        #oea.ingest_delta_csv_data(self.source_folder, 'studentdemographics', self.schemas['studentdemographics'])\r\n",
 							""
 						],
 						"outputs": [],
@@ -8889,7 +8918,7 @@
 						"spark.dynamicAllocation.enabled": "false",
 						"spark.dynamicAllocation.minExecutors": "2",
 						"spark.dynamicAllocation.maxExecutors": "2",
-						"spark.autotune.trackingId": "85c5b9c7-6ef8-4d67-b351-5474d05fa76e"
+						"spark.autotune.trackingId": "a8c4b750-a6e6-4edb-b6c8-cefdbef014ef"
 					}
 				},
 				"metadata": {
@@ -8945,6 +8974,7 @@
 							"        self.stage3np = 'abfss://stage3np@' + self.storage_account + '.dfs.core.windows.net'\n",
 							"        self.stage3p = 'abfss://stage3p@' + self.storage_account + '.dfs.core.windows.net'\n",
 							"        self.framework_path = 'abfss://oea-framework@' + self.storage_account + '.dfs.core.windows.net'\n",
+							"        self.registered_modules = []\n",
 							"\n",
 							"        logger.debug(\"OEA initialized.\")\n",
 							"\n",
@@ -8960,6 +8990,12 @@
 							"        formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')\n",
 							"        handler.setFormatter(formatter)\n",
 							"        logger.addHandler(handler) \n",
+							"\n",
+							"    def register_module(module):\n",
+							"        modules[type(module).__name__] = module\n",
+							"\n",
+							"    def call_module_method(module_name, method_name):\n",
+							"        getattr(modules[module_name], method_name)()\n",
 							"\n",
 							"    def load(self, folder, table, stage=None, data_format='delta'):\n",
 							"        \"\"\" Loads a dataframe based on the path specified in the given args \"\"\"\n",
@@ -9150,7 +9186,7 @@
 							"        m = re.match(r\".*:\\/\\/stage(?P<stage_num>\\d+)[n]?[p]?@[^/]+\\/(?P<ss>[^/]+)\", path)\n",
 							"        return m.groupdict()\n",
 							"    \n",
-							"    def create_lake_db(self, source_path, source_format='DELTA'):\n",
+							"    def create_db(self, source_path, source_format='DELTA'):\n",
 							"        \"\"\" Creates a spark db based on the given path (assumes that every folder in the given path is a table).\n",
 							"            Note that a spark db that points to source data in the delta format can't be queried via SQL serverless pool. More info here: https://docs.microsoft.com/en-us/azure/synapse-analytics/sql/resources-self-help-sql-on-demand#delta-lake\n",
 							"        \"\"\"\n",
@@ -9163,6 +9199,12 @@
 							"        result = \"Database created: \" + db_name\n",
 							"        logger.info(result)\n",
 							"        return result\n",
+							"\n",
+							"    def create_stage2_lake_db(self, source_directory):\n",
+							"        source_path = f'{self.stage2p}/{source_directory}'\n",
+							"        self.create_db(source_path)\n",
+							"        source_path = f'{self.stage2pn}/{source_directory}'\n",
+							"        self.create_db(source_path)\n",
 							"\n",
 							"    def drop_db(self, db_name):\n",
 							"        \"\"\" Drop all tables in a db, then drop the db. \"\"\"\n",
@@ -9231,6 +9273,7 @@
 							"        self.stage3p = f\"{oea.stage3p}/{source_folder}\"\n",
 							"        self.module_path = f\"{oea.framework_path}/modules/{source_folder}\"\n",
 							"        self.schemas = {}\n",
+							"        oea.register_module(self)\n",
 							"   \n",
 							"    def _process_entity_from_stage1(self, path, entity_name, format='csv', write_mode='overwrite', header='true'):\n",
 							"        spark_schema = self.oea.to_spark_schema(self.schemas[entity_name])\n",
@@ -11216,6 +11259,30 @@
 						"execution_count": 2
 					}
 				]
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('workspaceName'), '/create_stage2_lake_db')]",
+			"type": "Microsoft.Synapse/workspaces/pipelines",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"activities": [
+					{
+						"name": "Wait1",
+						"type": "Wait",
+						"dependsOn": [],
+						"userProperties": [],
+						"typeProperties": {
+							"waitTimeInSeconds": 1
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {},
+					"cancelAfter": {}
+				},
+				"annotations": []
 			},
 			"dependsOn": []
 		}
