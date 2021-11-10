@@ -5,7 +5,14 @@
 			{
 				"name": "Copy_from_each_URL - SIS data",
 				"type": "ExecutePipeline",
-				"dependsOn": [],
+				"dependsOn": [
+					{
+						"activity": "create_stage2_sql_db",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
 				"userProperties": [],
 				"typeProperties": {
 					"pipeline": {
@@ -26,14 +33,7 @@
 			{
 				"name": "Contoso_SIS_ingest",
 				"type": "SynapseNotebook",
-				"dependsOn": [
-					{
-						"activity": "Copy_from_each_URL - SIS data",
-						"dependencyConditions": [
-							"Succeeded"
-						]
-					}
-				],
+				"dependsOn": [],
 				"policy": {
 					"timeout": "7.00:00:00",
 					"retry": 0,
@@ -53,7 +53,7 @@
 							"type": "string"
 						},
 						"method_name": {
-							"value": "ingest",
+							"value": "sayhi",
 							"type": "string"
 						}
 					},
