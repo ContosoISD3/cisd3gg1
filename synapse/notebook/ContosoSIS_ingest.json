@@ -17,7 +17,7 @@
 				"spark.dynamicAllocation.enabled": "false",
 				"spark.dynamicAllocation.minExecutors": "4",
 				"spark.dynamicAllocation.maxExecutors": "4",
-				"spark.autotune.trackingId": "7595f6d8-29c1-4dd7-a8e8-2f596f4a045c"
+				"spark.autotune.trackingId": "db7cc05e-9776-4712-95bb-4a3ca4eaaeec"
 			}
 		},
 		"metadata": {
@@ -118,8 +118,8 @@
 				},
 				"source": [
 					"# Initialize the OEA framework, the ContosoSIS module, and ingest the data from stage1 into stage2\n",
-					"oea = OEA()\n",
-					"contoso_sis = ContosoSIS(oea)"
+					"#oea = OEA()\n",
+					"#contoso_sis = ContosoSIS(oea)"
 				],
 				"execution_count": 54
 			},
