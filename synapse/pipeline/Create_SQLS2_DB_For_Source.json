@@ -130,7 +130,7 @@
 					"storedProcedureParameters": {
 						"command": {
 							"value": {
-								"value": "IF NOT EXISTS (SELECT * FROM sys.databases WHERE name = '@{pipeline().parameters.databaseName}') \nBEGIN\n  CREATE DATABASE @{pipeline().parameters.databaseName}; \nEND;",
+								"value": "IF NOT EXISTS (SELECT * FROM sys.databases WHERE name = 'sqls2_@{pipeline().parameters.sourceDirectory}') \nBEGIN\n  CREATE DATABASE sqls2_@{pipeline().parameters.sourceDirectory}; \nEND;",
 								"type": "Expression"
 							},
 							"type": "String"
