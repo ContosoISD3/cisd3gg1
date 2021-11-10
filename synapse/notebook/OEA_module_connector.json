@@ -17,7 +17,7 @@
 				"spark.dynamicAllocation.enabled": "false",
 				"spark.dynamicAllocation.minExecutors": "4",
 				"spark.dynamicAllocation.maxExecutors": "4",
-				"spark.autotune.trackingId": "5dd4e08a-4d52-4efd-974c-e0198dca7266"
+				"spark.autotune.trackingId": "4bd796e0-45c5-48f4-a59f-da7fb8b2e550"
 			}
 		},
 		"metadata": {
@@ -114,7 +114,7 @@
 					"collapsed": true
 				},
 				"source": [
-					"#%run /ContosoSIS_py"
+					"%run /ContosoSIS_py"
 				],
 				"execution_count": 3
 			},
