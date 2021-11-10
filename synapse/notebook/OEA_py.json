@@ -13,7 +13,7 @@
 				"spark.dynamicAllocation.enabled": "false",
 				"spark.dynamicAllocation.minExecutors": "2",
 				"spark.dynamicAllocation.maxExecutors": "2",
-				"spark.autotune.trackingId": "a7a8ebc0-ecc8-4082-818f-7705f48c6511"
+				"spark.autotune.trackingId": "66495d9a-fa0c-4451-a30a-d23d2a8b3735"
 			}
 		},
 		"metadata": {
@@ -69,7 +69,7 @@
 					"        self.stage3np = 'abfss://stage3np@' + self.storage_account + '.dfs.core.windows.net'\n",
 					"        self.stage3p = 'abfss://stage3p@' + self.storage_account + '.dfs.core.windows.net'\n",
 					"        self.framework_path = 'abfss://oea-framework@' + self.storage_account + '.dfs.core.windows.net'\n",
-					"        self.registered_modules = []\n",
+					"        self.registered_modules = {}\n",
 					"\n",
 					"        logger.debug(\"OEA initialized.\")\n",
 					"\n",
