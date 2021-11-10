@@ -122,17 +122,14 @@
 				"userProperties": [
 					{
 						"name": "sql",
-						"value": "\"IF NOT EXISTS (SELECT * FROM sys.databases WHERE name = '@{pipeline().parameters.databaseName}') BEGIN CREATE DATABASE @{pipeline().parameters.databaseName}; END;\""
+						"value": "\"IF NOT EXISTS (SELECT * FROM sys.databases WHERE name = '@{pipeline().parameters.sourceDirectory}') BEGIN CREATE DATABASE @{pipeline().parameters.sourceDirectory}; END;\""
 					}
 				],
 				"typeProperties": {
 					"storedProcedureName": "[dbo].[sp_executesql]",
 					"storedProcedureParameters": {
 						"command": {
-							"value": {
-								"value": "IF NOT EXISTS (SELECT * FROM sys.databases WHERE name = 'sqls2_@{pipeline().parameters.sourceDirectory}') \nBEGIN\n  CREATE DATABASE sqls2_@{pipeline().parameters.sourceDirectory}; \nEND;",
-								"type": "Expression"
-							},
+							"value": "test",
 							"type": "String"
 						}
 					}
@@ -260,6 +257,10 @@
 			"sourceDirectory": {
 				"type": "string",
 				"defaultValue": "contoso_sis"
+			},
+			"databaseName2": {
+				"type": "string",
+				"defaultValue": "test"
 			}
 		},
 		"variables": {
