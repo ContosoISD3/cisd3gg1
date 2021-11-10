@@ -5,7 +5,14 @@
 			{
 				"name": "Get folder list 1",
 				"type": "GetMetadata",
-				"dependsOn": [],
+				"dependsOn": [
+					{
+						"activity": "create sql db unless it already exists",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
 				"policy": {
 					"timeout": "7.00:00:00",
 					"retry": 0,
@@ -95,6 +102,41 @@
 									}
 								}
 							}
+						},
+						{
+							"name": "create_view_copy3",
+							"type": "ExecutePipeline",
+							"dependsOn": [],
+							"userProperties": [],
+							"typeProperties": {
+								"pipeline": {
+									"referenceName": "create_view",
+									"type": "PipelineReference"
+								},
+								"waitOnCompletion": true,
+								"parameters": {
+									"storageAccount": {
+										"value": "@pipeline().parameters.storageAccount",
+										"type": "Expression"
+									},
+									"filesystem": {
+										"value": "@pipeline().parameters.filesystem1",
+										"type": "Expression"
+									},
+									"sourceDirectory": {
+										"value": "@pipeline().parameters.sourceDirectory",
+										"type": "Expression"
+									},
+									"table": {
+										"value": "@item().name",
+										"type": "Expression"
+									},
+									"databaseName": {
+										"value": "@pipeline().parameters.databaseName",
+										"type": "Expression"
+									}
+								}
+							}
 						}
 					]
 				}
@@ -102,7 +144,14 @@
 			{
 				"name": "Get folder list 2",
 				"type": "GetMetadata",
-				"dependsOn": [],
+				"dependsOn": [
+					{
+						"activity": "create sql db unless it already exists",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
 				"policy": {
 					"timeout": "7.00:00:00",
 					"retry": 0,
@@ -195,6 +244,93 @@
 						}
 					]
 				}
+			},
+			{
+				"name": "ForEach1_copy2",
+				"type": "ForEach",
+				"dependsOn": [],
+				"userProperties": [],
+				"typeProperties": {
+					"items": {
+						"value": "@activity('Get folder list 1').output.childItems",
+						"type": "Expression"
+					},
+					"isSequential": false,
+					"activities": [
+						{
+							"name": "create_view_copy2",
+							"type": "ExecutePipeline",
+							"dependsOn": [],
+							"userProperties": [],
+							"typeProperties": {
+								"pipeline": {
+									"referenceName": "create_view",
+									"type": "PipelineReference"
+								},
+								"waitOnCompletion": true,
+								"parameters": {
+									"storageAccount": {
+										"value": "@pipeline().parameters.storageAccount",
+										"type": "Expression"
+									},
+									"filesystem": {
+										"value": "@pipeline().parameters.filesystem1",
+										"type": "Expression"
+									},
+									"sourceDirectory": {
+										"value": "@pipeline().parameters.sourceDirectory",
+										"type": "Expression"
+									},
+									"table": {
+										"value": "@item().name",
+										"type": "Expression"
+									},
+									"databaseName": {
+										"value": "@pipeline().parameters.databaseName",
+										"type": "Expression"
+									}
+								}
+							}
+						}
+					]
+				}
+			},
+			{
+				"name": "create sql db unless it already exists",
+				"type": "SqlServerStoredProcedure",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [
+					{
+						"name": "sql",
+						"value": "\"IF NOT EXISTS (SELECT * FROM sys.databases WHERE name = '@{pipeline().parameters.databaseName}') BEGIN CREATE DATABASE @{pipeline().parameters.databaseName}; END;\""
+					}
+				],
+				"typeProperties": {
+					"storedProcedureName": "[dbo].[sp_executesql]",
+					"storedProcedureParameters": {
+						"command": {
+							"value": {
+								"value": "IF NOT EXISTS (SELECT * FROM sys.databases WHERE name = '@{pipeline().parameters.databaseName}') \nBEGIN\n  CREATE DATABASE @{pipeline().parameters.databaseName}; \nEND;",
+								"type": "Expression"
+							},
+							"type": "String"
+						}
+					}
+				},
+				"linkedServiceName": {
+					"referenceName": "LS_SQL_Serverless_OEA",
+					"type": "LinkedServiceReference",
+					"parameters": {
+						"databaseName": "master"
+					}
+				}
 			}
 		],
 		"parameters": {
@@ -204,7 +340,7 @@
 			},
 			"filesystem1": {
 				"type": "string",
-				"defaultValue": "stage2p"
+				"defaultValue": "stage2np"
 			},
 			"filesystem2": {
 				"type": "string",
@@ -216,7 +352,7 @@
 			},
 			"databaseName": {
 				"type": "string",
-				"defaultValue": "sqls2_contoso_sis"
+				"defaultValue": "sqls2c_contoso_sis"
 			}
 		},
 		"annotations": []
