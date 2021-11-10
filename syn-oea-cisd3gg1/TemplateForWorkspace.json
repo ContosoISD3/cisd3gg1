@@ -3432,7 +3432,7 @@
 						"spark.dynamicAllocation.enabled": "false",
 						"spark.dynamicAllocation.minExecutors": "4",
 						"spark.dynamicAllocation.maxExecutors": "4",
-						"spark.autotune.trackingId": "c661be86-bfd8-4b72-b288-9506e105db3e"
+						"spark.autotune.trackingId": "877bd805-aaf4-475d-86c8-d7457ed3e548"
 					}
 				},
 				"metadata": {
@@ -3497,7 +3497,7 @@
 							"%run /OEA_py"
 						],
 						"outputs": [],
-						"execution_count": 47
+						"execution_count": 52
 					},
 					{
 						"cell_type": "code",
@@ -3517,7 +3517,7 @@
 							"%run /ContosoSIS_py"
 						],
 						"outputs": [],
-						"execution_count": 48
+						"execution_count": 53
 					},
 					{
 						"cell_type": "code",
@@ -3535,11 +3535,11 @@
 						},
 						"source": [
 							"# Initialize the OEA framework, the ContosoSIS module, and ingest the data from stage1 into stage2\n",
-							"oea = OEA()\n",
-							"contoso_sis = ContosoSIS(oea)"
+							"#oea = OEA()\n",
+							"#contoso_sis = ContosoSIS(oea)"
 						],
 						"outputs": [],
-						"execution_count": 49
+						"execution_count": 54
 					},
 					{
 						"cell_type": "code",
@@ -3558,7 +3558,7 @@
 							"oea.call_module_method('ContosoSIS', 'sayhi')"
 						],
 						"outputs": [],
-						"execution_count": 50
+						"execution_count": 59
 					},
 					{
 						"cell_type": "code",
@@ -3615,10 +3615,10 @@
 							}
 						},
 						"source": [
-							"getattr(contoso_sis, 'sayhi')()"
+							"getattr(None, 'sayhi')()"
 						],
 						"outputs": [],
-						"execution_count": 45
+						"execution_count": 58
 					}
 				]
 			},
@@ -3641,7 +3641,7 @@
 						"spark.dynamicAllocation.enabled": "false",
 						"spark.dynamicAllocation.minExecutors": "2",
 						"spark.dynamicAllocation.maxExecutors": "2",
-						"spark.autotune.trackingId": "75c1d99a-1b8c-4447-940a-2492026ea8ff"
+						"spark.autotune.trackingId": "cd1c757f-9b2b-4ffc-bbd9-8997998eed9a"
 					}
 				},
 				"metadata": {
@@ -3706,7 +3706,8 @@
 							"        oea.ingest_incremental_csv_data(self.source_folder, 'studentsectionmark', self.schemas['studentsectionmark'], 'school_year', 'id')\r\n",
 							"        #oea.ingest_snapshot_csv_data(self.source_folder, 'studentsectionmark', self.schemas['studentsectionmark'], 'school_year', 'id')\r\n",
 							"        #oea.ingest_delta_csv_data(self.source_folder, 'studentdemographics', self.schemas['studentdemographics'])\r\n",
-							""
+							"\r\n",
+							"contoso_sis = ContosoSIS(oea)"
 						],
 						"outputs": [],
 						"execution_count": null
@@ -8938,7 +8939,7 @@
 						"spark.dynamicAllocation.enabled": "false",
 						"spark.dynamicAllocation.minExecutors": "2",
 						"spark.dynamicAllocation.maxExecutors": "2",
-						"spark.autotune.trackingId": "e1be8f65-13ba-4a3d-8b80-50823898a6cf"
+						"spark.autotune.trackingId": "f7ca00ef-3af5-4779-9acb-59b6c4102204"
 					}
 				},
 				"metadata": {
@@ -9344,7 +9345,9 @@
 							"        self.root_destination = root_destination\n",
 							"\n",
 							"    def write(self, path_and_filename, data_str, format='csv'):\n",
-							"        mssparkutils.fs.append(f\"{self.root_destination}/{path_and_filename}\", data_str, True) # Set the last parameter as True to create the file if it does not exist"
+							"        mssparkutils.fs.append(f\"{self.root_destination}/{path_and_filename}\", data_str, True) # Set the last parameter as True to create the file if it does not exist\n",
+							"\n",
+							"oea = OEA()"
 						],
 						"outputs": [],
 						"execution_count": null
