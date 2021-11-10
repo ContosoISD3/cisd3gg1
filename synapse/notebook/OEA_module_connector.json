@@ -1,5 +1,5 @@
 {
-	"name": "ContosoSIS_ingest",
+	"name": "OEA_module_connector",
 	"properties": {
 		"nbformat": 4,
 		"nbformat_minor": 2,
@@ -17,7 +17,7 @@
 				"spark.dynamicAllocation.enabled": "false",
 				"spark.dynamicAllocation.minExecutors": "4",
 				"spark.dynamicAllocation.maxExecutors": "4",
-				"spark.autotune.trackingId": "961ec4c9-f9e6-431d-b9d4-e62b4dadae6a"
+				"spark.autotune.trackingId": "30cf4fa2-4ea0-40b8-97d2-162c1c7deed6"
 			}
 		},
 		"metadata": {
@@ -58,10 +58,8 @@
 					}
 				},
 				"source": [
-					"# ContosoSIS Module\n",
-					"This is an example module that demonstrates data extraction and ingestion of data for a fictional data source utilizing the standard OEA approach.\n",
-					"\n",
-					"Check the github repo for more info: [Contoso SIS module](https://github.com/microsoft/OpenEduAnalytics/tree/main/modules/Contoso_SIS)"
+					"# OEA Module connector\n",
+					"This notebook provides a way for invoking methods on modules from a pipeline."
 				]
 			},
 			{
@@ -119,8 +117,8 @@
 					]
 				},
 				"source": [
-					"module_name = 'ContosoSIS'\r\n",
-					"method_to_call = 'sayhi'"
+					"module_name = 'MyModule'\r\n",
+					"method_to_call = 'method_name'"
 				],
 				"execution_count": 4
 			},

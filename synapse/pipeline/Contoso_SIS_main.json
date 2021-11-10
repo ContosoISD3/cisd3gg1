@@ -44,7 +44,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"notebook": {
-						"referenceName": "ContosoSIS_ingest",
+						"referenceName": "OEA_module_connector",
 						"type": "NotebookReference"
 					},
 					"snapshot": true
