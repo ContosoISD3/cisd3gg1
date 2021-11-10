@@ -79,7 +79,7 @@
 							"userProperties": [
 								{
 									"name": "sql",
-									"value": "CREATE OR ALTER VIEW @{item()} AS SELECT * FROM OPENROWSET(     BULK 'https://@{pipeline().parameters.storageAccount}.dfs.core.windows.net/@{pipeline().parameters.filesystem}/@{pipeline().parameters.sourceDirectory}/@{item()}',     FORMAT='DELTA' ) AS [r]"
+									"value": "CREATE OR ALTER VIEW @{item()} AS SELECT * FROM OPENROWSET(     BULK 'https://@{pipeline().parameters.storageAccount}.dfs.core.windows.net/stage2p/@{pipeline().parameters.sourceDirectory}/@{item()}',     FORMAT='DELTA' ) AS [r]"
 								}
 							],
 							"typeProperties": {
@@ -222,7 +222,7 @@
 							"userProperties": [
 								{
 									"name": "sql",
-									"value": "CREATE OR ALTER VIEW @{item()} AS SELECT * FROM OPENROWSET(     BULK 'https://@{pipeline().parameters.storageAccount}.dfs.core.windows.net/@{pipeline().parameters.filesystem}/@{pipeline().parameters.sourceDirectory}/@{item()}',     FORMAT='DELTA' ) AS [r]"
+									"value": "CREATE OR ALTER VIEW @{item()} AS SELECT * FROM OPENROWSET(     BULK 'https://@{pipeline().parameters.storageAccount}.dfs.core.windows.net/stage2np/@{pipeline().parameters.sourceDirectory}/@{item()}',     FORMAT='DELTA' ) AS [r]"
 								}
 							],
 							"typeProperties": {
