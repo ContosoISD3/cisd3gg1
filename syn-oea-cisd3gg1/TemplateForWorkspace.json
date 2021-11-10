@@ -3432,7 +3432,7 @@
 						"spark.dynamicAllocation.enabled": "false",
 						"spark.dynamicAllocation.minExecutors": "4",
 						"spark.dynamicAllocation.maxExecutors": "4",
-						"spark.autotune.trackingId": "e5e45263-8196-4112-9635-d8e5402185db"
+						"spark.autotune.trackingId": "7948ec9c-2064-4558-aac3-c8d331c8dfbe"
 					}
 				},
 				"metadata": {
@@ -3497,7 +3497,7 @@
 							"%run /OEA_py"
 						],
 						"outputs": [],
-						"execution_count": 27
+						"execution_count": 35
 					},
 					{
 						"cell_type": "code",
@@ -3517,7 +3517,7 @@
 							"%run /ContosoSIS_py"
 						],
 						"outputs": [],
-						"execution_count": 28
+						"execution_count": 36
 					},
 					{
 						"cell_type": "code",
@@ -3539,7 +3539,7 @@
 							"contoso_sis = ContosoSIS(oea)"
 						],
 						"outputs": [],
-						"execution_count": 29
+						"execution_count": 37
 					},
 					{
 						"cell_type": "code",
@@ -3558,7 +3558,7 @@
 							"oea.call_module_method(contoso_sis, 'sayhi')"
 						],
 						"outputs": [],
-						"execution_count": 30
+						"execution_count": 38
 					},
 					{
 						"cell_type": "code",
@@ -3622,7 +3622,7 @@
 						"spark.dynamicAllocation.enabled": "false",
 						"spark.dynamicAllocation.minExecutors": "2",
 						"spark.dynamicAllocation.maxExecutors": "2",
-						"spark.autotune.trackingId": "142da781-786d-47a2-a281-a52a83df7714"
+						"spark.autotune.trackingId": "73ac2527-43bc-4b10-82c8-01707272810b"
 					}
 				},
 				"metadata": {
@@ -8919,7 +8919,7 @@
 						"spark.dynamicAllocation.enabled": "false",
 						"spark.dynamicAllocation.minExecutors": "2",
 						"spark.dynamicAllocation.maxExecutors": "2",
-						"spark.autotune.trackingId": "8f34731e-7dd3-4022-8493-797848f4cd45"
+						"spark.autotune.trackingId": "9c502775-21c6-4717-b663-44729c52fa0c"
 					}
 				},
 				"metadata": {
@@ -8997,8 +8997,8 @@
 							"\n",
 							"    def call_module_method(self, module_name, method_name):\n",
 							"        print('in call_module method')\n",
-							"        tmp = getattr(self.registered_modules[module_name], method_name)\n",
-							"        print(tmp)\n",
+							"        #tmp = getattr(self.registered_modules[module_name], method_name)\n",
+							"        #print(tmp)\n",
 							"\n",
 							"    def load(self, folder, table, stage=None, data_format='delta'):\n",
 							"        \"\"\" Loads a dataframe based on the path specified in the given args \"\"\"\n",
