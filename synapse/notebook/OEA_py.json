@@ -13,7 +13,7 @@
 				"spark.dynamicAllocation.enabled": "false",
 				"spark.dynamicAllocation.minExecutors": "2",
 				"spark.dynamicAllocation.maxExecutors": "2",
-				"spark.autotune.trackingId": "66495d9a-fa0c-4451-a30a-d23d2a8b3735"
+				"spark.autotune.trackingId": "d443531f-7477-4428-9ec8-45c423abbd83"
 			}
 		},
 		"metadata": {
@@ -89,7 +89,7 @@
 					"    def register_module(self, module):\n",
 					"        self.registered_modules[type(module).__name__] = module\n",
 					"\n",
-					"    def call_module_method(module_name, method_name):\n",
+					"    def call_module_method(self, module_name, method_name):\n",
 					"        getattr(registered_modules[module_name], method_name)()\n",
 					"\n",
 					"    def load(self, folder, table, stage=None, data_format='delta'):\n",
@@ -368,7 +368,7 @@
 					"        self.stage3p = f\"{oea.stage3p}/{source_folder}\"\n",
 					"        self.module_path = f\"{oea.framework_path}/modules/{source_folder}\"\n",
 					"        self.schemas = {}\n",
-					"        oea.register_module(self)\n",
+					"        self.oea.register_module(self)\n",
 					"   \n",
 					"    def _process_entity_from_stage1(self, path, entity_name, format='csv', write_mode='overwrite', header='true'):\n",
 					"        spark_schema = self.oea.to_spark_schema(self.schemas[entity_name])\n",
