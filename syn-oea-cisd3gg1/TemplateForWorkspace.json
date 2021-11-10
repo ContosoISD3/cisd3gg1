@@ -3448,7 +3448,7 @@
 						"spark.dynamicAllocation.enabled": "false",
 						"spark.dynamicAllocation.minExecutors": "4",
 						"spark.dynamicAllocation.maxExecutors": "4",
-						"spark.autotune.trackingId": "f5c9bf75-7842-4312-bb2a-45e12c10d1e5"
+						"spark.autotune.trackingId": "3d932e09-9389-4935-b6ec-6b1cad1e472f"
 					}
 				},
 				"metadata": {
@@ -3497,6 +3497,25 @@
 						"cell_type": "code",
 						"metadata": {
 							"jupyter": {
+								"source_hidden": false,
+								"outputs_hidden": false
+							},
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							}
+						},
+						"source": [
+							"print('hi there world')"
+						],
+						"outputs": [],
+						"execution_count": null
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"jupyter": {
 								"outputs_hidden": false,
 								"source_hidden": false
 							},
@@ -3508,7 +3527,7 @@
 							"collapsed": true
 						},
 						"source": [
-							"%run /OEA_py"
+							"#%run /OEA_py"
 						],
 						"outputs": [],
 						"execution_count": 2
@@ -3528,7 +3547,7 @@
 							"collapsed": true
 						},
 						"source": [
-							"%run /ContosoSIS_py"
+							"#%run /ContosoSIS_py"
 						],
 						"outputs": [],
 						"execution_count": 3
@@ -3550,8 +3569,8 @@
 							]
 						},
 						"source": [
-							"module_name = 'MyModule'\r\n",
-							"method_name = 'ingest'"
+							"#module_name = 'MyModule'\r\n",
+							"#method_name = 'ingest'"
 						],
 						"outputs": [],
 						"execution_count": 4
@@ -3596,7 +3615,7 @@
 						"spark.dynamicAllocation.enabled": "false",
 						"spark.dynamicAllocation.minExecutors": "2",
 						"spark.dynamicAllocation.maxExecutors": "2",
-						"spark.autotune.trackingId": "b46b5f65-577f-4c22-8c1d-95d3e3ddac62"
+						"spark.autotune.trackingId": "04ea64fd-9830-4856-9889-f7f5d1e19e72"
 					}
 				},
 				"metadata": {
@@ -8893,7 +8912,7 @@
 						"spark.dynamicAllocation.enabled": "false",
 						"spark.dynamicAllocation.minExecutors": "2",
 						"spark.dynamicAllocation.maxExecutors": "2",
-						"spark.autotune.trackingId": "07d6da83-8cb7-4cdf-93fb-c7fd26d25314"
+						"spark.autotune.trackingId": "94ae3faa-8456-4bc2-ab18-71764ffbd704"
 					}
 				},
 				"metadata": {
