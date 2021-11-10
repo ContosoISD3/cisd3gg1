@@ -271,6 +271,9 @@
 				"defaultValue": "sqls2_mydb"
 			}
 		},
+		"folder": {
+			"name": "OEA_Framework/Ingest"
+		},
 		"annotations": []
 	}
 }

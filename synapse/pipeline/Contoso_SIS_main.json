@@ -1,9 +1,9 @@
 {
-	"name": "Contoso_SIS",
+	"name": "Contoso_SIS_main",
 	"properties": {
 		"activities": [
 			{
-				"name": "Copy_from_each_URL - SIS test data",
+				"name": "Copy_from_each_URL - SIS data",
 				"type": "ExecutePipeline",
 				"dependsOn": [],
 				"userProperties": [],
@@ -28,7 +28,7 @@
 				"type": "SynapseNotebook",
 				"dependsOn": [
 					{
-						"activity": "Copy_from_each_URL - SIS test data",
+						"activity": "Copy_from_each_URL - SIS data",
 						"dependencyConditions": [
 							"Succeeded"
 						]
