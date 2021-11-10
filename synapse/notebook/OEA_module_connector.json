@@ -17,7 +17,7 @@
 				"spark.dynamicAllocation.enabled": "false",
 				"spark.dynamicAllocation.minExecutors": "4",
 				"spark.dynamicAllocation.maxExecutors": "4",
-				"spark.autotune.trackingId": "f3cd0ce3-7a21-486e-972c-e05b5baa0515"
+				"spark.autotune.trackingId": "7ba6a8db-6f3b-4800-be38-7741aea27354"
 			}
 		},
 		"metadata": {
@@ -66,6 +66,24 @@
 				"cell_type": "code",
 				"metadata": {
 					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					"print('hi there world')"
+				],
+				"execution_count": null
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
 						"outputs_hidden": false,
 						"source_hidden": false
 					},
@@ -77,7 +95,7 @@
 					"collapsed": true
 				},
 				"source": [
-					"%run /OEA_py"
+					"#%run /OEA_py"
 				],
 				"execution_count": 2
 			},
@@ -96,7 +114,7 @@
 					"collapsed": true
 				},
 				"source": [
-					"%run /ContosoSIS_py"
+					"#%run /ContosoSIS_py"
 				],
 				"execution_count": 3
 			},
@@ -117,8 +135,8 @@
 					]
 				},
 				"source": [
-					"module_name = 'MyModule'\r\n",
-					"method_name = 'ingest'"
+					"#module_name = 'MyModule'\r\n",
+					"#method_name = 'ingest'"
 				],
 				"execution_count": 4
 			},
