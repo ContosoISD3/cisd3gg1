@@ -3432,7 +3432,7 @@
 						"spark.dynamicAllocation.enabled": "false",
 						"spark.dynamicAllocation.minExecutors": "4",
 						"spark.dynamicAllocation.maxExecutors": "4",
-						"spark.autotune.trackingId": "a1f4fab4-35c3-4a3e-ad84-8697d83b2387"
+						"spark.autotune.trackingId": "8231486c-ec4d-4a5e-a68a-03acf9c45575"
 					}
 				},
 				"metadata": {
@@ -3497,7 +3497,7 @@
 							"%run /OEA_py"
 						],
 						"outputs": [],
-						"execution_count": 13
+						"execution_count": 16
 					},
 					{
 						"cell_type": "code",
@@ -3517,7 +3517,7 @@
 							"%run /ContosoSIS_py"
 						],
 						"outputs": [],
-						"execution_count": 14
+						"execution_count": 17
 					},
 					{
 						"cell_type": "code",
@@ -3539,7 +3539,7 @@
 							"contoso_sis = ContosoSIS(oea)"
 						],
 						"outputs": [],
-						"execution_count": 15
+						"execution_count": 18
 					},
 					{
 						"cell_type": "code",
@@ -3558,7 +3558,7 @@
 							"oea.call_module_method(contoso_sis, 'sayhi')"
 						],
 						"outputs": [],
-						"execution_count": null
+						"execution_count": 19
 					},
 					{
 						"cell_type": "code",
@@ -3622,7 +3622,7 @@
 						"spark.dynamicAllocation.enabled": "false",
 						"spark.dynamicAllocation.minExecutors": "2",
 						"spark.dynamicAllocation.maxExecutors": "2",
-						"spark.autotune.trackingId": "70e2979b-d7c6-44bf-81de-8b5a75d9875e"
+						"spark.autotune.trackingId": "8e92daad-8566-4a5b-9a2d-ac6382267be6"
 					}
 				},
 				"metadata": {
@@ -8918,7 +8918,7 @@
 						"spark.dynamicAllocation.enabled": "false",
 						"spark.dynamicAllocation.minExecutors": "2",
 						"spark.dynamicAllocation.maxExecutors": "2",
-						"spark.autotune.trackingId": "12fc0507-3a8d-44ca-852a-e8e45ad48ac9"
+						"spark.autotune.trackingId": "ff311820-5fab-4364-82dc-ec8a2840f74b"
 					}
 				},
 				"metadata": {
@@ -8994,7 +8994,7 @@
 							"    def register_module(self, module):\n",
 							"        self.registered_modules[type(module).__name__] = module\n",
 							"\n",
-							"    def call_module_method(module_name, method_name):\n",
+							"    def call_module_method(self, module_name, method_name):\n",
 							"        getattr(registered_modules[module_name], method_name)()\n",
 							"\n",
 							"    def load(self, folder, table, stage=None, data_format='delta'):\n",
@@ -9273,7 +9273,7 @@
 							"        self.stage3p = f\"{oea.stage3p}/{source_folder}\"\n",
 							"        self.module_path = f\"{oea.framework_path}/modules/{source_folder}\"\n",
 							"        self.schemas = {}\n",
-							"        oea.register_module(self)\n",
+							"        self.oea.register_module(self)\n",
 							"   \n",
 							"    def _process_entity_from_stage1(self, path, entity_name, format='csv', write_mode='overwrite', header='true'):\n",
 							"        spark_schema = self.oea.to_spark_schema(self.schemas[entity_name])\n",
