@@ -1173,7 +1173,7 @@
 												"type": "Expression"
 											},
 											"table": {
-												"value": "@item().name",
+												"value": "@{item().name}_lookup",
 												"type": "Expression"
 											},
 											"databaseName": {
@@ -2220,7 +2220,7 @@
 						"spark.dynamicAllocation.enabled": "false",
 						"spark.dynamicAllocation.minExecutors": "4",
 						"spark.dynamicAllocation.maxExecutors": "4",
-						"spark.autotune.trackingId": "a23763c4-d2a7-46fc-9741-6ae1ff699374"
+						"spark.autotune.trackingId": "a230f08c-b8db-4270-9091-1683362d7043"
 					}
 				},
 				"metadata": {
@@ -2566,7 +2566,7 @@
 						"spark.dynamicAllocation.enabled": "false",
 						"spark.dynamicAllocation.minExecutors": "4",
 						"spark.dynamicAllocation.maxExecutors": "4",
-						"spark.autotune.trackingId": "3732eec3-0992-4244-b893-d937b63da77e"
+						"spark.autotune.trackingId": "df9bcf8b-f1db-4bd6-a4a7-178f239a49b9"
 					}
 				},
 				"metadata": {
@@ -2636,7 +2636,7 @@
 							"%run /OEA_py"
 						],
 						"outputs": [],
-						"execution_count": 61
+						"execution_count": 65
 					},
 					{
 						"cell_type": "code",
@@ -2656,7 +2656,7 @@
 							"%run /ContosoSIS_py"
 						],
 						"outputs": [],
-						"execution_count": 62
+						"execution_count": 66
 					},
 					{
 						"cell_type": "code",
@@ -2678,7 +2678,7 @@
 							"contoso_sis = ContosoSIS(oea)"
 						],
 						"outputs": [],
-						"execution_count": 63
+						"execution_count": 67
 					},
 					{
 						"cell_type": "code",
@@ -2697,7 +2697,7 @@
 							"contoso_sis.ingest()"
 						],
 						"outputs": [],
-						"execution_count": 64
+						"execution_count": 68
 					},
 					{
 						"cell_type": "code",
@@ -2718,7 +2718,7 @@
 							"contoso_sis.create_stage2_db()"
 						],
 						"outputs": [],
-						"execution_count": null
+						"execution_count": 69
 					},
 					{
 						"cell_type": "markdown",
@@ -2787,7 +2787,7 @@
 						"spark.dynamicAllocation.enabled": "false",
 						"spark.dynamicAllocation.minExecutors": "2",
 						"spark.dynamicAllocation.maxExecutors": "2",
-						"spark.autotune.trackingId": "822f1778-8e5a-41b4-a535-2c99060037eb"
+						"spark.autotune.trackingId": "65dc9b3e-cc06-466f-86ac-3a821d2501ca"
 					}
 				},
 				"metadata": {
@@ -8080,7 +8080,7 @@
 						"spark.dynamicAllocation.enabled": "false",
 						"spark.dynamicAllocation.minExecutors": "2",
 						"spark.dynamicAllocation.maxExecutors": "2",
-						"spark.autotune.trackingId": "c78f0fa0-361b-442c-a026-857c22c61bcc"
+						"spark.autotune.trackingId": "dbf8517d-5fbc-44a3-b6d1-20f9ca1b66a2"
 					}
 				},
 				"metadata": {
@@ -10565,6 +10565,26 @@
 			"dependsOn": [
 				"[concat(variables('workspaceId'), '/datasets/DS_ADLS_binary_folder')]"
 			]
+		},
+		{
+			"name": "[concat(parameters('workspaceName'), '/SQL script 2')]",
+			"type": "Microsoft.Synapse/workspaces/sqlscripts",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"content": {
+					"query": "SELECT TOP (100) [student_id]\n,[school_year]\n,[student_id_pseudonym]\n FROM [dbo].[studentattendance]",
+					"metadata": {
+						"language": "sql"
+					},
+					"currentConnection": {
+						"databaseName": "sqls2_contoso_sis",
+						"poolName": "Built-in"
+					},
+					"resultLimit": 5000
+				},
+				"type": "SqlQuery"
+			},
+			"dependsOn": []
 		}
 	]
 }
