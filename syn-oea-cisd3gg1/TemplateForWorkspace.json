@@ -230,8 +230,18 @@
 						"userProperties": [],
 						"typeProperties": {
 							"notebook": {
-								"referenceName": "ContosoSIS_ingest",
+								"referenceName": "OEA_module_connector",
 								"type": "NotebookReference"
+							},
+							"parameters": {
+								"module_name": {
+									"value": "ContosoSIS",
+									"type": "string"
+								},
+								"method_name": {
+									"value": "ingest",
+									"type": "string"
+								}
 							},
 							"snapshot": true
 						}
@@ -254,7 +264,10 @@
 								"type": "PipelineReference"
 							},
 							"waitOnCompletion": true,
-							"parameters": {}
+							"parameters": {
+								"storageAccount": "stoeacisd3gg1",
+								"sourceDirectory": "contoso_sis"
+							}
 						}
 					}
 				],
@@ -269,7 +282,7 @@
 			},
 			"dependsOn": [
 				"[concat(variables('workspaceId'), '/pipelines/Copy_from_each_URL')]",
-				"[concat(variables('workspaceId'), '/notebooks/ContosoSIS_ingest')]",
+				"[concat(variables('workspaceId'), '/notebooks/OEA_module_connector')]",
 				"[concat(variables('workspaceId'), '/pipelines/create_stage2_sql_db')]"
 			]
 		},
@@ -2156,7 +2169,7 @@
 			]
 		},
 		{
-			"name": "[concat(parameters('workspaceName'), '/reset_ingestion')]",
+			"name": "[concat(parameters('workspaceName'), '/reset_ingestion_of_table')]",
 			"type": "Microsoft.Synapse/workspaces/pipelines",
 			"apiVersion": "2019-06-01-preview",
 			"properties": {
@@ -2304,6 +2317,9 @@
 						"type": "string",
 						"defaultValue": "studentattendance"
 					}
+				},
+				"folder": {
+					"name": "OEA_Framework/Reset"
 				},
 				"annotations": []
 			},
@@ -3412,7 +3428,7 @@
 			"dependsOn": []
 		},
 		{
-			"name": "[concat(parameters('workspaceName'), '/ContosoSIS_ingest')]",
+			"name": "[concat(parameters('workspaceName'), '/OEA_module_connector')]",
 			"type": "Microsoft.Synapse/workspaces/notebooks",
 			"apiVersion": "2019-06-01-preview",
 			"properties": {
@@ -3432,7 +3448,7 @@
 						"spark.dynamicAllocation.enabled": "false",
 						"spark.dynamicAllocation.minExecutors": "4",
 						"spark.dynamicAllocation.maxExecutors": "4",
-						"spark.autotune.trackingId": "83f66a8d-9eae-42d3-ac43-4a2117a25d52"
+						"spark.autotune.trackingId": "e9e5c4d0-24b1-40bf-8707-f01a1be4b1c3"
 					}
 				},
 				"metadata": {
@@ -3473,10 +3489,8 @@
 							}
 						},
 						"source": [
-							"# ContosoSIS Module\n",
-							"This is an example module that demonstrates data extraction and ingestion of data for a fictional data source utilizing the standard OEA approach.\n",
-							"\n",
-							"Check the github repo for more info: [Contoso SIS module](https://github.com/microsoft/OpenEduAnalytics/tree/main/modules/Contoso_SIS)"
+							"# OEA Module connector\n",
+							"This notebook provides a way for invoking methods on modules from a pipeline."
 						]
 					},
 					{
@@ -3536,8 +3550,8 @@
 							]
 						},
 						"source": [
-							"module_name = 'ContosoSIS'\r\n",
-							"method_to_call = 'sayhi'"
+							"module_name = 'MyModule'\r\n",
+							"method_name = 'ingest'"
 						],
 						"outputs": [],
 						"execution_count": 4
@@ -3556,7 +3570,7 @@
 							}
 						},
 						"source": [
-							"oea.call_module_method(module_name, method_to_call)"
+							"oea.call_module_method(module_name, method_name)"
 						],
 						"outputs": [],
 						"execution_count": 5
@@ -8876,7 +8890,7 @@
 						"spark.dynamicAllocation.enabled": "false",
 						"spark.dynamicAllocation.minExecutors": "2",
 						"spark.dynamicAllocation.maxExecutors": "2",
-						"spark.autotune.trackingId": "8ed09c73-d1f1-4a97-8e31-5bafaab4dcef"
+						"spark.autotune.trackingId": "8652f9bb-93bb-4f0e-8f13-82b2801764e1"
 					}
 				},
 				"metadata": {
@@ -11248,6 +11262,129 @@
 				"annotations": []
 			},
 			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('workspaceName'), '/reset_all_for_source')]",
+			"type": "Microsoft.Synapse/workspaces/pipelines",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"description": "Deletes the ingestion for the specified system and table - in order to start over when testing during implementation.",
+				"activities": [
+					{
+						"name": "delete source system dir from stage1np",
+						"type": "Delete",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"dataset": {
+								"referenceName": "DS_ADLS_binary_folder",
+								"type": "DatasetReference",
+								"parameters": {
+									"filesystem": "stage1np",
+									"directory": {
+										"value": "@pipeline().parameters.sourceSystem",
+										"type": "Expression"
+									}
+								}
+							},
+							"enableLogging": false,
+							"storeSettings": {
+								"type": "AzureBlobFSReadSettings",
+								"recursive": true,
+								"enablePartitionDiscovery": false
+							}
+						}
+					},
+					{
+						"name": "delete from stage2np",
+						"type": "Delete",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"dataset": {
+								"referenceName": "DS_ADLS_binary_folder",
+								"type": "DatasetReference",
+								"parameters": {
+									"filesystem": "stage2np",
+									"directory": {
+										"value": "@pipeline().parameters.sourceSystem",
+										"type": "Expression"
+									}
+								}
+							},
+							"enableLogging": false,
+							"storeSettings": {
+								"type": "AzureBlobFSReadSettings",
+								"recursive": true,
+								"enablePartitionDiscovery": false
+							}
+						}
+					},
+					{
+						"name": "delete from stage2p",
+						"type": "Delete",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"dataset": {
+								"referenceName": "DS_ADLS_binary_folder",
+								"type": "DatasetReference",
+								"parameters": {
+									"filesystem": "stage2p",
+									"directory": {
+										"value": "@pipeline().parameters.sourceSystem",
+										"type": "Expression"
+									}
+								}
+							},
+							"enableLogging": false,
+							"storeSettings": {
+								"type": "AzureBlobFSReadSettings",
+								"recursive": true,
+								"enablePartitionDiscovery": false
+							}
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {},
+					"cancelAfter": {}
+				},
+				"parameters": {
+					"sourceSystem": {
+						"type": "string",
+						"defaultValue": "contoso_sis"
+					}
+				},
+				"folder": {
+					"name": "OEA_Framework/Reset"
+				},
+				"annotations": []
+			},
+			"dependsOn": [
+				"[concat(variables('workspaceId'), '/datasets/DS_ADLS_binary_folder')]"
+			]
 		}
 	]
 }
