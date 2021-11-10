@@ -77,7 +77,11 @@
 						"referenceName": "create_stage2_sql_db",
 						"type": "PipelineReference"
 					},
-					"waitOnCompletion": true
+					"waitOnCompletion": true,
+					"parameters": {
+						"storageAccount": "stoeacisd3gg1",
+						"sourceDirectory": "contoso_sis"
+					}
 				}
 			}
 		],
