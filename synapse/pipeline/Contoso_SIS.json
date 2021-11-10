@@ -65,6 +65,26 @@
 					},
 					"waitOnCompletion": true
 				}
+			},
+			{
+				"name": "create_stage2_lake_db",
+				"type": "ExecutePipeline",
+				"dependsOn": [
+					{
+						"activity": "Notebook1",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "create_stage2_lake_db",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true
+				}
 			}
 		],
 		"annotations": []
