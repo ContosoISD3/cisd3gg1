@@ -3448,7 +3448,7 @@
 						"spark.dynamicAllocation.enabled": "false",
 						"spark.dynamicAllocation.minExecutors": "4",
 						"spark.dynamicAllocation.maxExecutors": "4",
-						"spark.autotune.trackingId": "e9e5c4d0-24b1-40bf-8707-f01a1be4b1c3"
+						"spark.autotune.trackingId": "20884c87-70aa-46e2-bf4c-43738da34ab5"
 					}
 				},
 				"metadata": {
@@ -3596,7 +3596,7 @@
 						"spark.dynamicAllocation.enabled": "false",
 						"spark.dynamicAllocation.minExecutors": "2",
 						"spark.dynamicAllocation.maxExecutors": "2",
-						"spark.autotune.trackingId": "0b85a745-46f4-4d1c-b8da-724b9cc774cc"
+						"spark.autotune.trackingId": "e75b165b-130b-4464-a5b3-21f7acb1c789"
 					}
 				},
 				"metadata": {
@@ -3651,6 +3651,9 @@
 							"                                            ['ELLStatus', 'string', 'no-op'],\r\n",
 							"                                            ['SpecialEducation', 'string', 'no-op'],\r\n",
 							"                                            ['LowIncome', 'boolean', 'no-op']]                                            \r\n",
+							"\r\n",
+							"    def sayhi(self):\r\n",
+							"        print('hi there')\r\n",
 							"\r\n",
 							"    def ingest(self):\r\n",
 							"        oea.ingest_incremental_csv_data(self.source_folder, 'studentattendance', self.schemas['studentattendance'], 'school_year', 'id')\r\n",
@@ -8890,7 +8893,7 @@
 						"spark.dynamicAllocation.enabled": "false",
 						"spark.dynamicAllocation.minExecutors": "2",
 						"spark.dynamicAllocation.maxExecutors": "2",
-						"spark.autotune.trackingId": "8652f9bb-93bb-4f0e-8f13-82b2801764e1"
+						"spark.autotune.trackingId": "cc96bfe6-b94b-43d3-be52-456699e28061"
 					}
 				},
 				"metadata": {
