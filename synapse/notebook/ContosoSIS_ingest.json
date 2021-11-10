@@ -17,7 +17,7 @@
 				"spark.dynamicAllocation.enabled": "false",
 				"spark.dynamicAllocation.minExecutors": "4",
 				"spark.dynamicAllocation.maxExecutors": "4",
-				"spark.autotune.trackingId": "93a776ed-c9df-4eab-ad38-83e86e9e2175"
+				"spark.autotune.trackingId": "6df30b6d-3892-4ba4-9dfb-91af5599ace7"
 			}
 		},
 		"metadata": {
@@ -81,7 +81,7 @@
 				"source": [
 					"%run /OEA_py"
 				],
-				"execution_count": 35
+				"execution_count": 39
 			},
 			{
 				"cell_type": "code",
@@ -100,7 +100,7 @@
 				"source": [
 					"%run /ContosoSIS_py"
 				],
-				"execution_count": 36
+				"execution_count": 40
 			},
 			{
 				"cell_type": "code",
@@ -121,7 +121,7 @@
 					"oea = OEA()\n",
 					"contoso_sis = ContosoSIS(oea)"
 				],
-				"execution_count": 37
+				"execution_count": 41
 			},
 			{
 				"cell_type": "code",
@@ -139,7 +139,7 @@
 				"source": [
 					"oea.call_module_method(contoso_sis, 'sayhi')"
 				],
-				"execution_count": 38
+				"execution_count": 46
 			},
 			{
 				"cell_type": "code",
@@ -179,6 +179,24 @@
 					""
 				],
 				"execution_count": null
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					"getattr(contoso_sis, 'sayhi')()"
+				],
+				"execution_count": 45
 			}
 		]
 	}
