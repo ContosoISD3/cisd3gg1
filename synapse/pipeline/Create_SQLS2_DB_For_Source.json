@@ -257,17 +257,9 @@
 				"type": "string",
 				"defaultValue": "stoeacisd3gg1"
 			},
-			"filesystem": {
-				"type": "string",
-				"defaultValue": "stage2np"
-			},
 			"sourceDirectory": {
 				"type": "string",
 				"defaultValue": "contoso_sis"
-			},
-			"databaseName": {
-				"type": "string",
-				"defaultValue": "sqls2_contoso_sis"
 			}
 		},
 		"variables": {
