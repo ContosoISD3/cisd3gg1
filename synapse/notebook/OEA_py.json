@@ -13,7 +13,7 @@
 				"spark.dynamicAllocation.enabled": "false",
 				"spark.dynamicAllocation.minExecutors": "2",
 				"spark.dynamicAllocation.maxExecutors": "2",
-				"spark.autotune.trackingId": "d443531f-7477-4428-9ec8-45c423abbd83"
+				"spark.autotune.trackingId": "2549ca3e-627f-4fed-9c47-d80a4d8596c3"
 			}
 		},
 		"metadata": {
@@ -90,7 +90,7 @@
 					"        self.registered_modules[type(module).__name__] = module\n",
 					"\n",
 					"    def call_module_method(self, module_name, method_name):\n",
-					"        getattr(registered_modules[module_name], method_name)()\n",
+					"        getattr(self.registered_modules[module_name], method_name)()\n",
 					"\n",
 					"    def load(self, folder, table, stage=None, data_format='delta'):\n",
 					"        \"\"\" Loads a dataframe based on the path specified in the given args \"\"\"\n",
