@@ -17,7 +17,7 @@
 				"spark.dynamicAllocation.enabled": "false",
 				"spark.dynamicAllocation.minExecutors": "4",
 				"spark.dynamicAllocation.maxExecutors": "4",
-				"spark.autotune.trackingId": "ca677188-64cd-4caa-ae5a-7f3daa2c71b5"
+				"spark.autotune.trackingId": "caf29fb5-3ec1-4882-a19c-7bd8f05d6a3a"
 			}
 		},
 		"metadata": {
@@ -163,9 +163,9 @@
 				},
 				"source": [
 					"# 3) Create spark db's that point to the data in the delta lake.\n",
-					"contoso_sis.create_stage2_db()"
+					"contoso_sis.create_stage2_lake_db()"
 				],
-				"execution_count": 69
+				"execution_count": 6
 			},
 			{
 				"cell_type": "markdown",

@@ -1,5 +1,5 @@
 {
-	"name": "Pipeline 1",
+	"name": "create_stage2_sql_db",
 	"properties": {
 		"activities": [
 			{
