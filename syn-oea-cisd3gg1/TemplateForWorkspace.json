@@ -3432,7 +3432,7 @@
 						"spark.dynamicAllocation.enabled": "false",
 						"spark.dynamicAllocation.minExecutors": "4",
 						"spark.dynamicAllocation.maxExecutors": "4",
-						"spark.autotune.trackingId": "9bf84206-e9ea-46fd-a24d-d298712d049e"
+						"spark.autotune.trackingId": "a1f4fab4-35c3-4a3e-ad84-8697d83b2387"
 					}
 				},
 				"metadata": {
@@ -3497,7 +3497,7 @@
 							"%run /OEA_py"
 						],
 						"outputs": [],
-						"execution_count": 10
+						"execution_count": 13
 					},
 					{
 						"cell_type": "code",
@@ -3517,7 +3517,7 @@
 							"%run /ContosoSIS_py"
 						],
 						"outputs": [],
-						"execution_count": 11
+						"execution_count": 14
 					},
 					{
 						"cell_type": "code",
@@ -3539,7 +3539,7 @@
 							"contoso_sis = ContosoSIS(oea)"
 						],
 						"outputs": [],
-						"execution_count": 12
+						"execution_count": 15
 					},
 					{
 						"cell_type": "code",
@@ -3622,7 +3622,7 @@
 						"spark.dynamicAllocation.enabled": "false",
 						"spark.dynamicAllocation.minExecutors": "2",
 						"spark.dynamicAllocation.maxExecutors": "2",
-						"spark.autotune.trackingId": "8f71e501-9880-4dd8-8b50-74249f778baf"
+						"spark.autotune.trackingId": "70e2979b-d7c6-44bf-81de-8b5a75d9875e"
 					}
 				},
 				"metadata": {
@@ -8918,7 +8918,7 @@
 						"spark.dynamicAllocation.enabled": "false",
 						"spark.dynamicAllocation.minExecutors": "2",
 						"spark.dynamicAllocation.maxExecutors": "2",
-						"spark.autotune.trackingId": "4f20f091-d275-49b8-8238-782bccfca008"
+						"spark.autotune.trackingId": "12fc0507-3a8d-44ca-852a-e8e45ad48ac9"
 					}
 				},
 				"metadata": {
@@ -8974,7 +8974,7 @@
 							"        self.stage3np = 'abfss://stage3np@' + self.storage_account + '.dfs.core.windows.net'\n",
 							"        self.stage3p = 'abfss://stage3p@' + self.storage_account + '.dfs.core.windows.net'\n",
 							"        self.framework_path = 'abfss://oea-framework@' + self.storage_account + '.dfs.core.windows.net'\n",
-							"        self.registered_modules = []\n",
+							"        self.registered_modules = {}\n",
 							"\n",
 							"        logger.debug(\"OEA initialized.\")\n",
 							"\n",
