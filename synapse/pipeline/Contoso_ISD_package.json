@@ -1,5 +1,5 @@
 {
-	"name": "Contoso_SIS_extract",
+	"name": "Contoso_ISD_package",
 	"properties": {
 		"description": "Copies in the Contoso test data and lands it in stage1np.\nUse this pipeline as part of the Contoso example.",
 		"activities": [
