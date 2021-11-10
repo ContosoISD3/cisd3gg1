@@ -142,6 +142,9 @@
 				"defaultValue": "studentattendance"
 			}
 		},
+		"folder": {
+			"name": "OEA_Framework/Reset"
+		},
 		"annotations": []
 	}
 }
