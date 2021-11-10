@@ -24,7 +24,7 @@
 				}
 			},
 			{
-				"name": "Notebook1",
+				"name": "Contoso_SIS_ingest",
 				"type": "SynapseNotebook",
 				"dependsOn": [
 					{
@@ -43,6 +43,10 @@
 				},
 				"userProperties": [],
 				"typeProperties": {
+					"notebook": {
+						"referenceName": "ContosoSIS_ingest",
+						"type": "NotebookReference"
+					},
 					"snapshot": true
 				}
 			},
@@ -51,7 +55,7 @@
 				"type": "ExecutePipeline",
 				"dependsOn": [
 					{
-						"activity": "Notebook1",
+						"activity": "Contoso_SIS_ingest",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -71,7 +75,7 @@
 				"type": "ExecutePipeline",
 				"dependsOn": [
 					{
-						"activity": "Notebook1",
+						"activity": "Contoso_SIS_ingest",
 						"dependencyConditions": [
 							"Succeeded"
 						]

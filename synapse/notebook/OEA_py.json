@@ -13,7 +13,7 @@
 				"spark.dynamicAllocation.enabled": "false",
 				"spark.dynamicAllocation.minExecutors": "2",
 				"spark.dynamicAllocation.maxExecutors": "2",
-				"spark.autotune.trackingId": "7035919b-dd43-4679-b39d-d6f0504a8109"
+				"spark.autotune.trackingId": "3c658b42-6b13-4c2e-bc13-b45aebbc9e25"
 			}
 		},
 		"metadata": {
@@ -274,7 +274,7 @@
 					"        m = re.match(r\".*:\\/\\/stage(?P<stage_num>\\d+)[n]?[p]?@[^/]+\\/(?P<ss>[^/]+)\", path)\n",
 					"        return m.groupdict()\n",
 					"    \n",
-					"    def create_lake_db(self, source_path, source_format='DELTA'):\n",
+					"    def create_db(self, source_path, source_format='DELTA'):\n",
 					"        \"\"\" Creates a spark db based on the given path (assumes that every folder in the given path is a table).\n",
 					"            Note that a spark db that points to source data in the delta format can't be queried via SQL serverless pool. More info here: https://docs.microsoft.com/en-us/azure/synapse-analytics/sql/resources-self-help-sql-on-demand#delta-lake\n",
 					"        \"\"\"\n",
@@ -287,6 +287,12 @@
 					"        result = \"Database created: \" + db_name\n",
 					"        logger.info(result)\n",
 					"        return result\n",
+					"\n",
+					"    def create_stage2_lake_db(self, source_directory):\n",
+					"        source_path = f'{self.stage2p}/{source_directory}'\n",
+					"        self.create_db(source_path)\n",
+					"        source_path = f'{self.stage2pn}/{source_directory}'\n",
+					"        self.create_db(source_path)\n",
 					"\n",
 					"    def drop_db(self, db_name):\n",
 					"        \"\"\" Drop all tables in a db, then drop the db. \"\"\"\n",

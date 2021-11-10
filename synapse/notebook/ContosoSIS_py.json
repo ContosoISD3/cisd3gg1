@@ -13,7 +13,7 @@
 				"spark.dynamicAllocation.enabled": "false",
 				"spark.dynamicAllocation.minExecutors": "2",
 				"spark.dynamicAllocation.maxExecutors": "2",
-				"spark.autotune.trackingId": "e7e8aa6f-2d03-45cb-9649-d361fb5b31ab"
+				"spark.autotune.trackingId": "59d7729e-9849-42a0-9e13-b12ac66eb487"
 			}
 		},
 		"metadata": {
@@ -70,7 +70,7 @@
 					"\r\n",
 					"    def ingest(self):\r\n",
 					"        oea.ingest_incremental_csv_data(self.source_folder, 'studentattendance', self.schemas['studentattendance'], 'school_year', 'id')\r\n",
-					"        oea.ingest_incremental_csv_data(self.source_folder, 'studentsectionmark', self.schemas['studentsectionmark'], 'school_year', 'id')\r\n",
+					"        oea.ingest_snapshot_csv_data(self.source_folder, 'studentsectionmark', self.schemas['studentsectionmark'], 'school_year', 'id')\r\n",
 					""
 				],
 				"execution_count": null
