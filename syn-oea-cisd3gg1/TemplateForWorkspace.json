@@ -3432,7 +3432,7 @@
 						"spark.dynamicAllocation.enabled": "false",
 						"spark.dynamicAllocation.minExecutors": "4",
 						"spark.dynamicAllocation.maxExecutors": "4",
-						"spark.autotune.trackingId": "7948ec9c-2064-4558-aac3-c8d331c8dfbe"
+						"spark.autotune.trackingId": "6a14bf9f-4b7a-4129-a579-8cd1ed26de5d"
 					}
 				},
 				"metadata": {
@@ -3497,7 +3497,7 @@
 							"%run /OEA_py"
 						],
 						"outputs": [],
-						"execution_count": 35
+						"execution_count": 39
 					},
 					{
 						"cell_type": "code",
@@ -3517,7 +3517,7 @@
 							"%run /ContosoSIS_py"
 						],
 						"outputs": [],
-						"execution_count": 36
+						"execution_count": 40
 					},
 					{
 						"cell_type": "code",
@@ -3539,7 +3539,7 @@
 							"contoso_sis = ContosoSIS(oea)"
 						],
 						"outputs": [],
-						"execution_count": 37
+						"execution_count": 41
 					},
 					{
 						"cell_type": "code",
@@ -3558,7 +3558,7 @@
 							"oea.call_module_method(contoso_sis, 'sayhi')"
 						],
 						"outputs": [],
-						"execution_count": 38
+						"execution_count": 46
 					},
 					{
 						"cell_type": "code",
@@ -3600,6 +3600,25 @@
 						],
 						"outputs": [],
 						"execution_count": null
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"jupyter": {
+								"source_hidden": false,
+								"outputs_hidden": false
+							},
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							}
+						},
+						"source": [
+							"getattr(contoso_sis, 'sayhi')()"
+						],
+						"outputs": [],
+						"execution_count": 45
 					}
 				]
 			},
@@ -3622,7 +3641,7 @@
 						"spark.dynamicAllocation.enabled": "false",
 						"spark.dynamicAllocation.minExecutors": "2",
 						"spark.dynamicAllocation.maxExecutors": "2",
-						"spark.autotune.trackingId": "73ac2527-43bc-4b10-82c8-01707272810b"
+						"spark.autotune.trackingId": "fe491c29-785a-4e9d-b1d3-23b46e03f86b"
 					}
 				},
 				"metadata": {
@@ -8919,7 +8938,7 @@
 						"spark.dynamicAllocation.enabled": "false",
 						"spark.dynamicAllocation.minExecutors": "2",
 						"spark.dynamicAllocation.maxExecutors": "2",
-						"spark.autotune.trackingId": "9c502775-21c6-4717-b663-44729c52fa0c"
+						"spark.autotune.trackingId": "c0159e85-74a3-4f61-b55f-715f1d04d176"
 					}
 				},
 				"metadata": {
@@ -8997,8 +9016,8 @@
 							"\n",
 							"    def call_module_method(self, module_name, method_name):\n",
 							"        print('in call_module method')\n",
-							"        #tmp = getattr(self.registered_modules[module_name], method_name)\n",
-							"        #print(tmp)\n",
+							"        tmp = getattr(self.registered_modules[module_name], method_name)\n",
+							"        print(tmp)\n",
 							"\n",
 							"    def load(self, folder, table, stage=None, data_format='delta'):\n",
 							"        \"\"\" Loads a dataframe based on the path specified in the given args \"\"\"\n",
