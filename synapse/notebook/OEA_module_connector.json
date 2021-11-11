@@ -17,7 +17,7 @@
 				"spark.dynamicAllocation.enabled": "false",
 				"spark.dynamicAllocation.minExecutors": "4",
 				"spark.dynamicAllocation.maxExecutors": "4",
-				"spark.autotune.trackingId": "86adb541-3704-4a5d-a4bf-2c92dc57921a"
+				"spark.autotune.trackingId": "0bdeaebe-b7bf-45fc-a93e-ef82eceb7cc8"
 			}
 		},
 		"metadata": {
@@ -58,8 +58,10 @@
 					}
 				},
 				"source": [
-					"# OEA Module connector\n",
-					"This notebook provides a way for invoking methods on modules from a pipeline."
+					"# OEA connector\n",
+					"This notebook provides a way for invoking methods on the OEA framework or supporting modules from a pipeline.\n",
+					"\n",
+					"When setting up a new module, be sure to include a new cell below that imports that module, so that it's methods can be invoked by pipelines."
 				]
 			},
 			{
