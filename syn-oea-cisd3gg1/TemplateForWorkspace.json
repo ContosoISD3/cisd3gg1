@@ -296,7 +296,7 @@
 							},
 							"parameters": {
 								"module_name": {
-									"value": "ContosoSIS",
+									"value": "contoso_sis",
 									"type": "string"
 								},
 								"method_name": {
@@ -3591,7 +3591,7 @@
 						"spark.dynamicAllocation.enabled": "false",
 						"spark.dynamicAllocation.minExecutors": "2",
 						"spark.dynamicAllocation.maxExecutors": "2",
-						"spark.autotune.trackingId": "59d69aa2-92ec-4a8f-9527-b8c1e3ad5b70"
+						"spark.autotune.trackingId": "b319b57a-ce23-47e3-9cff-eb5b37189f6b"
 					}
 				},
 				"metadata": {
@@ -8892,7 +8892,7 @@
 						"spark.dynamicAllocation.enabled": "false",
 						"spark.dynamicAllocation.minExecutors": "4",
 						"spark.dynamicAllocation.maxExecutors": "4",
-						"spark.autotune.trackingId": "dd897fba-8e55-4877-8bd8-ad311e759bd7"
+						"spark.autotune.trackingId": "4d38cba2-ee75-4ff4-a329-e29f20b37e76"
 					}
 				},
 				"metadata": {
@@ -9040,7 +9040,7 @@
 						"spark.dynamicAllocation.enabled": "false",
 						"spark.dynamicAllocation.minExecutors": "2",
 						"spark.dynamicAllocation.maxExecutors": "2",
-						"spark.autotune.trackingId": "9660a4c2-9ddb-47e3-845d-4acac6184ddc"
+						"spark.autotune.trackingId": "91a0b539-938c-4822-a754-e8c4c99b638f"
 					}
 				},
 				"metadata": {
