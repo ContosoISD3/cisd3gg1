@@ -183,6 +183,67 @@
 			]
 		},
 		{
+			"name": "[concat(parameters('workspaceName'), '/Contoso_ISD_package')]",
+			"type": "Microsoft.Synapse/workspaces/pipelines",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"description": "Copies in the Contoso test data and lands it in stage1np.\nUse this pipeline as part of the Contoso example.",
+				"activities": [
+					{
+						"name": "Copy_from_each_URL - SIS test data",
+						"type": "ExecutePipeline",
+						"dependsOn": [],
+						"userProperties": [],
+						"typeProperties": {
+							"pipeline": {
+								"referenceName": "Copy_from_each_URL",
+								"type": "PipelineReference"
+							},
+							"waitOnCompletion": true,
+							"parameters": {
+								"endpoints": {
+									"value": "@json('[{\"URL\": \"https://raw.githubusercontent.com/microsoft/OpenEduAnalytics/main/modules/Contoso_SIS/test_data/studentattendance.csv\",\"sinkDirectory\": \"contoso_sis\",\"sinkFilename\": \"studentattendance/studentattendance.csv\"}, {\"URL\": \"https://raw.githubusercontent.com/microsoft/OpenEduAnalytics/main/modules/Contoso_SIS/test_data/studentdemographics.csv\",\"sinkDirectory\": \"contoso_sis\",\"sinkFilename\": \"studentdemographics/studentdemographics.csv\"}, {\"URL\": \"https://raw.githubusercontent.com/microsoft/OpenEduAnalytics/main/modules/Contoso_SIS/test_data/studentsectionmark.csv\",\"sinkDirectory\": \"contoso_sis\",\"sinkFilename\": \"studentsectionmark/studentsectionmark.csv\"}]')",
+									"type": "Expression"
+								},
+								"sinkFilesystem": "stage1np",
+								"timezone": "Eastern Standard Time"
+							}
+						}
+					},
+					{
+						"name": "Copy_from_each_URL - M365 test data",
+						"type": "ExecutePipeline",
+						"dependsOn": [],
+						"userProperties": [],
+						"typeProperties": {
+							"pipeline": {
+								"referenceName": "Copy_from_each_URL",
+								"type": "PipelineReference"
+							},
+							"waitOnCompletion": true,
+							"parameters": {
+								"endpoints": {
+									"value": "@json('[{\"URL\":\"https://raw.githubusercontent.com/microsoft/OpenEduAnalytics/main/modules/M365/test_data/DIPData/Activity/ApplicationUsage/Activity.csv\", \"sinkDirectory\":\"m365\", \"sinkFilename\":\"Activity/Activity.csv\"},\n{\"URL\":\"https://raw.githubusercontent.com/microsoft/OpenEduAnalytics/main/modules/M365/test_data/DIPData/Roster/Calendar.csv\", \"sinkDirectory\":\"m365\", \"sinkFilename\":\"Calendar/Calendar.csv\"},\n{\"URL\":\"https://raw.githubusercontent.com/microsoft/OpenEduAnalytics/main/modules/M365/test_data/DIPData/Roster/Course.csv\", \"sinkDirectory\":\"m365\", \"sinkFilename\":\"Course/Course.csv\"},\n{\"URL\":\"https://raw.githubusercontent.com/microsoft/OpenEduAnalytics/main/modules/M365/test_data/DIPData/Roster/Org.csv\", \"sinkDirectory\":\"m365\", \"sinkFilename\":\"Org/Org.csv\"},\n{\"URL\":\"https://raw.githubusercontent.com/microsoft/OpenEduAnalytics/main/modules/M365/test_data/DIPData/Roster/Person.csv\", \"sinkDirectory\":\"m365\", \"sinkFilename\":\"Person/Person.csv\"},\n{\"URL\":\"https://raw.githubusercontent.com/microsoft/OpenEduAnalytics/main/modules/M365/test_data/DIPData/Roster/PersonIdentifier.csv\", \"sinkDirectory\":\"m365\", \"sinkFilename\":\"PersonIdentifier/PersonIdentifier.csv\"},\n{\"URL\":\"https://raw.githubusercontent.com/microsoft/OpenEduAnalytics/main/modules/M365/test_data/DIPData/Roster/RefDefinition.csv\", \"sinkDirectory\":\"m365\", \"sinkFilename\":\"RefDefinition/RefDefinition.csv\"},\n{\"URL\":\"https://raw.githubusercontent.com/microsoft/OpenEduAnalytics/main/modules/M365/test_data/DIPData/Roster/Section.csv\", \"sinkDirectory\":\"m365\", \"sinkFilename\":\"Section/Section.csv\"},\n{\"URL\":\"https://raw.githubusercontent.com/microsoft/OpenEduAnalytics/main/modules/M365/test_data/DIPData/Roster/Session.csv\", \"sinkDirectory\":\"m365\", \"sinkFilename\":\"Session/Session.csv\"},\n{\"URL\":\"https://raw.githubusercontent.com/microsoft/OpenEduAnalytics/main/modules/M365/test_data/DIPData/Roster/StaffOrgAffiliation.csv\", \"sinkDirectory\":\"m365\", \"sinkFilename\":\"StaffOrgAffiliation/StaffOrgAffiliation.csv\"},\n{\"URL\":\"https://raw.githubusercontent.com/microsoft/OpenEduAnalytics/main/modules/M365/test_data/DIPData/Roster/StaffSectionMembership.csv\", \"sinkDirectory\":\"m365\", \"sinkFilename\":\"StaffSectionMembership/StaffSectionMembership.csv\"},\n{\"URL\":\"https://raw.githubusercontent.com/microsoft/OpenEduAnalytics/main/modules/M365/test_data/DIPData/Roster/StudentOrgAffiliation.csv\", \"sinkDirectory\":\"m365\", \"sinkFilename\":\"StudentOrgAffiliation/StudentOrgAffiliation.csv\"},\n{\"URL\":\"https://raw.githubusercontent.com/microsoft/OpenEduAnalytics/main/modules/M365/test_data/DIPData/Roster/StudentSectionMembership.csv\", \"sinkDirectory\":\"m365\", \"sinkFilename\":\"StudentSectionMembership/StudentSectionMembership.csv\"}]')",
+									"type": "Expression"
+								},
+								"sinkFilesystem": "stage1np",
+								"timezone": "Eastern Standard Time"
+							}
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {},
+					"cancelAfter": {}
+				},
+				"annotations": [],
+				"lastPublishTime": "2021-10-28T13:57:38Z"
+			},
+			"dependsOn": [
+				"[concat(variables('workspaceId'), '/pipelines/Copy_from_each_URL')]"
+			]
+		},
+		{
 			"name": "[concat(parameters('workspaceName'), '/Contoso_SIS_main')]",
 			"type": "Microsoft.Synapse/workspaces/pipelines",
 			"apiVersion": "2019-06-01-preview",
@@ -284,67 +345,6 @@
 				"[concat(variables('workspaceId'), '/pipelines/Copy_from_each_URL')]",
 				"[concat(variables('workspaceId'), '/notebooks/OEA_module_connector')]",
 				"[concat(variables('workspaceId'), '/pipelines/create_stage2_sql_db')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('workspaceName'), '/Contoso_ISD_package')]",
-			"type": "Microsoft.Synapse/workspaces/pipelines",
-			"apiVersion": "2019-06-01-preview",
-			"properties": {
-				"description": "Copies in the Contoso test data and lands it in stage1np.\nUse this pipeline as part of the Contoso example.",
-				"activities": [
-					{
-						"name": "Copy_from_each_URL - SIS test data",
-						"type": "ExecutePipeline",
-						"dependsOn": [],
-						"userProperties": [],
-						"typeProperties": {
-							"pipeline": {
-								"referenceName": "Copy_from_each_URL",
-								"type": "PipelineReference"
-							},
-							"waitOnCompletion": true,
-							"parameters": {
-								"endpoints": {
-									"value": "@json('[{\"URL\": \"https://raw.githubusercontent.com/microsoft/OpenEduAnalytics/main/modules/Contoso_SIS/test_data/studentattendance.csv\",\"sinkDirectory\": \"contoso_sis\",\"sinkFilename\": \"studentattendance/studentattendance.csv\"}, {\"URL\": \"https://raw.githubusercontent.com/microsoft/OpenEduAnalytics/main/modules/Contoso_SIS/test_data/studentdemographics.csv\",\"sinkDirectory\": \"contoso_sis\",\"sinkFilename\": \"studentdemographics/studentdemographics.csv\"}, {\"URL\": \"https://raw.githubusercontent.com/microsoft/OpenEduAnalytics/main/modules/Contoso_SIS/test_data/studentsectionmark.csv\",\"sinkDirectory\": \"contoso_sis\",\"sinkFilename\": \"studentsectionmark/studentsectionmark.csv\"}]')",
-									"type": "Expression"
-								},
-								"sinkFilesystem": "stage1np",
-								"timezone": "Eastern Standard Time"
-							}
-						}
-					},
-					{
-						"name": "Copy_from_each_URL - M365 test data",
-						"type": "ExecutePipeline",
-						"dependsOn": [],
-						"userProperties": [],
-						"typeProperties": {
-							"pipeline": {
-								"referenceName": "Copy_from_each_URL",
-								"type": "PipelineReference"
-							},
-							"waitOnCompletion": true,
-							"parameters": {
-								"endpoints": {
-									"value": "@json('[{\"URL\":\"https://raw.githubusercontent.com/microsoft/OpenEduAnalytics/main/modules/M365/test_data/DIPData/Activity/ApplicationUsage/Activity.csv\", \"sinkDirectory\":\"m365\", \"sinkFilename\":\"Activity/Activity.csv\"},\n{\"URL\":\"https://raw.githubusercontent.com/microsoft/OpenEduAnalytics/main/modules/M365/test_data/DIPData/Roster/Calendar.csv\", \"sinkDirectory\":\"m365\", \"sinkFilename\":\"Calendar/Calendar.csv\"},\n{\"URL\":\"https://raw.githubusercontent.com/microsoft/OpenEduAnalytics/main/modules/M365/test_data/DIPData/Roster/Course.csv\", \"sinkDirectory\":\"m365\", \"sinkFilename\":\"Course/Course.csv\"},\n{\"URL\":\"https://raw.githubusercontent.com/microsoft/OpenEduAnalytics/main/modules/M365/test_data/DIPData/Roster/Org.csv\", \"sinkDirectory\":\"m365\", \"sinkFilename\":\"Org/Org.csv\"},\n{\"URL\":\"https://raw.githubusercontent.com/microsoft/OpenEduAnalytics/main/modules/M365/test_data/DIPData/Roster/Person.csv\", \"sinkDirectory\":\"m365\", \"sinkFilename\":\"Person/Person.csv\"},\n{\"URL\":\"https://raw.githubusercontent.com/microsoft/OpenEduAnalytics/main/modules/M365/test_data/DIPData/Roster/PersonIdentifier.csv\", \"sinkDirectory\":\"m365\", \"sinkFilename\":\"PersonIdentifier/PersonIdentifier.csv\"},\n{\"URL\":\"https://raw.githubusercontent.com/microsoft/OpenEduAnalytics/main/modules/M365/test_data/DIPData/Roster/RefDefinition.csv\", \"sinkDirectory\":\"m365\", \"sinkFilename\":\"RefDefinition/RefDefinition.csv\"},\n{\"URL\":\"https://raw.githubusercontent.com/microsoft/OpenEduAnalytics/main/modules/M365/test_data/DIPData/Roster/Section.csv\", \"sinkDirectory\":\"m365\", \"sinkFilename\":\"Section/Section.csv\"},\n{\"URL\":\"https://raw.githubusercontent.com/microsoft/OpenEduAnalytics/main/modules/M365/test_data/DIPData/Roster/Session.csv\", \"sinkDirectory\":\"m365\", \"sinkFilename\":\"Session/Session.csv\"},\n{\"URL\":\"https://raw.githubusercontent.com/microsoft/OpenEduAnalytics/main/modules/M365/test_data/DIPData/Roster/StaffOrgAffiliation.csv\", \"sinkDirectory\":\"m365\", \"sinkFilename\":\"StaffOrgAffiliation/StaffOrgAffiliation.csv\"},\n{\"URL\":\"https://raw.githubusercontent.com/microsoft/OpenEduAnalytics/main/modules/M365/test_data/DIPData/Roster/StaffSectionMembership.csv\", \"sinkDirectory\":\"m365\", \"sinkFilename\":\"StaffSectionMembership/StaffSectionMembership.csv\"},\n{\"URL\":\"https://raw.githubusercontent.com/microsoft/OpenEduAnalytics/main/modules/M365/test_data/DIPData/Roster/StudentOrgAffiliation.csv\", \"sinkDirectory\":\"m365\", \"sinkFilename\":\"StudentOrgAffiliation/StudentOrgAffiliation.csv\"},\n{\"URL\":\"https://raw.githubusercontent.com/microsoft/OpenEduAnalytics/main/modules/M365/test_data/DIPData/Roster/StudentSectionMembership.csv\", \"sinkDirectory\":\"m365\", \"sinkFilename\":\"StudentSectionMembership/StudentSectionMembership.csv\"}]')",
-									"type": "Expression"
-								},
-								"sinkFilesystem": "stage1np",
-								"timezone": "Eastern Standard Time"
-							}
-						}
-					}
-				],
-				"policy": {
-					"elapsedTimeMetric": {},
-					"cancelAfter": {}
-				},
-				"annotations": [],
-				"lastPublishTime": "2021-10-28T13:57:38Z"
-			},
-			"dependsOn": [
-				"[concat(variables('workspaceId'), '/pipelines/Copy_from_each_URL')]"
 			]
 		},
 		{
@@ -1305,295 +1305,6 @@
 			]
 		},
 		{
-			"name": "[concat(parameters('workspaceName'), '/create_stage2_sql_db')]",
-			"type": "Microsoft.Synapse/workspaces/pipelines",
-			"apiVersion": "2019-06-01-preview",
-			"properties": {
-				"activities": [
-					{
-						"name": "set sqlDBName",
-						"type": "SetVariable",
-						"dependsOn": [],
-						"userProperties": [],
-						"typeProperties": {
-							"variableName": "sqlDBName",
-							"value": {
-								"value": "sqls2_@{pipeline().parameters.sourceDirectory}",
-								"type": "Expression"
-							}
-						}
-					},
-					{
-						"name": "Stored procedure1",
-						"type": "SqlServerStoredProcedure",
-						"dependsOn": [
-							{
-								"activity": "set sqlDBName",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							}
-						],
-						"policy": {
-							"timeout": "7.00:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"storedProcedureName": "[dbo].[sp_executesql]",
-							"storedProcedureParameters": {
-								"command": {
-									"value": {
-										"value": "IF NOT EXISTS (SELECT * FROM sys.databases WHERE name = 'sqls2_@{pipeline().parameters.sourceDirectory}') \nBEGIN\n  CREATE DATABASE sqls2_@{pipeline().parameters.sourceDirectory}; \nEND;",
-										"type": "Expression"
-									},
-									"type": "String"
-								}
-							}
-						},
-						"linkedServiceName": {
-							"referenceName": "LS_SQL_Serverless_OEA",
-							"type": "LinkedServiceReference",
-							"parameters": {
-								"databaseName": "master"
-							}
-						}
-					},
-					{
-						"name": "get folders in stage2p",
-						"type": "GetMetadata",
-						"dependsOn": [
-							{
-								"activity": "Stored procedure1",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							}
-						],
-						"policy": {
-							"timeout": "7.00:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"dataset": {
-								"referenceName": "DS_ADLS_binary_folder",
-								"type": "DatasetReference",
-								"parameters": {
-									"filesystem": "stage2p",
-									"directory": {
-										"value": "@pipeline().parameters.sourceDirectory",
-										"type": "Expression"
-									}
-								}
-							},
-							"fieldList": [
-								"childItems"
-							],
-							"storeSettings": {
-								"type": "AzureBlobFSReadSettings",
-								"recursive": true,
-								"enablePartitionDiscovery": false
-							},
-							"formatSettings": {
-								"type": "BinaryReadSettings"
-							}
-						}
-					},
-					{
-						"name": "ForEach1",
-						"type": "ForEach",
-						"dependsOn": [
-							{
-								"activity": "get folders in stage2p",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							}
-						],
-						"userProperties": [],
-						"typeProperties": {
-							"items": {
-								"value": "@activity('get folders in stage2p').output.childItems",
-								"type": "Expression"
-							},
-							"activities": [
-								{
-									"name": "create or alter view for pseduonymized tables",
-									"type": "SqlServerStoredProcedure",
-									"dependsOn": [],
-									"policy": {
-										"timeout": "7.00:00:00",
-										"retry": 0,
-										"retryIntervalInSeconds": 30,
-										"secureOutput": false,
-										"secureInput": false
-									},
-									"userProperties": [],
-									"typeProperties": {
-										"storedProcedureName": "[dbo].[sp_executesql]",
-										"storedProcedureParameters": {
-											"command": {
-												"value": {
-													"value": "CREATE OR ALTER VIEW @{item().name} AS\nSELECT * FROM OPENROWSET(\nBULK 'https://@{pipeline().parameters.storageAccount}.dfs.core.windows.net/stage2p/@{pipeline().parameters.sourceDirectory}/@{item().name}',\nFORMAT='DELTA'\n) AS [r]",
-													"type": "Expression"
-												},
-												"type": "String"
-											}
-										}
-									},
-									"linkedServiceName": {
-										"referenceName": "LS_SQL_Serverless_OEA",
-										"type": "LinkedServiceReference",
-										"parameters": {
-											"databaseName": {
-												"value": "@variables('sqlDBName')",
-												"type": "Expression"
-											}
-										}
-									}
-								}
-							]
-						}
-					},
-					{
-						"name": "get folders in stage2np",
-						"type": "GetMetadata",
-						"dependsOn": [
-							{
-								"activity": "Stored procedure1",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							}
-						],
-						"policy": {
-							"timeout": "7.00:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"dataset": {
-								"referenceName": "DS_ADLS_binary_folder",
-								"type": "DatasetReference",
-								"parameters": {
-									"filesystem": "stage2np",
-									"directory": {
-										"value": "@pipeline().parameters.sourceDirectory",
-										"type": "Expression"
-									}
-								}
-							},
-							"fieldList": [
-								"childItems"
-							],
-							"storeSettings": {
-								"type": "AzureBlobFSReadSettings",
-								"recursive": true,
-								"enablePartitionDiscovery": false
-							},
-							"formatSettings": {
-								"type": "BinaryReadSettings"
-							}
-						}
-					},
-					{
-						"name": "ForEach2",
-						"type": "ForEach",
-						"dependsOn": [
-							{
-								"activity": "get folders in stage2np",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							}
-						],
-						"userProperties": [],
-						"typeProperties": {
-							"items": {
-								"value": "@activity('get folders in stage2np').output.childItems",
-								"type": "Expression"
-							},
-							"activities": [
-								{
-									"name": "create or alter view for lookup tables",
-									"type": "SqlServerStoredProcedure",
-									"dependsOn": [],
-									"policy": {
-										"timeout": "7.00:00:00",
-										"retry": 0,
-										"retryIntervalInSeconds": 30,
-										"secureOutput": false,
-										"secureInput": false
-									},
-									"userProperties": [],
-									"typeProperties": {
-										"storedProcedureName": "[dbo].[sp_executesql]",
-										"storedProcedureParameters": {
-											"command": {
-												"value": {
-													"value": "CREATE OR ALTER VIEW @{item().name} AS\nSELECT * FROM OPENROWSET(\nBULK 'https://@{pipeline().parameters.storageAccount}.dfs.core.windows.net/stage2np/@{pipeline().parameters.sourceDirectory}/@{item().name}',\nFORMAT='DELTA'\n) AS [r]",
-													"type": "Expression"
-												},
-												"type": "String"
-											}
-										}
-									},
-									"linkedServiceName": {
-										"referenceName": "LS_SQL_Serverless_OEA",
-										"type": "LinkedServiceReference",
-										"parameters": {
-											"databaseName": {
-												"value": "@variables('sqlDBName')",
-												"type": "Expression"
-											}
-										}
-									}
-								}
-							]
-						}
-					}
-				],
-				"policy": {
-					"elapsedTimeMetric": {},
-					"cancelAfter": {}
-				},
-				"parameters": {
-					"storageAccount": {
-						"type": "string",
-						"defaultValue": "stoeacisd3gg1"
-					},
-					"sourceDirectory": {
-						"type": "string",
-						"defaultValue": "contoso_sis"
-					}
-				},
-				"variables": {
-					"sqlDBName": {
-						"type": "String",
-						"defaultValue": "sqls2_mydb"
-					}
-				},
-				"folder": {
-					"name": "OEA_Framework/Ingest"
-				},
-				"annotations": []
-			},
-			"dependsOn": [
-				"[concat(variables('workspaceId'), '/linkedServices/LS_SQL_Serverless_OEA')]",
-				"[concat(variables('workspaceId'), '/datasets/DS_ADLS_binary_folder')]"
-			]
-		},
-		{
 			"name": "[concat(parameters('workspaceName'), '/Push_to_SDS')]",
 			"type": "Microsoft.Synapse/workspaces/pipelines",
 			"apiVersion": "2019-06-01-preview",
@@ -1950,6 +1661,319 @@
 			]
 		},
 		{
+			"name": "[concat(parameters('workspaceName'), '/create_stage2_lake_db')]",
+			"type": "Microsoft.Synapse/workspaces/pipelines",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"activities": [
+					{
+						"name": "Wait1",
+						"type": "Wait",
+						"dependsOn": [],
+						"userProperties": [],
+						"typeProperties": {
+							"waitTimeInSeconds": 1
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {},
+					"cancelAfter": {}
+				},
+				"annotations": []
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('workspaceName'), '/create_stage2_sql_db')]",
+			"type": "Microsoft.Synapse/workspaces/pipelines",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"activities": [
+					{
+						"name": "set sqlDBName",
+						"type": "SetVariable",
+						"dependsOn": [],
+						"userProperties": [],
+						"typeProperties": {
+							"variableName": "sqlDBName",
+							"value": {
+								"value": "sqls2_@{pipeline().parameters.sourceDirectory}",
+								"type": "Expression"
+							}
+						}
+					},
+					{
+						"name": "Stored procedure1",
+						"type": "SqlServerStoredProcedure",
+						"dependsOn": [
+							{
+								"activity": "set sqlDBName",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"storedProcedureName": "[dbo].[sp_executesql]",
+							"storedProcedureParameters": {
+								"command": {
+									"value": {
+										"value": "IF NOT EXISTS (SELECT * FROM sys.databases WHERE name = 'sqls2_@{pipeline().parameters.sourceDirectory}') \nBEGIN\n  CREATE DATABASE sqls2_@{pipeline().parameters.sourceDirectory}; \nEND;",
+										"type": "Expression"
+									},
+									"type": "String"
+								}
+							}
+						},
+						"linkedServiceName": {
+							"referenceName": "LS_SQL_Serverless_OEA",
+							"type": "LinkedServiceReference",
+							"parameters": {
+								"databaseName": "master"
+							}
+						}
+					},
+					{
+						"name": "get folders in stage2p",
+						"type": "GetMetadata",
+						"dependsOn": [
+							{
+								"activity": "Stored procedure1",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"dataset": {
+								"referenceName": "DS_ADLS_binary_folder",
+								"type": "DatasetReference",
+								"parameters": {
+									"filesystem": "stage2p",
+									"directory": {
+										"value": "@pipeline().parameters.sourceDirectory",
+										"type": "Expression"
+									}
+								}
+							},
+							"fieldList": [
+								"childItems"
+							],
+							"storeSettings": {
+								"type": "AzureBlobFSReadSettings",
+								"recursive": true,
+								"enablePartitionDiscovery": false
+							},
+							"formatSettings": {
+								"type": "BinaryReadSettings"
+							}
+						}
+					},
+					{
+						"name": "ForEach1",
+						"type": "ForEach",
+						"dependsOn": [
+							{
+								"activity": "get folders in stage2p",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"userProperties": [],
+						"typeProperties": {
+							"items": {
+								"value": "@activity('get folders in stage2p').output.childItems",
+								"type": "Expression"
+							},
+							"activities": [
+								{
+									"name": "create or alter view for pseduonymized tables",
+									"type": "SqlServerStoredProcedure",
+									"dependsOn": [],
+									"policy": {
+										"timeout": "7.00:00:00",
+										"retry": 0,
+										"retryIntervalInSeconds": 30,
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"userProperties": [],
+									"typeProperties": {
+										"storedProcedureName": "[dbo].[sp_executesql]",
+										"storedProcedureParameters": {
+											"command": {
+												"value": {
+													"value": "CREATE OR ALTER VIEW @{item().name} AS\nSELECT * FROM OPENROWSET(\nBULK 'https://@{pipeline().parameters.storageAccount}.dfs.core.windows.net/stage2p/@{pipeline().parameters.sourceDirectory}/@{item().name}',\nFORMAT='DELTA'\n) AS [r]",
+													"type": "Expression"
+												},
+												"type": "String"
+											}
+										}
+									},
+									"linkedServiceName": {
+										"referenceName": "LS_SQL_Serverless_OEA",
+										"type": "LinkedServiceReference",
+										"parameters": {
+											"databaseName": {
+												"value": "@variables('sqlDBName')",
+												"type": "Expression"
+											}
+										}
+									}
+								}
+							]
+						}
+					},
+					{
+						"name": "get folders in stage2np",
+						"type": "GetMetadata",
+						"dependsOn": [
+							{
+								"activity": "Stored procedure1",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"dataset": {
+								"referenceName": "DS_ADLS_binary_folder",
+								"type": "DatasetReference",
+								"parameters": {
+									"filesystem": "stage2np",
+									"directory": {
+										"value": "@pipeline().parameters.sourceDirectory",
+										"type": "Expression"
+									}
+								}
+							},
+							"fieldList": [
+								"childItems"
+							],
+							"storeSettings": {
+								"type": "AzureBlobFSReadSettings",
+								"recursive": true,
+								"enablePartitionDiscovery": false
+							},
+							"formatSettings": {
+								"type": "BinaryReadSettings"
+							}
+						}
+					},
+					{
+						"name": "ForEach2",
+						"type": "ForEach",
+						"dependsOn": [
+							{
+								"activity": "get folders in stage2np",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"userProperties": [],
+						"typeProperties": {
+							"items": {
+								"value": "@activity('get folders in stage2np').output.childItems",
+								"type": "Expression"
+							},
+							"activities": [
+								{
+									"name": "create or alter view for lookup tables",
+									"type": "SqlServerStoredProcedure",
+									"dependsOn": [],
+									"policy": {
+										"timeout": "7.00:00:00",
+										"retry": 0,
+										"retryIntervalInSeconds": 30,
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"userProperties": [],
+									"typeProperties": {
+										"storedProcedureName": "[dbo].[sp_executesql]",
+										"storedProcedureParameters": {
+											"command": {
+												"value": {
+													"value": "CREATE OR ALTER VIEW @{item().name} AS\nSELECT * FROM OPENROWSET(\nBULK 'https://@{pipeline().parameters.storageAccount}.dfs.core.windows.net/stage2np/@{pipeline().parameters.sourceDirectory}/@{item().name}',\nFORMAT='DELTA'\n) AS [r]",
+													"type": "Expression"
+												},
+												"type": "String"
+											}
+										}
+									},
+									"linkedServiceName": {
+										"referenceName": "LS_SQL_Serverless_OEA",
+										"type": "LinkedServiceReference",
+										"parameters": {
+											"databaseName": {
+												"value": "@variables('sqlDBName')",
+												"type": "Expression"
+											}
+										}
+									}
+								}
+							]
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {},
+					"cancelAfter": {}
+				},
+				"parameters": {
+					"storageAccount": {
+						"type": "string",
+						"defaultValue": "stoeacisd3gg1"
+					},
+					"sourceDirectory": {
+						"type": "string",
+						"defaultValue": "contoso_sis"
+					}
+				},
+				"variables": {
+					"sqlDBName": {
+						"type": "String",
+						"defaultValue": "sqls2_mydb"
+					}
+				},
+				"folder": {
+					"name": "OEA_Framework/Ingest"
+				},
+				"annotations": []
+			},
+			"dependsOn": [
+				"[concat(variables('workspaceId'), '/linkedServices/LS_SQL_Serverless_OEA')]",
+				"[concat(variables('workspaceId'), '/datasets/DS_ADLS_binary_folder')]"
+			]
+		},
+		{
 			"name": "[concat(parameters('workspaceName'), '/create_view')]",
 			"type": "Microsoft.Synapse/workspaces/pipelines",
 			"apiVersion": "2019-06-01-preview",
@@ -2166,6 +2190,129 @@
 			},
 			"dependsOn": [
 				"[concat(variables('workspaceId'), '/linkedServices/LS_SQL_Serverless_OEA')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('workspaceName'), '/reset_all_for_source')]",
+			"type": "Microsoft.Synapse/workspaces/pipelines",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"description": "Deletes the ingestion for the specified system and table - in order to start over when testing during implementation.",
+				"activities": [
+					{
+						"name": "delete source system dir from stage1np",
+						"type": "Delete",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"dataset": {
+								"referenceName": "DS_ADLS_binary_folder",
+								"type": "DatasetReference",
+								"parameters": {
+									"filesystem": "stage1np",
+									"directory": {
+										"value": "@pipeline().parameters.sourceSystem",
+										"type": "Expression"
+									}
+								}
+							},
+							"enableLogging": false,
+							"storeSettings": {
+								"type": "AzureBlobFSReadSettings",
+								"recursive": true,
+								"enablePartitionDiscovery": false
+							}
+						}
+					},
+					{
+						"name": "delete from stage2np",
+						"type": "Delete",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"dataset": {
+								"referenceName": "DS_ADLS_binary_folder",
+								"type": "DatasetReference",
+								"parameters": {
+									"filesystem": "stage2np",
+									"directory": {
+										"value": "@pipeline().parameters.sourceSystem",
+										"type": "Expression"
+									}
+								}
+							},
+							"enableLogging": false,
+							"storeSettings": {
+								"type": "AzureBlobFSReadSettings",
+								"recursive": true,
+								"enablePartitionDiscovery": false
+							}
+						}
+					},
+					{
+						"name": "delete from stage2p",
+						"type": "Delete",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"dataset": {
+								"referenceName": "DS_ADLS_binary_folder",
+								"type": "DatasetReference",
+								"parameters": {
+									"filesystem": "stage2p",
+									"directory": {
+										"value": "@pipeline().parameters.sourceSystem",
+										"type": "Expression"
+									}
+								}
+							},
+							"enableLogging": false,
+							"storeSettings": {
+								"type": "AzureBlobFSReadSettings",
+								"recursive": true,
+								"enablePartitionDiscovery": false
+							}
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {},
+					"cancelAfter": {}
+				},
+				"parameters": {
+					"sourceSystem": {
+						"type": "string",
+						"defaultValue": "contoso_sis"
+					}
+				},
+				"folder": {
+					"name": "OEA_Framework/Reset"
+				},
+				"annotations": []
+			},
+			"dependsOn": [
+				"[concat(variables('workspaceId'), '/datasets/DS_ADLS_binary_folder')]"
 			]
 		},
 		{
@@ -3428,177 +3575,6 @@
 			"dependsOn": []
 		},
 		{
-			"name": "[concat(parameters('workspaceName'), '/OEA_module_connector')]",
-			"type": "Microsoft.Synapse/workspaces/notebooks",
-			"apiVersion": "2019-06-01-preview",
-			"properties": {
-				"nbformat": 4,
-				"nbformat_minor": 2,
-				"bigDataPool": {
-					"referenceName": "spark4v3p1",
-					"type": "BigDataPoolReference"
-				},
-				"sessionProperties": {
-					"driverMemory": "28g",
-					"driverCores": 4,
-					"executorMemory": "28g",
-					"executorCores": 4,
-					"numExecutors": 4,
-					"conf": {
-						"spark.dynamicAllocation.enabled": "false",
-						"spark.dynamicAllocation.minExecutors": "4",
-						"spark.dynamicAllocation.maxExecutors": "4",
-						"spark.autotune.trackingId": "94043ec9-0832-41ed-b38d-a49a82d86572"
-					}
-				},
-				"metadata": {
-					"saveOutput": true,
-					"enableDebugMode": false,
-					"kernelspec": {
-						"name": "synapse_pyspark",
-						"display_name": "Synapse PySpark"
-					},
-					"language_info": {
-						"name": "python"
-					},
-					"a365ComputeOptions": {
-						"id": "/subscriptions/7b9a4896-4541-483f-bdc7-d8f4ec6be3ee/resourceGroups/rg-oea-CISD3GG1/providers/Microsoft.Synapse/workspaces/syn-oea-cisd3gg1/bigDataPools/spark4v3p1",
-						"name": "spark4v3p1",
-						"type": "Spark",
-						"endpoint": "https://syn-oea-cisd3gg1.dev.azuresynapse.net/livyApi/versions/2019-11-01-preview/sparkPools/spark4v3p1",
-						"auth": {
-							"type": "AAD",
-							"authResource": "https://dev.azuresynapse.net"
-						},
-						"sparkVersion": "3.1",
-						"nodeCount": 10,
-						"cores": 4,
-						"memory": 28,
-						"automaticScaleJobs": false
-					},
-					"sessionKeepAliveTimeout": 30
-				},
-				"cells": [
-					{
-						"cell_type": "markdown",
-						"metadata": {
-							"nteract": {
-								"transient": {
-									"deleting": false
-								}
-							}
-						},
-						"source": [
-							"# OEA Module connector\n",
-							"This notebook provides a way for invoking methods on modules from a pipeline."
-						]
-					},
-					{
-						"cell_type": "code",
-						"metadata": {
-							"jupyter": {
-								"source_hidden": false,
-								"outputs_hidden": false
-							},
-							"nteract": {
-								"transient": {
-									"deleting": false
-								}
-							}
-						},
-						"source": [
-							"print('hi there world')"
-						],
-						"outputs": [],
-						"execution_count": null
-					},
-					{
-						"cell_type": "code",
-						"metadata": {
-							"jupyter": {
-								"outputs_hidden": false,
-								"source_hidden": false
-							},
-							"nteract": {
-								"transient": {
-									"deleting": false
-								}
-							},
-							"collapsed": true
-						},
-						"source": [
-							"%run /OEA_py"
-						],
-						"outputs": [],
-						"execution_count": 2
-					},
-					{
-						"cell_type": "code",
-						"metadata": {
-							"jupyter": {
-								"outputs_hidden": false,
-								"source_hidden": false
-							},
-							"nteract": {
-								"transient": {
-									"deleting": false
-								}
-							},
-							"collapsed": true
-						},
-						"source": [
-							"%run /ContosoSIS_py"
-						],
-						"outputs": [],
-						"execution_count": 3
-					},
-					{
-						"cell_type": "code",
-						"metadata": {
-							"jupyter": {
-								"source_hidden": false,
-								"outputs_hidden": false
-							},
-							"nteract": {
-								"transient": {
-									"deleting": false
-								}
-							},
-							"tags": [
-								"parameters"
-							]
-						},
-						"source": [
-							"#module_name = 'MyModule'\r\n",
-							"#method_name = 'ingest'"
-						],
-						"outputs": [],
-						"execution_count": 4
-					},
-					{
-						"cell_type": "code",
-						"metadata": {
-							"jupyter": {
-								"source_hidden": false,
-								"outputs_hidden": false
-							},
-							"nteract": {
-								"transient": {
-									"deleting": false
-								}
-							}
-						},
-						"source": [
-							"#oea.call_module_method(module_name, method_name)"
-						],
-						"outputs": [],
-						"execution_count": 5
-					}
-				]
-			},
-			"dependsOn": []
-		},
-		{
 			"name": "[concat(parameters('workspaceName'), '/ContosoSIS_py')]",
 			"type": "Microsoft.Synapse/workspaces/notebooks",
 			"apiVersion": "2019-06-01-preview",
@@ -3615,7 +3591,7 @@
 						"spark.dynamicAllocation.enabled": "false",
 						"spark.dynamicAllocation.minExecutors": "2",
 						"spark.dynamicAllocation.maxExecutors": "2",
-						"spark.autotune.trackingId": "616c32c8-39a9-491b-96dc-efe2d7cf8b34"
+						"spark.autotune.trackingId": "35dbab3a-1914-4e02-8249-b383911c61a8"
 					}
 				},
 				"metadata": {
@@ -3637,7 +3613,7 @@
 						"source": [
 							"class ContosoSIS(BaseOEAModule):\r\n",
 							"    def __init__(self, source_folder='contoso_sis', pseudonymize = True):\r\n",
-							"        BaseOEAModule.__init__(self, oea, source_folder, pseudonymize)\r\n",
+							"        BaseOEAModule.__init__(self, source_folder, pseudonymize)\r\n",
 							"        self.schemas['studentattendance'] = [['id', 'string', 'no-op'],\r\n",
 							"                                            ['student_id', 'string', 'hash'],\r\n",
 							"                                            ['school_year', 'integer', 'partition-by'],\r\n",
@@ -8896,6 +8872,177 @@
 			"dependsOn": []
 		},
 		{
+			"name": "[concat(parameters('workspaceName'), '/OEA_module_connector')]",
+			"type": "Microsoft.Synapse/workspaces/notebooks",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"nbformat": 4,
+				"nbformat_minor": 2,
+				"bigDataPool": {
+					"referenceName": "spark4v3p1",
+					"type": "BigDataPoolReference"
+				},
+				"sessionProperties": {
+					"driverMemory": "28g",
+					"driverCores": 4,
+					"executorMemory": "28g",
+					"executorCores": 4,
+					"numExecutors": 4,
+					"conf": {
+						"spark.dynamicAllocation.enabled": "false",
+						"spark.dynamicAllocation.minExecutors": "4",
+						"spark.dynamicAllocation.maxExecutors": "4",
+						"spark.autotune.trackingId": "1ee277b3-ccbf-436e-88e7-109ad90d4c4f"
+					}
+				},
+				"metadata": {
+					"saveOutput": true,
+					"enableDebugMode": false,
+					"kernelspec": {
+						"name": "synapse_pyspark",
+						"display_name": "Synapse PySpark"
+					},
+					"language_info": {
+						"name": "python"
+					},
+					"a365ComputeOptions": {
+						"id": "/subscriptions/7b9a4896-4541-483f-bdc7-d8f4ec6be3ee/resourceGroups/rg-oea-CISD3GG1/providers/Microsoft.Synapse/workspaces/syn-oea-cisd3gg1/bigDataPools/spark4v3p1",
+						"name": "spark4v3p1",
+						"type": "Spark",
+						"endpoint": "https://syn-oea-cisd3gg1.dev.azuresynapse.net/livyApi/versions/2019-11-01-preview/sparkPools/spark4v3p1",
+						"auth": {
+							"type": "AAD",
+							"authResource": "https://dev.azuresynapse.net"
+						},
+						"sparkVersion": "3.1",
+						"nodeCount": 10,
+						"cores": 4,
+						"memory": 28,
+						"automaticScaleJobs": false
+					},
+					"sessionKeepAliveTimeout": 30
+				},
+				"cells": [
+					{
+						"cell_type": "markdown",
+						"metadata": {
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							}
+						},
+						"source": [
+							"# OEA Module connector\n",
+							"This notebook provides a way for invoking methods on modules from a pipeline."
+						]
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"jupyter": {
+								"source_hidden": false,
+								"outputs_hidden": false
+							},
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							}
+						},
+						"source": [
+							"print('hi there world')"
+						],
+						"outputs": [],
+						"execution_count": null
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"jupyter": {
+								"outputs_hidden": false,
+								"source_hidden": false
+							},
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							},
+							"collapsed": true
+						},
+						"source": [
+							"%run /OEA_py"
+						],
+						"outputs": [],
+						"execution_count": 2
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"jupyter": {
+								"outputs_hidden": false,
+								"source_hidden": false
+							},
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							},
+							"collapsed": true
+						},
+						"source": [
+							"%run /ContosoSIS_py"
+						],
+						"outputs": [],
+						"execution_count": 3
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"jupyter": {
+								"source_hidden": false,
+								"outputs_hidden": false
+							},
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							},
+							"tags": [
+								"parameters"
+							]
+						},
+						"source": [
+							"#module_name = 'MyModule'\r\n",
+							"#method_name = 'ingest'"
+						],
+						"outputs": [],
+						"execution_count": 4
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"jupyter": {
+								"source_hidden": false,
+								"outputs_hidden": false
+							},
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							}
+						},
+						"source": [
+							"#oea.call_module_method(module_name, method_name)"
+						],
+						"outputs": [],
+						"execution_count": 5
+					}
+				]
+			},
+			"dependsOn": []
+		},
+		{
 			"name": "[concat(parameters('workspaceName'), '/OEA_py')]",
 			"type": "Microsoft.Synapse/workspaces/notebooks",
 			"apiVersion": "2019-06-01-preview",
@@ -8912,7 +9059,7 @@
 						"spark.dynamicAllocation.enabled": "false",
 						"spark.dynamicAllocation.minExecutors": "2",
 						"spark.dynamicAllocation.maxExecutors": "2",
-						"spark.autotune.trackingId": "3fcd7c9a-8e54-465c-b1b7-fe99df294a66"
+						"spark.autotune.trackingId": "a25b04e7-d1dd-40e1-ae4c-fe51b4574981"
 					}
 				},
 				"metadata": {
@@ -11260,153 +11407,6 @@
 				]
 			},
 			"dependsOn": []
-		},
-		{
-			"name": "[concat(parameters('workspaceName'), '/create_stage2_lake_db')]",
-			"type": "Microsoft.Synapse/workspaces/pipelines",
-			"apiVersion": "2019-06-01-preview",
-			"properties": {
-				"activities": [
-					{
-						"name": "Wait1",
-						"type": "Wait",
-						"dependsOn": [],
-						"userProperties": [],
-						"typeProperties": {
-							"waitTimeInSeconds": 1
-						}
-					}
-				],
-				"policy": {
-					"elapsedTimeMetric": {},
-					"cancelAfter": {}
-				},
-				"annotations": []
-			},
-			"dependsOn": []
-		},
-		{
-			"name": "[concat(parameters('workspaceName'), '/reset_all_for_source')]",
-			"type": "Microsoft.Synapse/workspaces/pipelines",
-			"apiVersion": "2019-06-01-preview",
-			"properties": {
-				"description": "Deletes the ingestion for the specified system and table - in order to start over when testing during implementation.",
-				"activities": [
-					{
-						"name": "delete source system dir from stage1np",
-						"type": "Delete",
-						"dependsOn": [],
-						"policy": {
-							"timeout": "7.00:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"dataset": {
-								"referenceName": "DS_ADLS_binary_folder",
-								"type": "DatasetReference",
-								"parameters": {
-									"filesystem": "stage1np",
-									"directory": {
-										"value": "@pipeline().parameters.sourceSystem",
-										"type": "Expression"
-									}
-								}
-							},
-							"enableLogging": false,
-							"storeSettings": {
-								"type": "AzureBlobFSReadSettings",
-								"recursive": true,
-								"enablePartitionDiscovery": false
-							}
-						}
-					},
-					{
-						"name": "delete from stage2np",
-						"type": "Delete",
-						"dependsOn": [],
-						"policy": {
-							"timeout": "7.00:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"dataset": {
-								"referenceName": "DS_ADLS_binary_folder",
-								"type": "DatasetReference",
-								"parameters": {
-									"filesystem": "stage2np",
-									"directory": {
-										"value": "@pipeline().parameters.sourceSystem",
-										"type": "Expression"
-									}
-								}
-							},
-							"enableLogging": false,
-							"storeSettings": {
-								"type": "AzureBlobFSReadSettings",
-								"recursive": true,
-								"enablePartitionDiscovery": false
-							}
-						}
-					},
-					{
-						"name": "delete from stage2p",
-						"type": "Delete",
-						"dependsOn": [],
-						"policy": {
-							"timeout": "7.00:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"dataset": {
-								"referenceName": "DS_ADLS_binary_folder",
-								"type": "DatasetReference",
-								"parameters": {
-									"filesystem": "stage2p",
-									"directory": {
-										"value": "@pipeline().parameters.sourceSystem",
-										"type": "Expression"
-									}
-								}
-							},
-							"enableLogging": false,
-							"storeSettings": {
-								"type": "AzureBlobFSReadSettings",
-								"recursive": true,
-								"enablePartitionDiscovery": false
-							}
-						}
-					}
-				],
-				"policy": {
-					"elapsedTimeMetric": {},
-					"cancelAfter": {}
-				},
-				"parameters": {
-					"sourceSystem": {
-						"type": "string",
-						"defaultValue": "contoso_sis"
-					}
-				},
-				"folder": {
-					"name": "OEA_Framework/Reset"
-				},
-				"annotations": []
-			},
-			"dependsOn": [
-				"[concat(variables('workspaceId'), '/datasets/DS_ADLS_binary_folder')]"
-			]
 		}
 	]
 }
