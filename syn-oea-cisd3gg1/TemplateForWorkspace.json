@@ -3591,7 +3591,7 @@
 						"spark.dynamicAllocation.enabled": "false",
 						"spark.dynamicAllocation.minExecutors": "2",
 						"spark.dynamicAllocation.maxExecutors": "2",
-						"spark.autotune.trackingId": "52e32855-5c07-47af-a4f1-54d635666b2d"
+						"spark.autotune.trackingId": "0259d811-c1f3-4b52-8066-7c739f20cecb"
 					}
 				},
 				"metadata": {
@@ -8894,7 +8894,7 @@
 						"spark.dynamicAllocation.enabled": "false",
 						"spark.dynamicAllocation.minExecutors": "4",
 						"spark.dynamicAllocation.maxExecutors": "4",
-						"spark.autotune.trackingId": "bc4c6a3b-74ab-40a8-8311-7c212f63ed56"
+						"spark.autotune.trackingId": "5a502c15-0c6c-4fbf-bfc5-b88f1c959fab"
 					}
 				},
 				"metadata": {
@@ -8960,7 +8960,7 @@
 							"method_name = 'ingest'"
 						],
 						"outputs": [],
-						"execution_count": 14
+						"execution_count": 20
 					},
 					{
 						"cell_type": "code",
@@ -8980,7 +8980,7 @@
 							"%run /OEA_py"
 						],
 						"outputs": [],
-						"execution_count": 15
+						"execution_count": 21
 					},
 					{
 						"cell_type": "code",
@@ -9000,26 +9000,7 @@
 							"%run /ContosoSIS_py"
 						],
 						"outputs": [],
-						"execution_count": 16
-					},
-					{
-						"cell_type": "code",
-						"metadata": {
-							"jupyter": {
-								"source_hidden": false,
-								"outputs_hidden": false
-							},
-							"nteract": {
-								"transient": {
-									"deleting": false
-								}
-							}
-						},
-						"source": [
-							"oea.registered_modules"
-						],
-						"outputs": [],
-						"execution_count": 17
+						"execution_count": 22
 					},
 					{
 						"cell_type": "code",
@@ -9061,7 +9042,7 @@
 						"spark.dynamicAllocation.enabled": "false",
 						"spark.dynamicAllocation.minExecutors": "2",
 						"spark.dynamicAllocation.maxExecutors": "2",
-						"spark.autotune.trackingId": "81298f87-671d-451d-9455-8045daaf6ef6"
+						"spark.autotune.trackingId": "d685676d-435e-4468-adbd-b1d8b6fb8cf6"
 					}
 				},
 				"metadata": {
@@ -9139,11 +9120,13 @@
 							"            self.logger.addHandler(AzureLogHandler(connection_string='InstrumentationKey=' + instrumentation_key))\n",
 							"\n",
 							"    def register_module(self, module):\n",
-							"        \"\"\" Register a module to have allow for it to be called via call_module_method \"\"\"\n",
-							"        self.registered_modules[module.source_folder] = module\n",
+							"        \"\"\" Register a module to have allow for it to be called via call_method \"\"\"\n",
+							"        self.registered_modules[type(module).__name__] = module\n",
 							"\n",
 							"    def call_method(self, module_name, method_name):\n",
-							"        \"\"\" Calls the specified method on the specified module \"\"\"\n",
+							"        \"\"\" Calls the specified method on the specified module \n",
+							"            eg, call_method('ContosoSIS', 'ingest')\n",
+							"        \"\"\"\n",
 							"        if module_name in self.registered_modules:\n",
 							"            m = getattr(self.registered_modules[module_name], method_name)\n",
 							"            m()\n",
