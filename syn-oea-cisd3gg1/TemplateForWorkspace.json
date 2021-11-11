@@ -3591,7 +3591,7 @@
 						"spark.dynamicAllocation.enabled": "false",
 						"spark.dynamicAllocation.minExecutors": "2",
 						"spark.dynamicAllocation.maxExecutors": "2",
-						"spark.autotune.trackingId": "f250fe4b-d103-4a8f-9fad-3b4579a24ff0"
+						"spark.autotune.trackingId": "87b2c586-8e7e-46a5-bd24-53541c64576e"
 					}
 				},
 				"metadata": {
@@ -8892,7 +8892,7 @@
 						"spark.dynamicAllocation.enabled": "false",
 						"spark.dynamicAllocation.minExecutors": "4",
 						"spark.dynamicAllocation.maxExecutors": "4",
-						"spark.autotune.trackingId": "a35d2a5e-7632-4927-9b0f-d8655325b4e2"
+						"spark.autotune.trackingId": "f952be7a-1eb3-4d19-8a60-662ceb4c9c99"
 					}
 				},
 				"metadata": {
@@ -8936,6 +8936,29 @@
 							"# OEA Module connector\n",
 							"This notebook provides a way for invoking methods on modules from a pipeline."
 						]
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"jupyter": {
+								"source_hidden": false,
+								"outputs_hidden": false
+							},
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							},
+							"tags": [
+								"parameters"
+							]
+						},
+						"source": [
+							"module_name = 'MyModule'\r\n",
+							"method_name = 'ingest'"
+						],
+						"outputs": [],
+						"execution_count": 4
 					},
 					{
 						"cell_type": "code",
@@ -8988,29 +9011,6 @@
 								"transient": {
 									"deleting": false
 								}
-							},
-							"tags": [
-								"parameters"
-							]
-						},
-						"source": [
-							"#module_name = 'MyModule'\r\n",
-							"#method_name = 'ingest'"
-						],
-						"outputs": [],
-						"execution_count": 4
-					},
-					{
-						"cell_type": "code",
-						"metadata": {
-							"jupyter": {
-								"source_hidden": false,
-								"outputs_hidden": false
-							},
-							"nteract": {
-								"transient": {
-									"deleting": false
-								}
 							}
 						},
 						"source": [
@@ -9040,7 +9040,7 @@
 						"spark.dynamicAllocation.enabled": "false",
 						"spark.dynamicAllocation.minExecutors": "2",
 						"spark.dynamicAllocation.maxExecutors": "2",
-						"spark.autotune.trackingId": "5f90cf1d-1bbc-4e07-bd6b-39ef1c9e5548"
+						"spark.autotune.trackingId": "f23f3d5c-c7ae-444e-b605-1842308b4d83"
 					}
 				},
 				"metadata": {
