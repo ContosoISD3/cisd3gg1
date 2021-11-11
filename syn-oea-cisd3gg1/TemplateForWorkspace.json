@@ -291,7 +291,7 @@
 						"userProperties": [],
 						"typeProperties": {
 							"notebook": {
-								"referenceName": "OEA_module_connector",
+								"referenceName": "OEA_connector",
 								"type": "NotebookReference"
 							},
 							"parameters": {
@@ -345,7 +345,7 @@
 						"userProperties": [],
 						"typeProperties": {
 							"notebook": {
-								"referenceName": "OEA_module_connector",
+								"referenceName": "OEA_connector",
 								"type": "NotebookReference"
 							},
 							"snapshot": true
@@ -363,7 +363,7 @@
 			},
 			"dependsOn": [
 				"[concat(variables('workspaceId'), '/pipelines/Copy_from_each_URL')]",
-				"[concat(variables('workspaceId'), '/notebooks/OEA_module_connector')]",
+				"[concat(variables('workspaceId'), '/notebooks/OEA_connector')]",
 				"[concat(variables('workspaceId'), '/pipelines/create_stage2_sql_db')]"
 			]
 		},
@@ -3271,7 +3271,7 @@
 						"spark.dynamicAllocation.enabled": "false",
 						"spark.dynamicAllocation.minExecutors": "4",
 						"spark.dynamicAllocation.maxExecutors": "4",
-						"spark.autotune.trackingId": "f5354438-c352-4da4-9e28-de6775129fa3"
+						"spark.autotune.trackingId": "16a64b45-d245-499f-a13a-e0515eab592b"
 					}
 				},
 				"metadata": {
@@ -3296,10 +3296,8 @@
 						"sparkVersion": "3.1",
 						"nodeCount": 10,
 						"cores": 4,
-						"memory": 28,
-						"automaticScaleJobs": false
-					},
-					"sessionKeepAliveTimeout": 30
+						"memory": 28
+					}
 				},
 				"cells": [
 					{
@@ -3613,7 +3611,7 @@
 						"spark.dynamicAllocation.enabled": "false",
 						"spark.dynamicAllocation.minExecutors": "2",
 						"spark.dynamicAllocation.maxExecutors": "2",
-						"spark.autotune.trackingId": "0dc69b23-fc28-4454-a619-f6c0d6575d2a"
+						"spark.autotune.trackingId": "72fa1011-c5ad-4f1e-983a-7d1df8a3bbd1"
 					}
 				},
 				"metadata": {
@@ -3625,13 +3623,11 @@
 					},
 					"language_info": {
 						"name": "python"
-					},
-					"sessionKeepAliveTimeout": 30
+					}
 				},
 				"cells": [
 					{
 						"cell_type": "code",
-						"metadata": {},
 						"source": [
 							"class ContosoSIS(BaseOEAModule):\r\n",
 							"    def __init__(self, source_folder='contoso_sis', pseudonymize = True):\r\n",
@@ -8891,7 +8887,7 @@
 			"dependsOn": []
 		},
 		{
-			"name": "[concat(parameters('workspaceName'), '/OEA_module_connector')]",
+			"name": "[concat(parameters('workspaceName'), '/OEA_connector')]",
 			"type": "Microsoft.Synapse/workspaces/notebooks",
 			"apiVersion": "2019-06-01-preview",
 			"properties": {
@@ -8911,7 +8907,7 @@
 						"spark.dynamicAllocation.enabled": "false",
 						"spark.dynamicAllocation.minExecutors": "4",
 						"spark.dynamicAllocation.maxExecutors": "4",
-						"spark.autotune.trackingId": "59886258-13ea-4fe0-ae24-bf90b09084d8"
+						"spark.autotune.trackingId": "53af6a51-d44d-441a-8086-c468a7b095b6"
 					}
 				},
 				"metadata": {
@@ -9062,7 +9058,7 @@
 						"spark.dynamicAllocation.enabled": "false",
 						"spark.dynamicAllocation.minExecutors": "2",
 						"spark.dynamicAllocation.maxExecutors": "2",
-						"spark.autotune.trackingId": "594246d5-70bc-42a2-a148-82397bc9006c"
+						"spark.autotune.trackingId": "97fd0059-d19c-4332-8198-3d59195e4e76"
 					}
 				},
 				"metadata": {
@@ -9074,8 +9070,7 @@
 					},
 					"language_info": {
 						"name": "python"
-					},
-					"sessionKeepAliveTimeout": 30
+					}
 				},
 				"cells": [
 					{
