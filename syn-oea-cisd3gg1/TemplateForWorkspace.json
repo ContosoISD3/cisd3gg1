@@ -3591,7 +3591,7 @@
 						"spark.dynamicAllocation.enabled": "false",
 						"spark.dynamicAllocation.minExecutors": "2",
 						"spark.dynamicAllocation.maxExecutors": "2",
-						"spark.autotune.trackingId": "db34d198-a8d1-4201-88f1-0d1c5cbdb46c"
+						"spark.autotune.trackingId": "9d80bcab-0a2b-44d8-9713-00447b8b7253"
 					}
 				},
 				"metadata": {
@@ -3657,7 +3657,7 @@
 							"        #oea.ingest_snapshot_csv_data(self.source_folder, 'studentsectionmark', self.schemas['studentsectionmark'], 'school_year', 'id')\r\n",
 							"        #oea.ingest_delta_csv_data(self.source_folder, 'studentdemographics', self.schemas['studentdemographics'])\r\n",
 							"\r\n",
-							"contoso_sis = ContosoSIS(oea)\r\n",
+							"contoso_sis = ContosoSIS()\r\n",
 							"oea.register_module(contoso_sis)"
 						],
 						"outputs": [],
@@ -8894,7 +8894,7 @@
 						"spark.dynamicAllocation.enabled": "false",
 						"spark.dynamicAllocation.minExecutors": "4",
 						"spark.dynamicAllocation.maxExecutors": "4",
-						"spark.autotune.trackingId": "21fcb20f-589a-46fb-9f69-79248c57591a"
+						"spark.autotune.trackingId": "d7e0384c-b90f-4ae7-8fc6-c0da707c765e"
 					}
 				},
 				"metadata": {
@@ -8980,7 +8980,7 @@
 							"%run /OEA_py"
 						],
 						"outputs": [],
-						"execution_count": 3
+						"execution_count": 8
 					},
 					{
 						"cell_type": "code",
@@ -9000,7 +9000,7 @@
 							"%run /ContosoSIS_py"
 						],
 						"outputs": [],
-						"execution_count": 4
+						"execution_count": 12
 					},
 					{
 						"cell_type": "code",
@@ -9038,7 +9038,26 @@
 							"oea.call_module_method('ContosoSIS', 'sayhi')"
 						],
 						"outputs": [],
-						"execution_count": 7
+						"execution_count": 10
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"jupyter": {
+								"source_hidden": false,
+								"outputs_hidden": false
+							},
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							}
+						},
+						"source": [
+							"print(contoso_sis.source_folder)"
+						],
+						"outputs": [],
+						"execution_count": 13
 					},
 					{
 						"cell_type": "code",
@@ -9080,7 +9099,7 @@
 						"spark.dynamicAllocation.enabled": "false",
 						"spark.dynamicAllocation.minExecutors": "2",
 						"spark.dynamicAllocation.maxExecutors": "2",
-						"spark.autotune.trackingId": "8a189159-9f43-49f7-9202-5bb79e4d4240"
+						"spark.autotune.trackingId": "3f2757cf-f9d6-4eaf-96c6-d2cd5c8d7a48"
 					}
 				},
 				"metadata": {
