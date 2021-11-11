@@ -13,7 +13,7 @@
 				"spark.dynamicAllocation.enabled": "false",
 				"spark.dynamicAllocation.minExecutors": "2",
 				"spark.dynamicAllocation.maxExecutors": "2",
-				"spark.autotune.trackingId": "f9a9083b-e1a6-4057-99b6-12c840c2f96e"
+				"spark.autotune.trackingId": "010182da-ddd5-490a-9cd6-f9aea67bf526"
 			}
 		},
 		"metadata": {
@@ -371,8 +371,7 @@
 					"        self.stage3p = f\"{oea.stage3p}/{source_folder}\"\n",
 					"        self.module_path = f\"{oea.framework_path}/modules/{source_folder}\"\n",
 					"        self.schemas = {}\n",
-					"        oea.register_module(self)\n",
-					"   \n",
+					"        \n",
 					"    def _process_entity_from_stage1(self, path, entity_name, format='csv', write_mode='overwrite', header='true'):\n",
 					"        spark_schema = oea.to_spark_schema(self.schemas[entity_name])\n",
 					"        df = spark.read.format(format).load(f\"{self.stage1np}/{path}/{entity_name}\", header=header, schema=spark_schema)\n",

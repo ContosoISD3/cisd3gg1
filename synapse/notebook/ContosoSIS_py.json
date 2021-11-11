@@ -13,7 +13,7 @@
 				"spark.dynamicAllocation.enabled": "false",
 				"spark.dynamicAllocation.minExecutors": "2",
 				"spark.dynamicAllocation.maxExecutors": "2",
-				"spark.autotune.trackingId": "69995d3b-041a-4c25-8be0-abfc46a38ac5"
+				"spark.autotune.trackingId": "2e53dd8d-ed45-4edf-93d9-556d8c8d3254"
 			}
 		},
 		"metadata": {
@@ -77,7 +77,8 @@
 					"        #oea.ingest_snapshot_csv_data(self.source_folder, 'studentsectionmark', self.schemas['studentsectionmark'], 'school_year', 'id')\r\n",
 					"        #oea.ingest_delta_csv_data(self.source_folder, 'studentdemographics', self.schemas['studentdemographics'])\r\n",
 					"\r\n",
-					"contoso_sis = ContosoSIS(oea)"
+					"contoso_sis = ContosoSIS(oea)\r\n",
+					"oea.register_module(contoso_sis)"
 				],
 				"execution_count": null
 			}
