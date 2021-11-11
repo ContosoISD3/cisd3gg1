@@ -48,8 +48,8 @@
 						"type": "NotebookReference"
 					},
 					"parameters": {
-						"module_name": {
-							"value": "ContosoSIS",
+						"object_name": {
+							"value": "contoso_sis",
 							"type": "string"
 						},
 						"method_name": {
@@ -85,9 +85,16 @@
 				}
 			},
 			{
-				"name": "Notebook1",
+				"name": "create_stage2_lake_db",
 				"type": "SynapseNotebook",
-				"dependsOn": [],
+				"dependsOn": [
+					{
+						"activity": "Contoso_SIS_ingest",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
 				"policy": {
 					"timeout": "7.00:00:00",
 					"retry": 0,
@@ -100,6 +107,16 @@
 					"notebook": {
 						"referenceName": "OEA_connector",
 						"type": "NotebookReference"
+					},
+					"parameters": {
+						"object_name": {
+							"value": "oea",
+							"type": "string"
+						},
+						"method_name": {
+							"value": "create_stage2_lake_db",
+							"type": "string"
+						}
 					},
 					"snapshot": true
 				}
