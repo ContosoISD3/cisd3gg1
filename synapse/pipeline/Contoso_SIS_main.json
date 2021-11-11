@@ -79,7 +79,10 @@
 					},
 					"waitOnCompletion": true,
 					"parameters": {
-						"storageAccount": "stoeacisd3gg1",
+						"storageAccount": {
+							"value": "@pipeline().parameters.storageAccount",
+							"type": "Expression"
+						},
 						"sourceDirectory": "contoso_sis"
 					}
 				}
@@ -122,6 +125,12 @@
 				}
 			}
 		],
+		"parameters": {
+			"storageAccount": {
+				"type": "string",
+				"defaultValue": "stoeacisd3gg1"
+			}
+		},
 		"folder": {
 			"name": "OEA_Modules"
 		},
