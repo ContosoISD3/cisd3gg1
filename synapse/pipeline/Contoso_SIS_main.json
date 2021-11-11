@@ -49,7 +49,7 @@
 					},
 					"parameters": {
 						"module_name": {
-							"value": "contoso_sis",
+							"value": "ContosoSIS",
 							"type": "string"
 						},
 						"method_name": {
