@@ -17,7 +17,7 @@
 				"spark.dynamicAllocation.enabled": "false",
 				"spark.dynamicAllocation.minExecutors": "4",
 				"spark.dynamicAllocation.maxExecutors": "4",
-				"spark.autotune.trackingId": "d5d583de-3451-40b0-9db7-2287fc2045e1"
+				"spark.autotune.trackingId": "8ab7fa83-3a70-40c3-a07b-fc18dac48c1b"
 			}
 		},
 		"metadata": {
@@ -66,6 +66,28 @@
 				"cell_type": "code",
 				"metadata": {
 					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					},
+					"tags": [
+						"parameters"
+					]
+				},
+				"source": [
+					"module_name = 'MyModule'\r\n",
+					"method_name = 'ingest'"
+				],
+				"execution_count": 4
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
 						"outputs_hidden": false,
 						"source_hidden": false
 					},
@@ -99,28 +121,6 @@
 					"%run /ContosoSIS_py"
 				],
 				"execution_count": 3
-			},
-			{
-				"cell_type": "code",
-				"metadata": {
-					"jupyter": {
-						"source_hidden": false,
-						"outputs_hidden": false
-					},
-					"nteract": {
-						"transient": {
-							"deleting": false
-						}
-					},
-					"tags": [
-						"parameters"
-					]
-				},
-				"source": [
-					"module_name = 'MyModule'\r\n",
-					"method_name = 'ingest'"
-				],
-				"execution_count": 4
 			},
 			{
 				"cell_type": "code",
