@@ -3591,7 +3591,7 @@
 						"spark.dynamicAllocation.enabled": "false",
 						"spark.dynamicAllocation.minExecutors": "2",
 						"spark.dynamicAllocation.maxExecutors": "2",
-						"spark.autotune.trackingId": "35dbab3a-1914-4e02-8249-b383911c61a8"
+						"spark.autotune.trackingId": "9db6b9d5-0161-4e6e-89f2-762dc38354b1"
 					}
 				},
 				"metadata": {
@@ -8892,7 +8892,7 @@
 						"spark.dynamicAllocation.enabled": "false",
 						"spark.dynamicAllocation.minExecutors": "4",
 						"spark.dynamicAllocation.maxExecutors": "4",
-						"spark.autotune.trackingId": "1ee277b3-ccbf-436e-88e7-109ad90d4c4f"
+						"spark.autotune.trackingId": "45e76ed2-6047-4265-bc00-56c4810c762c"
 					}
 				},
 				"metadata": {
@@ -8936,25 +8936,6 @@
 							"# OEA Module connector\n",
 							"This notebook provides a way for invoking methods on modules from a pipeline."
 						]
-					},
-					{
-						"cell_type": "code",
-						"metadata": {
-							"jupyter": {
-								"source_hidden": false,
-								"outputs_hidden": false
-							},
-							"nteract": {
-								"transient": {
-									"deleting": false
-								}
-							}
-						},
-						"source": [
-							"print('hi there world')"
-						],
-						"outputs": [],
-						"execution_count": null
 					},
 					{
 						"cell_type": "code",
@@ -9059,7 +9040,7 @@
 						"spark.dynamicAllocation.enabled": "false",
 						"spark.dynamicAllocation.minExecutors": "2",
 						"spark.dynamicAllocation.maxExecutors": "2",
-						"spark.autotune.trackingId": "a25b04e7-d1dd-40e1-ae4c-fe51b4574981"
+						"spark.autotune.trackingId": "0d675d2b-c570-46f9-82f9-9710d8e707a2"
 					}
 				},
 				"metadata": {
