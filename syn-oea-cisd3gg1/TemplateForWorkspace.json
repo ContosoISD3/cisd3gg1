@@ -326,7 +326,10 @@
 							},
 							"waitOnCompletion": true,
 							"parameters": {
-								"storageAccount": "stoeacisd3gg1",
+								"storageAccount": {
+									"value": "@pipeline().parameters.storageAccount",
+									"type": "Expression"
+								},
 								"sourceDirectory": "contoso_sis"
 							}
 						}
@@ -372,6 +375,12 @@
 				"policy": {
 					"elapsedTimeMetric": {},
 					"cancelAfter": {}
+				},
+				"parameters": {
+					"storageAccount": {
+						"type": "string",
+						"defaultValue": "stoeacisd3gg1"
+					}
 				},
 				"folder": {
 					"name": "OEA_Modules"
@@ -8924,7 +8933,7 @@
 						"spark.dynamicAllocation.enabled": "false",
 						"spark.dynamicAllocation.minExecutors": "4",
 						"spark.dynamicAllocation.maxExecutors": "4",
-						"spark.autotune.trackingId": "0576da8f-b5b0-42a1-9120-b361d82c36a3"
+						"spark.autotune.trackingId": "01f96384-5b75-4ceb-aa17-28b8496e6834"
 					}
 				},
 				"metadata": {
@@ -8989,10 +8998,10 @@
 						},
 						"source": [
 							"object_name = 'contoso_sis'\r\n",
-							"method_name = 'some_method_name'"
+							"method_name = 'ingest'"
 						],
 						"outputs": [],
-						"execution_count": null
+						"execution_count": 27
 					},
 					{
 						"cell_type": "code",
@@ -9012,7 +9021,7 @@
 							"%run /OEA_py"
 						],
 						"outputs": [],
-						"execution_count": null
+						"execution_count": 28
 					},
 					{
 						"cell_type": "code",
@@ -9032,7 +9041,7 @@
 							"%run /ContosoSIS_py"
 						],
 						"outputs": [],
-						"execution_count": null
+						"execution_count": 29
 					},
 					{
 						"cell_type": "code",
@@ -9048,11 +9057,11 @@
 							}
 						},
 						"source": [
-							"m = getattr(object_name, method_name)\r\n",
+							"m = getattr(eval(object_name), method_name)\r\n",
 							"m()"
 						],
 						"outputs": [],
-						"execution_count": null
+						"execution_count": 30
 					}
 				]
 			},
