@@ -17,7 +17,7 @@
 				"spark.dynamicAllocation.enabled": "false",
 				"spark.dynamicAllocation.minExecutors": "4",
 				"spark.dynamicAllocation.maxExecutors": "4",
-				"spark.autotune.trackingId": "8ab7fa83-3a70-40c3-a07b-fc18dac48c1b"
+				"spark.autotune.trackingId": "2e7c9415-baba-44b9-a0f6-2c742db56970"
 			}
 		},
 		"metadata": {
@@ -79,27 +79,8 @@
 					]
 				},
 				"source": [
-					"module_name = 'MyModule'\r\n",
+					"module_name = 'ContosoSIS'\r\n",
 					"method_name = 'ingest'"
-				],
-				"execution_count": 4
-			},
-			{
-				"cell_type": "code",
-				"metadata": {
-					"jupyter": {
-						"outputs_hidden": false,
-						"source_hidden": false
-					},
-					"nteract": {
-						"transient": {
-							"deleting": false
-						}
-					},
-					"collapsed": true
-				},
-				"source": [
-					"%run /OEA_py"
 				],
 				"execution_count": 2
 			},
@@ -118,9 +99,64 @@
 					"collapsed": true
 				},
 				"source": [
-					"%run /ContosoSIS_py"
+					"%run /OEA_py"
 				],
 				"execution_count": 3
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"outputs_hidden": false,
+						"source_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					},
+					"collapsed": true
+				},
+				"source": [
+					"%run /ContosoSIS_py"
+				],
+				"execution_count": 4
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					"oea.registered_modules"
+				],
+				"execution_count": 5
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					"oea.call_module_method('ContosoSIS', 'sayhi')"
+				],
+				"execution_count": 7
 			},
 			{
 				"cell_type": "code",
@@ -138,7 +174,7 @@
 				"source": [
 					"oea.call_module_method(module_name, method_name)"
 				],
-				"execution_count": 5
+				"execution_count": 6
 			}
 		]
 	}
