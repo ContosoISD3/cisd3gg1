@@ -44,7 +44,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"notebook": {
-						"referenceName": "OEA_module_connector",
+						"referenceName": "OEA_connector",
 						"type": "NotebookReference"
 					},
 					"parameters": {
@@ -98,7 +98,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"notebook": {
-						"referenceName": "OEA_module_connector",
+						"referenceName": "OEA_connector",
 						"type": "NotebookReference"
 					},
 					"snapshot": true
