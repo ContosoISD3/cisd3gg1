@@ -17,7 +17,7 @@
 				"spark.dynamicAllocation.enabled": "false",
 				"spark.dynamicAllocation.minExecutors": "4",
 				"spark.dynamicAllocation.maxExecutors": "4",
-				"spark.autotune.trackingId": "0ffddce8-413b-42b5-9c07-6e5446697760"
+				"spark.autotune.trackingId": "f6ffb1cc-8ddd-405e-b61e-7793c4e4da6a"
 			}
 		},
 		"metadata": {
@@ -82,9 +82,9 @@
 				},
 				"source": [
 					"object_name = 'contoso_sis'\r\n",
-					"method_name = 'some_method_name'"
+					"method_name = 'ingest'"
 				],
-				"execution_count": null
+				"execution_count": 27
 			},
 			{
 				"cell_type": "code",
@@ -103,7 +103,7 @@
 				"source": [
 					"%run /OEA_py"
 				],
-				"execution_count": null
+				"execution_count": 28
 			},
 			{
 				"cell_type": "code",
@@ -122,7 +122,7 @@
 				"source": [
 					"%run /ContosoSIS_py"
 				],
-				"execution_count": null
+				"execution_count": 29
 			},
 			{
 				"cell_type": "code",
@@ -138,10 +138,10 @@
 					}
 				},
 				"source": [
-					"m = getattr(object_name, method_name)\r\n",
+					"m = getattr(eval(object_name), method_name)\r\n",
 					"m()"
 				],
-				"execution_count": null
+				"execution_count": 30
 			}
 		]
 	}
