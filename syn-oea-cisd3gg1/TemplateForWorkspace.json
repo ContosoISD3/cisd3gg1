@@ -295,8 +295,8 @@
 								"type": "NotebookReference"
 							},
 							"parameters": {
-								"module_name": {
-									"value": "ContosoSIS",
+								"object_name": {
+									"value": "contoso_sis",
 									"type": "string"
 								},
 								"method_name": {
@@ -332,9 +332,16 @@
 						}
 					},
 					{
-						"name": "Notebook1",
+						"name": "create_stage2_lake_db",
 						"type": "SynapseNotebook",
-						"dependsOn": [],
+						"dependsOn": [
+							{
+								"activity": "Contoso_SIS_ingest",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
 						"policy": {
 							"timeout": "7.00:00:00",
 							"retry": 0,
@@ -347,6 +354,16 @@
 							"notebook": {
 								"referenceName": "OEA_connector",
 								"type": "NotebookReference"
+							},
+							"parameters": {
+								"object_name": {
+									"value": "oea",
+									"type": "string"
+								},
+								"method_name": {
+									"value": "create_stage2_lake_db",
+									"type": "string"
+								}
 							},
 							"snapshot": true
 						}
@@ -8907,7 +8924,7 @@
 						"spark.dynamicAllocation.enabled": "false",
 						"spark.dynamicAllocation.minExecutors": "4",
 						"spark.dynamicAllocation.maxExecutors": "4",
-						"spark.autotune.trackingId": "53af6a51-d44d-441a-8086-c468a7b095b6"
+						"spark.autotune.trackingId": "0576da8f-b5b0-42a1-9120-b361d82c36a3"
 					}
 				},
 				"metadata": {
@@ -8951,7 +8968,7 @@
 							"# OEA connector\n",
 							"This notebook provides a way for invoking methods on the OEA framework or supporting modules from a pipeline.\n",
 							"\n",
-							"When setting up a new module, be sure to include a new cell below that imports that module, so that it's methods can be invoked by pipelines."
+							"When setting up a new module, be sure to include a new cell below that imports that module, so that its methods can be invoked by pipelines."
 						]
 					},
 					{
