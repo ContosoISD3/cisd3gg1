@@ -13,7 +13,7 @@
 				"spark.dynamicAllocation.enabled": "false",
 				"spark.dynamicAllocation.minExecutors": "2",
 				"spark.dynamicAllocation.maxExecutors": "2",
-				"spark.autotune.trackingId": "9a319d03-53c6-4f1e-ac91-3d85a1ad1bb3"
+				"spark.autotune.trackingId": "c1ab8889-d6d7-4a82-9cc6-578e0bf583fd"
 			}
 		},
 		"metadata": {
@@ -67,10 +67,6 @@
 					"                                            ['ELLStatus', 'string', 'no-op'],\r\n",
 					"                                            ['SpecialEducation', 'string', 'no-op'],\r\n",
 					"                                            ['LowIncome', 'boolean', 'no-op']]                                            \r\n",
-					"\r\n",
-					"    def sayhi(self):\r\n",
-					"        print('hi there')\r\n",
-					"        print(self.source_folder)\r\n",
 					"\r\n",
 					"    def ingest(self):\r\n",
 					"        oea.ingest_incremental_csv_data(self.source_folder, 'studentattendance', self.schemas['studentattendance'], 'school_year', 'id')\r\n",
