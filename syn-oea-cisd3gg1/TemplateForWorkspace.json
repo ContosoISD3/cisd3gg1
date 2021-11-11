@@ -252,14 +252,7 @@
 					{
 						"name": "Copy_from_each_URL - SIS data",
 						"type": "ExecutePipeline",
-						"dependsOn": [
-							{
-								"activity": "create_stage2_sql_db",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							}
-						],
+						"dependsOn": [],
 						"userProperties": [],
 						"typeProperties": {
 							"pipeline": {
@@ -280,7 +273,14 @@
 					{
 						"name": "Contoso_SIS_ingest",
 						"type": "SynapseNotebook",
-						"dependsOn": [],
+						"dependsOn": [
+							{
+								"activity": "Copy_from_each_URL - SIS data",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
 						"policy": {
 							"timeout": "7.00:00:00",
 							"retry": 0,
@@ -300,7 +300,7 @@
 									"type": "string"
 								},
 								"method_name": {
-									"value": "sayhi",
+									"value": "ingest",
 									"type": "string"
 								}
 							},
@@ -3591,7 +3591,7 @@
 						"spark.dynamicAllocation.enabled": "false",
 						"spark.dynamicAllocation.minExecutors": "2",
 						"spark.dynamicAllocation.maxExecutors": "2",
-						"spark.autotune.trackingId": "87b2c586-8e7e-46a5-bd24-53541c64576e"
+						"spark.autotune.trackingId": "59d69aa2-92ec-4a8f-9527-b8c1e3ad5b70"
 					}
 				},
 				"metadata": {
@@ -8892,7 +8892,7 @@
 						"spark.dynamicAllocation.enabled": "false",
 						"spark.dynamicAllocation.minExecutors": "4",
 						"spark.dynamicAllocation.maxExecutors": "4",
-						"spark.autotune.trackingId": "f952be7a-1eb3-4d19-8a60-662ceb4c9c99"
+						"spark.autotune.trackingId": "dd897fba-8e55-4877-8bd8-ad311e759bd7"
 					}
 				},
 				"metadata": {
@@ -9040,7 +9040,7 @@
 						"spark.dynamicAllocation.enabled": "false",
 						"spark.dynamicAllocation.minExecutors": "2",
 						"spark.dynamicAllocation.maxExecutors": "2",
-						"spark.autotune.trackingId": "f23f3d5c-c7ae-444e-b605-1842308b4d83"
+						"spark.autotune.trackingId": "9660a4c2-9ddb-47e3-845d-4acac6184ddc"
 					}
 				},
 				"metadata": {
