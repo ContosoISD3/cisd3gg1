@@ -17,7 +17,7 @@
 				"spark.dynamicAllocation.enabled": "false",
 				"spark.dynamicAllocation.minExecutors": "4",
 				"spark.dynamicAllocation.maxExecutors": "4",
-				"spark.autotune.trackingId": "0bdeaebe-b7bf-45fc-a93e-ef82eceb7cc8"
+				"spark.autotune.trackingId": "ca9d5999-f369-46da-b423-d465c22d6508"
 			}
 		},
 		"metadata": {
@@ -81,8 +81,8 @@
 					]
 				},
 				"source": [
-					"object_name = 'MyModule'\r\n",
-					"method_name = 'ingest'"
+					"object_name = 'contoso_sis'\r\n",
+					"method_name = 'some_method_name'"
 				],
 				"execution_count": null
 			},
