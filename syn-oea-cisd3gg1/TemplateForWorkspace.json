@@ -3251,7 +3251,7 @@
 						"spark.dynamicAllocation.enabled": "false",
 						"spark.dynamicAllocation.minExecutors": "4",
 						"spark.dynamicAllocation.maxExecutors": "4",
-						"spark.autotune.trackingId": "16a64b45-d245-499f-a13a-e0515eab592b"
+						"spark.autotune.trackingId": "3a9bbb57-4bb7-4512-b4a3-936b8f77c5ef"
 					}
 				},
 				"metadata": {
@@ -3276,8 +3276,10 @@
 						"sparkVersion": "3.1",
 						"nodeCount": 10,
 						"cores": 4,
-						"memory": 28
-					}
+						"memory": 28,
+						"automaticScaleJobs": false
+					},
+					"sessionKeepAliveTimeout": 30
 				},
 				"cells": [
 					{
@@ -3591,7 +3593,7 @@
 						"spark.dynamicAllocation.enabled": "false",
 						"spark.dynamicAllocation.minExecutors": "2",
 						"spark.dynamicAllocation.maxExecutors": "2",
-						"spark.autotune.trackingId": "b7964806-4a15-4408-ab9e-3fdbaac4073b"
+						"spark.autotune.trackingId": "396a5fed-d673-404f-bdd0-576136b971c2"
 					}
 				},
 				"metadata": {
@@ -3647,18 +3649,13 @@
 							"                                            ['SpecialEducation', 'string', 'no-op'],\r\n",
 							"                                            ['LowIncome', 'boolean', 'no-op']]                                            \r\n",
 							"\r\n",
-							"    def sayhi(self):\r\n",
-							"        print('hi there')\r\n",
-							"        print(self.source_folder)\r\n",
-							"\r\n",
 							"    def ingest(self):\r\n",
 							"        oea.ingest_incremental_csv_data(self.source_folder, 'studentattendance', self.schemas['studentattendance'], 'school_year', 'id')\r\n",
 							"        oea.ingest_incremental_csv_data(self.source_folder, 'studentsectionmark', self.schemas['studentsectionmark'], 'school_year', 'id')\r\n",
 							"        #oea.ingest_snapshot_csv_data(self.source_folder, 'studentsectionmark', self.schemas['studentsectionmark'], 'school_year', 'id')\r\n",
 							"        #oea.ingest_delta_csv_data(self.source_folder, 'studentdemographics', self.schemas['studentdemographics'])\r\n",
 							"\r\n",
-							"contoso_sis = ContosoSIS()\r\n",
-							"oea.register_module(contoso_sis)"
+							"contoso_sis = ContosoSIS()"
 						],
 						"outputs": [],
 						"execution_count": null
@@ -8894,7 +8891,7 @@
 						"spark.dynamicAllocation.enabled": "false",
 						"spark.dynamicAllocation.minExecutors": "4",
 						"spark.dynamicAllocation.maxExecutors": "4",
-						"spark.autotune.trackingId": "8bf53912-0a38-4788-8e22-dbb159f99836"
+						"spark.autotune.trackingId": "b17a29db-48dd-420f-bc87-7e64fc85ddac"
 					}
 				},
 				"metadata": {
@@ -8956,7 +8953,7 @@
 							]
 						},
 						"source": [
-							"module_name = 'MyModule'\r\n",
+							"object_name = 'MyModule'\r\n",
 							"method_name = 'ingest'"
 						],
 						"outputs": [],
@@ -9016,7 +9013,8 @@
 							}
 						},
 						"source": [
-							"oea.call_method(module_name, method_name)"
+							"m = getattr(object_name, method_name)\r\n",
+							"m()"
 						],
 						"outputs": [],
 						"execution_count": null
@@ -9042,7 +9040,7 @@
 						"spark.dynamicAllocation.enabled": "false",
 						"spark.dynamicAllocation.minExecutors": "2",
 						"spark.dynamicAllocation.maxExecutors": "2",
-						"spark.autotune.trackingId": "3b29a45f-9206-4b6c-8045-b43ae3ea6e8c"
+						"spark.autotune.trackingId": "ed81b893-9ebd-40d9-a546-5a94443a4da7"
 					}
 				},
 				"metadata": {
@@ -9118,10 +9116,6 @@
 							"        if instrumentation_key:\n",
 							"            # Setup logging to go to app insights (more info here: https://github.com/balakreshnan/Samples2021/blob/main/Synapseworkspace/opencensuslog.md#azure-synapse-spark-logs-runtime-errors-to-application-insights)\n",
 							"            self.logger.addHandler(AzureLogHandler(connection_string='InstrumentationKey=' + instrumentation_key))\n",
-							"\n",
-							"    def register_module(self, module):\n",
-							"        \"\"\" Register a module to have allow for it to be called via call_method \"\"\"\n",
-							"        self.registered_modules[type(module).__name__] = module\n",
 							"\n",
 							"    def call_method(self, module_name, method_name):\n",
 							"        \"\"\" Calls the specified method on the specified module \n",
