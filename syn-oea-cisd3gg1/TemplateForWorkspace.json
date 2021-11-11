@@ -296,7 +296,7 @@
 							},
 							"parameters": {
 								"module_name": {
-									"value": "contoso_sis",
+									"value": "ContosoSIS",
 									"type": "string"
 								},
 								"method_name": {
@@ -3591,7 +3591,7 @@
 						"spark.dynamicAllocation.enabled": "false",
 						"spark.dynamicAllocation.minExecutors": "2",
 						"spark.dynamicAllocation.maxExecutors": "2",
-						"spark.autotune.trackingId": "b319b57a-ce23-47e3-9cff-eb5b37189f6b"
+						"spark.autotune.trackingId": "2ca42190-9104-447b-9c85-8cddc54beef3"
 					}
 				},
 				"metadata": {
@@ -3656,7 +3656,8 @@
 							"        #oea.ingest_snapshot_csv_data(self.source_folder, 'studentsectionmark', self.schemas['studentsectionmark'], 'school_year', 'id')\r\n",
 							"        #oea.ingest_delta_csv_data(self.source_folder, 'studentdemographics', self.schemas['studentdemographics'])\r\n",
 							"\r\n",
-							"contoso_sis = ContosoSIS(oea)"
+							"contoso_sis = ContosoSIS(oea)\r\n",
+							"oea.register_module(contoso_sis)"
 						],
 						"outputs": [],
 						"execution_count": null
@@ -8892,7 +8893,7 @@
 						"spark.dynamicAllocation.enabled": "false",
 						"spark.dynamicAllocation.minExecutors": "4",
 						"spark.dynamicAllocation.maxExecutors": "4",
-						"spark.autotune.trackingId": "4d38cba2-ee75-4ff4-a329-e29f20b37e76"
+						"spark.autotune.trackingId": "ab255e42-b0be-44ed-90a2-935635fcaf12"
 					}
 				},
 				"metadata": {
@@ -9040,7 +9041,7 @@
 						"spark.dynamicAllocation.enabled": "false",
 						"spark.dynamicAllocation.minExecutors": "2",
 						"spark.dynamicAllocation.maxExecutors": "2",
-						"spark.autotune.trackingId": "91a0b539-938c-4822-a754-e8c4c99b638f"
+						"spark.autotune.trackingId": "01df5941-520b-42be-a7e8-92be2ca9c668"
 					}
 				},
 				"metadata": {
@@ -9398,8 +9399,7 @@
 							"        self.stage3p = f\"{oea.stage3p}/{source_folder}\"\n",
 							"        self.module_path = f\"{oea.framework_path}/modules/{source_folder}\"\n",
 							"        self.schemas = {}\n",
-							"        oea.register_module(self)\n",
-							"   \n",
+							"        \n",
 							"    def _process_entity_from_stage1(self, path, entity_name, format='csv', write_mode='overwrite', header='true'):\n",
 							"        spark_schema = oea.to_spark_schema(self.schemas[entity_name])\n",
 							"        df = spark.read.format(format).load(f\"{self.stage1np}/{path}/{entity_name}\", header=header, schema=spark_schema)\n",
