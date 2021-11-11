@@ -330,6 +330,26 @@
 								"sourceDirectory": "contoso_sis"
 							}
 						}
+					},
+					{
+						"name": "Notebook1",
+						"type": "SynapseNotebook",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"notebook": {
+								"referenceName": "OEA_module_connector",
+								"type": "NotebookReference"
+							},
+							"snapshot": true
+						}
 					}
 				],
 				"policy": {
@@ -3251,7 +3271,7 @@
 						"spark.dynamicAllocation.enabled": "false",
 						"spark.dynamicAllocation.minExecutors": "4",
 						"spark.dynamicAllocation.maxExecutors": "4",
-						"spark.autotune.trackingId": "3a9bbb57-4bb7-4512-b4a3-936b8f77c5ef"
+						"spark.autotune.trackingId": "f5354438-c352-4da4-9e28-de6775129fa3"
 					}
 				},
 				"metadata": {
@@ -3593,7 +3613,7 @@
 						"spark.dynamicAllocation.enabled": "false",
 						"spark.dynamicAllocation.minExecutors": "2",
 						"spark.dynamicAllocation.maxExecutors": "2",
-						"spark.autotune.trackingId": "396a5fed-d673-404f-bdd0-576136b971c2"
+						"spark.autotune.trackingId": "0dc69b23-fc28-4454-a619-f6c0d6575d2a"
 					}
 				},
 				"metadata": {
@@ -8891,7 +8911,7 @@
 						"spark.dynamicAllocation.enabled": "false",
 						"spark.dynamicAllocation.minExecutors": "4",
 						"spark.dynamicAllocation.maxExecutors": "4",
-						"spark.autotune.trackingId": "b17a29db-48dd-420f-bc87-7e64fc85ddac"
+						"spark.autotune.trackingId": "59886258-13ea-4fe0-ae24-bf90b09084d8"
 					}
 				},
 				"metadata": {
@@ -8932,8 +8952,10 @@
 							}
 						},
 						"source": [
-							"# OEA Module connector\n",
-							"This notebook provides a way for invoking methods on modules from a pipeline."
+							"# OEA connector\n",
+							"This notebook provides a way for invoking methods on the OEA framework or supporting modules from a pipeline.\n",
+							"\n",
+							"When setting up a new module, be sure to include a new cell below that imports that module, so that it's methods can be invoked by pipelines."
 						]
 					},
 					{
@@ -8953,8 +8975,8 @@
 							]
 						},
 						"source": [
-							"object_name = 'MyModule'\r\n",
-							"method_name = 'ingest'"
+							"object_name = 'contoso_sis'\r\n",
+							"method_name = 'some_method_name'"
 						],
 						"outputs": [],
 						"execution_count": null
@@ -9040,7 +9062,7 @@
 						"spark.dynamicAllocation.enabled": "false",
 						"spark.dynamicAllocation.minExecutors": "2",
 						"spark.dynamicAllocation.maxExecutors": "2",
-						"spark.autotune.trackingId": "ed81b893-9ebd-40d9-a546-5a94443a4da7"
+						"spark.autotune.trackingId": "594246d5-70bc-42a2-a148-82397bc9006c"
 					}
 				},
 				"metadata": {
