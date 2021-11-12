@@ -13,7 +13,7 @@
 				"spark.dynamicAllocation.enabled": "false",
 				"spark.dynamicAllocation.minExecutors": "2",
 				"spark.dynamicAllocation.maxExecutors": "2",
-				"spark.autotune.trackingId": "966a163a-5598-4a5b-985c-668de80fc5d0"
+				"spark.autotune.trackingId": "a3e7ecc7-8ae6-40da-adac-402def6e0e3c"
 			}
 		},
 		"metadata": {
@@ -311,18 +311,14 @@
 					"        return result       \n",
 					"\n",
 					"    def create_sql_db(self, stage_num, source_dir, source_format='DELTA'):\n",
-					"        \"\"\" Creates the script for creating db based on the given path (assumes that every folder in the given path is a table).\n",
-					"            Note that a spark db that points to source data in the delta format can't be queried via SQL serverless pool. More info here: https://docs.microsoft.com/en-us/azure/synapse-analytics/sql/resources-self-help-sql-on-demand#delta-lake\n",
-					"        \"\"\"\n",
+					"        \"\"\" Prints out the sql script needed for creating a sql serverless db and set of views. \"\"\"\n",
 					"        db_name = f'sqls{stage_num}_{source_dir}'\n",
-					"        cmd = f\"IF NOT EXISTS (SELECT * FROM sys.databases WHERE name = '{db_name}')\\nBEGIN\\n  CREATE DATABASE {db_name};\\nEND;\\nGO\\n\"\n",
+					"        cmd += '-- Create a new sql script then execute the following in it:'\n",
+					"        cmd += f\"IF NOT EXISTS (SELECT * FROM sys.databases WHERE name = '{db_name}')\\nBEGIN\\n  CREATE DATABASE {db_name};\\nEND;\\nGO\\n\"\n",
 					"        cmd += f\"USE {db_name};\\nGO\\n\\n\"\n",
 					"        cmd += self.create_sql_views(self.path(f'stage{stage_num}p', source_dir), source_format)\n",
 					"        cmd += self.create_sql_views(self.path(f'stage{stage_num}np', source_dir), source_format)\n",
 					"        print(cmd)\n",
-					"        #result = \"Database created: \" + db_name\n",
-					"        #logger.info(result)\n",
-					"        #return result\n",
 					"\n",
 					"    def create_sql_views(self, source_path, source_format):\n",
 					"        cmd = ''      \n",
