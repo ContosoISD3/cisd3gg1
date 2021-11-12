@@ -13,7 +13,7 @@
 				"spark.dynamicAllocation.enabled": "false",
 				"spark.dynamicAllocation.minExecutors": "2",
 				"spark.dynamicAllocation.maxExecutors": "2",
-				"spark.autotune.trackingId": "b60d8f56-3f28-44cb-9a00-e0fbeeb5ca6a"
+				"spark.autotune.trackingId": "24e2b165-af5e-4929-aa82-db75bdf8e504"
 			}
 		},
 		"metadata": {
@@ -296,7 +296,7 @@
 					"    def create_stage2_lake_db(self, source_directory):\n",
 					"        source_path = f'{self.stage2p}/{source_directory}'\n",
 					"        self.create_db(source_path)\n",
-					"        source_path = f'{self.stage2pn}/{source_directory}'\n",
+					"        source_path = f'{self.stage2np}/{source_directory}'\n",
 					"        self.create_db(source_path)\n",
 					"\n",
 					"    def drop_db(self, db_name):\n",

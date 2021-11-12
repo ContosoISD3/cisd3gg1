@@ -117,11 +117,11 @@
 							"type": "string"
 						},
 						"method_name": {
-							"value": "print_stage",
+							"value": "create_stage2_lake_db",
 							"type": "string"
 						},
 						"kwargs": {
-							"value": "{'path':oea.stage2np}",
+							"value": "{'source_directory':'contoso_sis'}",
 							"type": "string"
 						}
 					},
