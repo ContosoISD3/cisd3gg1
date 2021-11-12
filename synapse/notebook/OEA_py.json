@@ -13,7 +13,7 @@
 				"spark.dynamicAllocation.enabled": "false",
 				"spark.dynamicAllocation.minExecutors": "2",
 				"spark.dynamicAllocation.maxExecutors": "2",
-				"spark.autotune.trackingId": "b9eec6fe-04e1-417a-82f9-04ed8c0380e4"
+				"spark.autotune.trackingId": "c29da569-4888-4b93-8ac4-c537b2062b3f"
 			}
 		},
 		"metadata": {
@@ -332,8 +332,7 @@
 					"        return cmd\n",
 					"\n",
 					"    def drop_sql_db(self, db_name):\n",
-					"        print('Copy and paste this into a sql script and execute it:\\n')\n",
-					"        print(f'DROP VIEW {db_name}')\n",
+					"        print('Click on the menu next to the SQL db and select \"Delete\"')\n",
 					"\n",
 					"    # List installed packages\n",
 					"    def list_packages(self):\n",

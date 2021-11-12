@@ -2,12 +2,12 @@
 	"name": "SQL script 4",
 	"properties": {
 		"content": {
-			"query": "IF NOT EXISTS (SELECT * FROM sys.databases WHERE name = 'tests2_contoso_sis')\nBEGIN\n  CREATE DATABASE tests2_contoso_sis;\nEND;\n\nUSE tests2_contoso_sis;\nGO\n\nCREATE OR ALTER VIEW xstudentattendance_pseudo AS \n  SELECT * FROM OPENROWSET(BULK 'abfss://stage2p@stoeacisd3gg1.dfs.core.windows.net/contoso_sis/studentattendance_pseudo', FORMAT='DELTA') AS [r]\n",
+			"query": "IF NOT EXISTS (SELECT * FROM sys.databases WHERE name = 'tests2_contoso_sis')\nBEGIN\n  CREATE DATABASE tests2_contoso_sis;\nEND;\n\nUSE tests2_contoso_sis;\nGO\n\nCREATE OR ALTER VIEW xstudentattendance_pseudo AS \n  SELECT * FROM OPENROWSET(BULK 'abfss://stage2p@stoeacisd3gg1.dfs.core.windows.net/contoso_sis/studentattendance_pseudo', FORMAT='DELTA') AS [r]\n\n\nDROP VIEW tests2_contoso_sis",
 			"metadata": {
 				"language": "sql"
 			},
 			"currentConnection": {
-				"databaseName": "tests2_contoso_sis",
+				"databaseName": "master",
 				"poolName": "Built-in"
 			},
 			"resultLimit": 5000
