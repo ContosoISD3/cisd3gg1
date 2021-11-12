@@ -869,6 +869,7 @@
 								"type": "Expression"
 							},
 							"isSequential": false,
+							"batchCount": 3,
 							"activities": [
 								{
 									"name": "Copy_from_URL",
@@ -1488,73 +1489,6 @@
 				},
 				"folder": {
 					"name": "OEA_Framework"
-				},
-				"annotations": []
-			},
-			"dependsOn": [
-				"[concat(variables('workspaceId'), '/notebooks/OEA_connector')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('workspaceName'), '/tmpcreate_lake_db')]",
-			"type": "Microsoft.Synapse/workspaces/pipelines",
-			"apiVersion": "2019-06-01-preview",
-			"properties": {
-				"activities": [
-					{
-						"name": "create_lake_db",
-						"type": "SynapseNotebook",
-						"dependsOn": [],
-						"policy": {
-							"timeout": "7.00:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"notebook": {
-								"referenceName": "OEA_connector",
-								"type": "NotebookReference"
-							},
-							"parameters": {
-								"object_name": {
-									"value": "oea",
-									"type": "string"
-								},
-								"method_name": {
-									"value": "create_lake_db",
-									"type": "string"
-								},
-								"kwargs": {
-									"value": {
-										"value": "{'stage_num':@{pipeline().parameters.stageNum},'source_dir':@{pipeline().parameters.sourceDirectory}}",
-										"type": "Expression"
-									},
-									"type": "string"
-								}
-							},
-							"snapshot": true
-						}
-					}
-				],
-				"policy": {
-					"elapsedTimeMetric": {},
-					"cancelAfter": {}
-				},
-				"parameters": {
-					"stageNum": {
-						"type": "string",
-						"defaultValue": "2"
-					},
-					"sourceDirectory": {
-						"type": "string",
-						"defaultValue": "contoso_sis"
-					}
-				},
-				"folder": {
-					"name": "OEA_Framework/Ingest"
 				},
 				"annotations": []
 			},
@@ -2684,6 +2618,73 @@
 			]
 		},
 		{
+			"name": "[concat(parameters('workspaceName'), '/tmpcreate_lake_db')]",
+			"type": "Microsoft.Synapse/workspaces/pipelines",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"activities": [
+					{
+						"name": "create_lake_db",
+						"type": "SynapseNotebook",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"notebook": {
+								"referenceName": "OEA_connector",
+								"type": "NotebookReference"
+							},
+							"parameters": {
+								"object_name": {
+									"value": "oea",
+									"type": "string"
+								},
+								"method_name": {
+									"value": "create_lake_db",
+									"type": "string"
+								},
+								"kwargs": {
+									"value": {
+										"value": "{'stage_num':@{pipeline().parameters.stageNum},'source_dir':@{pipeline().parameters.sourceDirectory}",
+										"type": "Expression"
+									},
+									"type": "string"
+								}
+							},
+							"snapshot": true
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {},
+					"cancelAfter": {}
+				},
+				"parameters": {
+					"stageNum": {
+						"type": "string",
+						"defaultValue": "2"
+					},
+					"sourceDirectory": {
+						"type": "string",
+						"defaultValue": "contoso_sis"
+					}
+				},
+				"folder": {
+					"name": "OEA_Framework/Ingest"
+				},
+				"annotations": []
+			},
+			"dependsOn": [
+				"[concat(variables('workspaceId'), '/notebooks/OEA_connector')]"
+			]
+		},
+		{
 			"name": "[concat(parameters('workspaceName'), '/DS_ADLS_binary_file')]",
 			"type": "Microsoft.Synapse/workspaces/datasets",
 			"apiVersion": "2019-06-01-preview",
@@ -3192,6 +3193,26 @@
 					},
 					"currentConnection": {
 						"databaseName": "master",
+						"poolName": "Built-in"
+					},
+					"resultLimit": 5000
+				},
+				"type": "SqlQuery"
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('workspaceName'), '/SQL script 4')]",
+			"type": "Microsoft.Synapse/workspaces/sqlscripts",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"content": {
+					"query": "IF NOT EXISTS (SELECT * FROM sys.databases WHERE name = 'sqls2_contoso_sis')\nBEGIN\n  CREATE DATABASE sqls2_contoso_sis;\nEND;\nGO\nUSE sqls2_contoso_sis;\nGO\n\nCREATE OR ALTER VIEW studentattendance_pseudo AS\n  SELECT * FROM OPENROWSET(BULK 'abfss://stage2p@stoeacisd3gg1.dfs.core.windows.net/contoso_sis/studentattendance_pseudo', FORMAT='DELTA') AS [r];\nGO\nCREATE OR ALTER VIEW studentsectionmark_pseudo AS\n  SELECT * FROM OPENROWSET(BULK 'abfss://stage2p@stoeacisd3gg1.dfs.core.windows.net/contoso_sis/studentsectionmark_pseudo', FORMAT='DELTA') AS [r];\nGO\nCREATE OR ALTER VIEW studentattendance_lookup AS\n  SELECT * FROM OPENROWSET(BULK 'abfss://stage2np@stoeacisd3gg1.dfs.core.windows.net/contoso_sis/studentattendance_lookup', FORMAT='DELTA') AS [r];\nGO\nCREATE OR ALTER VIEW studentsectionmark_lookup AS\n  SELECT * FROM OPENROWSET(BULK 'abfss://stage2np@stoeacisd3gg1.dfs.core.windows.net/contoso_sis/studentsectionmark_lookup', FORMAT='DELTA') AS [r];\nGO",
+					"metadata": {
+						"language": "sql"
+					},
+					"currentConnection": {
+						"databaseName": "sqls2_contoso_sis",
 						"poolName": "Built-in"
 					},
 					"resultLimit": 5000
@@ -9141,7 +9162,7 @@
 						"spark.dynamicAllocation.enabled": "false",
 						"spark.dynamicAllocation.minExecutors": "4",
 						"spark.dynamicAllocation.maxExecutors": "4",
-						"spark.autotune.trackingId": "d03cc492-f50c-4edf-8dde-3ac110fe9e15"
+						"spark.autotune.trackingId": "5ade5ffe-bea4-43fb-b58c-360511467e90"
 					}
 				},
 				"metadata": {
@@ -9166,10 +9187,8 @@
 						"sparkVersion": "3.1",
 						"nodeCount": 10,
 						"cores": 4,
-						"memory": 28,
-						"automaticScaleJobs": false
-					},
-					"sessionKeepAliveTimeout": 30
+						"memory": 28
+					}
 				},
 				"cells": [
 					{
@@ -9298,7 +9317,7 @@
 						"spark.dynamicAllocation.enabled": "false",
 						"spark.dynamicAllocation.minExecutors": "2",
 						"spark.dynamicAllocation.maxExecutors": "2",
-						"spark.autotune.trackingId": "9e441423-5f37-4594-810f-c6e1cb5107be"
+						"spark.autotune.trackingId": "a3e7ecc7-8ae6-40da-adac-402def6e0e3c"
 					}
 				},
 				"metadata": {
@@ -9310,8 +9329,7 @@
 					},
 					"language_info": {
 						"name": "python"
-					},
-					"sessionKeepAliveTimeout": 30
+					}
 				},
 				"cells": [
 					{
@@ -11648,22 +11666,15 @@
 			"dependsOn": []
 		},
 		{
-			"name": "[concat(parameters('workspaceName'), '/SQL script 4')]",
-			"type": "Microsoft.Synapse/workspaces/sqlscripts",
+			"name": "[concat(parameters('workspaceName'), '/Pipeline 1')]",
+			"type": "Microsoft.Synapse/workspaces/pipelines",
 			"apiVersion": "2019-06-01-preview",
 			"properties": {
-				"content": {
-					"query": "IF NOT EXISTS (SELECT * FROM sys.databases WHERE name = 'sqls2_contoso_sis')\nBEGIN\n  CREATE DATABASE sqls2_contoso_sis;\nEND;\nGO\nUSE sqls2_contoso_sis;\nGO\n\nCREATE OR ALTER VIEW studentattendance_pseudo AS\n  SELECT * FROM OPENROWSET(BULK 'abfss://stage2p@stoeacisd3gg1.dfs.core.windows.net/contoso_sis/studentattendance_pseudo', FORMAT='DELTA') AS [r];\nGO\nCREATE OR ALTER VIEW studentsectionmark_pseudo AS\n  SELECT * FROM OPENROWSET(BULK 'abfss://stage2p@stoeacisd3gg1.dfs.core.windows.net/contoso_sis/studentsectionmark_pseudo', FORMAT='DELTA') AS [r];\nGO\nCREATE OR ALTER VIEW studentattendance_lookup AS\n  SELECT * FROM OPENROWSET(BULK 'abfss://stage2np@stoeacisd3gg1.dfs.core.windows.net/contoso_sis/studentattendance_lookup', FORMAT='DELTA') AS [r];\nGO\nCREATE OR ALTER VIEW studentsectionmark_lookup AS\n  SELECT * FROM OPENROWSET(BULK 'abfss://stage2np@stoeacisd3gg1.dfs.core.windows.net/contoso_sis/studentsectionmark_lookup', FORMAT='DELTA') AS [r];\nGO",
-					"metadata": {
-						"language": "sql"
-					},
-					"currentConnection": {
-						"databaseName": "sqls2_contoso_sis",
-						"poolName": "Built-in"
-					},
-					"resultLimit": 5000
+				"policy": {
+					"elapsedTimeMetric": {},
+					"cancelAfter": {}
 				},
-				"type": "SqlQuery"
+				"annotations": []
 			},
 			"dependsOn": []
 		}
