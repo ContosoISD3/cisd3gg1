@@ -13,7 +13,7 @@
 				"spark.dynamicAllocation.enabled": "false",
 				"spark.dynamicAllocation.minExecutors": "2",
 				"spark.dynamicAllocation.maxExecutors": "2",
-				"spark.autotune.trackingId": "d0d2d936-f212-4722-8ff1-54e046586c41"
+				"spark.autotune.trackingId": "b9eec6fe-04e1-417a-82f9-04ed8c0380e4"
 			}
 		},
 		"metadata": {
@@ -317,18 +317,18 @@
 					"        db_name = f's{stage_num}_{source_dir}'\n",
 					"        cmd = f\"IF NOT EXISTS (SELECT * FROM sys.databases WHERE name = '{db_name}')\\nBEGIN\\n  CREATE DATABASE {db_name};\\nEND;\\nGO\\n\"\n",
 					"        cmd += f\"USE {db_name};\\nGO\\n\\n\"\n",
-					"        cmd += self.create_sql_views(db_name, self.path(f'stage{stage_num}p', source_dir), source_format)\n",
-					"        cmd += self.create_sql_views(db_name, self.path(f'stage{stage_num}np', source_dir), source_format)\n",
+					"        cmd += self.create_sql_views(self.path(f'stage{stage_num}p', source_dir), source_format)\n",
+					"        cmd += self.create_sql_views(self.path(f'stage{stage_num}np', source_dir), source_format)\n",
 					"        print(cmd)\n",
 					"        #result = \"Database created: \" + db_name\n",
 					"        #logger.info(result)\n",
 					"        #return result\n",
 					"\n",
-					"    def create_sql_views(self, db_name, source_path, source_format):\n",
+					"    def create_sql_views(self, source_path, source_format):\n",
 					"        cmd = ''      \n",
 					"        dirs = self.get_folders(source_path)\n",
 					"        for table_name in dirs:\n",
-					"            cmd += f\"CREATE OR ALTER VIEW {table_name} AS\\n  SELECT * FROM OPENROWSET(BULK '{source_path}/{table_name}', FORMAT='DELTA') AS [r];\\n\"\n",
+					"            cmd += f\"CREATE OR ALTER VIEW {table_name} AS\\n  SELECT * FROM OPENROWSET(BULK '{source_path}/{table_name}', FORMAT='{source_format}') AS [r];\\n\"\n",
 					"        return cmd\n",
 					"\n",
 					"    def drop_sql_db(self, db_name):\n",
