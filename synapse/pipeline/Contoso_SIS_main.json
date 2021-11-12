@@ -121,7 +121,7 @@
 							"type": "string"
 						},
 						"kwargs": {
-							"value": "{'path':'eval(oea.stage2np)'}",
+							"value": "{'path':oea.stage2np}",
 							"type": "string"
 						}
 					},

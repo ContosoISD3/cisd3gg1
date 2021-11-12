@@ -17,7 +17,7 @@
 				"spark.dynamicAllocation.enabled": "false",
 				"spark.dynamicAllocation.minExecutors": "4",
 				"spark.dynamicAllocation.maxExecutors": "4",
-				"spark.autotune.trackingId": "21a77467-4469-4ea0-a091-a33dfcc71cfc"
+				"spark.autotune.trackingId": "cf2429c4-1e86-4e55-b7f1-49c0fa7a8393"
 			}
 		},
 		"metadata": {
@@ -82,12 +82,12 @@
 				},
 				"source": [
 					"# These values should be passed in from the pipeline that is using this notebook as an activity.\r\n",
-					"# Note that kwargs allows you to pass in a dict of params, including params that need to be eval'd prior to use (eg, kwargs={'path':'eval(oea.stage2np)'})\r\n",
+					"# Note that kwargs allows you to pass in a dict of params, but the dict has to specified as a string when invoked from a pipeline.\r\n",
 					"object_name = 'oea'\r\n",
 					"method_name = 'print_stage'\r\n",
-					"kwargs = \"{'path':'eval(oea.stage2np)'}\""
+					"kwargs = \"{'path':oea.stage2np}\""
 				],
-				"execution_count": 33
+				"execution_count": 37
 			},
 			{
 				"cell_type": "code",
@@ -106,7 +106,7 @@
 				"source": [
 					"%run /OEA_py"
 				],
-				"execution_count": 34
+				"execution_count": 38
 			},
 			{
 				"cell_type": "code",
@@ -143,18 +143,10 @@
 				"source": [
 					"obj = eval(object_name)\r\n",
 					"kwargs = eval(kwargs)\r\n",
-					"resolved_params = {}\r\n",
-					"for key in kwargs:\r\n",
-					"    if kwargs[key].startswith('eval('):\r\n",
-					"        m = re.match(r\"eval\\((.*)\\)\", kwargs[key])\r\n",
-					"        resolved_params[key] = eval(m.group(1))\r\n",
-					"    else:\r\n",
-					"        resolved_params[key] = kwargs[key]\r\n",
-					"\r\n",
 					"m = getattr(obj, method_name)\r\n",
-					"m(**resolved_params)"
+					"m(**kwargs)"
 				],
-				"execution_count": 36
+				"execution_count": 39
 			}
 		]
 	}
