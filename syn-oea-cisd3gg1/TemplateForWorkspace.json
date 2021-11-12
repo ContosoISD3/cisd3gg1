@@ -9141,7 +9141,7 @@
 						"spark.dynamicAllocation.enabled": "false",
 						"spark.dynamicAllocation.minExecutors": "4",
 						"spark.dynamicAllocation.maxExecutors": "4",
-						"spark.autotune.trackingId": "11cfca3e-d4c1-4830-9e8a-08031130cba0"
+						"spark.autotune.trackingId": "1551036d-93cc-4a72-afe1-26bb83243caa"
 					}
 				},
 				"metadata": {
@@ -9233,7 +9233,7 @@
 							"%run /OEA_py"
 						],
 						"outputs": [],
-						"execution_count": 68
+						"execution_count": 71
 					},
 					{
 						"cell_type": "code",
@@ -9253,7 +9253,7 @@
 							"%run /ContosoSIS_py"
 						],
 						"outputs": [],
-						"execution_count": 69
+						"execution_count": 72
 					},
 					{
 						"cell_type": "code",
@@ -9272,7 +9272,7 @@
 							"oea.create_lake_db(2, 'contoso_sis')"
 						],
 						"outputs": [],
-						"execution_count": 70
+						"execution_count": 73
 					},
 					{
 						"cell_type": "code",
@@ -9317,7 +9317,7 @@
 						"spark.dynamicAllocation.enabled": "false",
 						"spark.dynamicAllocation.minExecutors": "2",
 						"spark.dynamicAllocation.maxExecutors": "2",
-						"spark.autotune.trackingId": "58ec3722-7931-41ae-bd16-43ea021d9362"
+						"spark.autotune.trackingId": "14ab248d-c1f0-417b-a255-04cb65ba7600"
 					}
 				},
 				"metadata": {
@@ -9597,8 +9597,8 @@
 							"        \"\"\"\n",
 							"        db_name = f's{stage_num}_{source_dir}'\n",
 							"        spark.sql(f'CREATE DATABASE IF NOT EXISTS {db_name}')\n",
-							"        self.create_lake_views(db_name, self.path(f'stage{stage_num}p'), source_format)\n",
-							"        self.create_lake_views(db_name, self.path(f'stage{stage_num}np'), source_format)\n",
+							"        self.create_lake_views(db_name, self.path(f'stage{stage_num}p', source_dir), source_format)\n",
+							"        self.create_lake_views(db_name, self.path(f'stage{stage_num}np', source_dir), source_format)\n",
 							"        result = \"Database created: \" + db_name\n",
 							"        logger.info(result)\n",
 							"        return result        \n",
