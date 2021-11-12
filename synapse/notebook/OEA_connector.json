@@ -17,7 +17,7 @@
 				"spark.dynamicAllocation.enabled": "false",
 				"spark.dynamicAllocation.minExecutors": "4",
 				"spark.dynamicAllocation.maxExecutors": "4",
-				"spark.autotune.trackingId": "5d6acf17-ad1a-4ebb-b6c7-50bd4741e521"
+				"spark.autotune.trackingId": "21a77467-4469-4ea0-a091-a33dfcc71cfc"
 			}
 		},
 		"metadata": {
@@ -85,9 +85,9 @@
 					"# Note that kwargs allows you to pass in a dict of params, including params that need to be eval'd prior to use (eg, kwargs={'path':'eval(oea.stage2np)'})\r\n",
 					"object_name = 'oea'\r\n",
 					"method_name = 'print_stage'\r\n",
-					"kwargs = {'path':'eval(oea.stage2np)'}"
+					"kwargs = \"{'path':'eval(oea.stage2np)'}\""
 				],
-				"execution_count": null
+				"execution_count": 33
 			},
 			{
 				"cell_type": "code",
@@ -106,7 +106,7 @@
 				"source": [
 					"%run /OEA_py"
 				],
-				"execution_count": null
+				"execution_count": 34
 			},
 			{
 				"cell_type": "code",
@@ -125,7 +125,7 @@
 				"source": [
 					"%run /ContosoSIS_py"
 				],
-				"execution_count": null
+				"execution_count": 35
 			},
 			{
 				"cell_type": "code",
@@ -141,19 +141,20 @@
 					}
 				},
 				"source": [
+					"obj = eval(object_name)\r\n",
+					"kwargs = eval(kwargs)\r\n",
 					"resolved_params = {}\r\n",
 					"for key in kwargs:\r\n",
 					"    if kwargs[key].startswith('eval('):\r\n",
 					"        m = re.match(r\"eval\\((.*)\\)\", kwargs[key])\r\n",
-					"        print(m.group(1))\r\n",
 					"        resolved_params[key] = eval(m.group(1))\r\n",
 					"    else:\r\n",
 					"        resolved_params[key] = kwargs[key]\r\n",
 					"\r\n",
-					"m = getattr(eval(object_name), method_name)\r\n",
+					"m = getattr(obj, method_name)\r\n",
 					"m(**resolved_params)"
 				],
-				"execution_count": null
+				"execution_count": 36
 			}
 		]
 	}

@@ -5,7 +5,14 @@
 			{
 				"name": "Copy_from_each_URL - SIS data",
 				"type": "ExecutePipeline",
-				"dependsOn": [],
+				"dependsOn": [
+					{
+						"activity": "create_stage2_lake_db",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
 				"userProperties": [],
 				"typeProperties": {
 					"pipeline": {
@@ -90,14 +97,7 @@
 			{
 				"name": "create_stage2_lake_db",
 				"type": "SynapseNotebook",
-				"dependsOn": [
-					{
-						"activity": "Contoso_SIS_ingest",
-						"dependencyConditions": [
-							"Succeeded"
-						]
-					}
-				],
+				"dependsOn": [],
 				"policy": {
 					"timeout": "7.00:00:00",
 					"retry": 0,
@@ -117,7 +117,11 @@
 							"type": "string"
 						},
 						"method_name": {
-							"value": "create_stage2_lake_db",
+							"value": "print_stage",
+							"type": "string"
+						},
+						"kwargs": {
+							"value": "{'path':'eval(oea.stage2np)'}",
 							"type": "string"
 						}
 					},
