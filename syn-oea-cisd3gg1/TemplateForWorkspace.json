@@ -252,14 +252,7 @@
 					{
 						"name": "Copy_from_each_URL - SIS data",
 						"type": "ExecutePipeline",
-						"dependsOn": [
-							{
-								"activity": "create_stage2_lake_db",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							}
-						],
+						"dependsOn": [],
 						"userProperties": [],
 						"typeProperties": {
 							"pipeline": {
@@ -315,8 +308,8 @@
 						}
 					},
 					{
-						"name": "create_stage2_sql_db",
-						"type": "ExecutePipeline",
+						"name": "If Condition1",
+						"type": "IfCondition",
 						"dependsOn": [
 							{
 								"activity": "Contoso_SIS_ingest",
@@ -327,52 +320,87 @@
 						],
 						"userProperties": [],
 						"typeProperties": {
-							"pipeline": {
-								"referenceName": "create_stage2_sql_db",
-								"type": "PipelineReference"
+							"expression": {
+								"value": "@pipeline().parameters.create_sql_db",
+								"type": "Expression"
 							},
-							"waitOnCompletion": true,
-							"parameters": {
-								"storageAccount": {
-									"value": "@pipeline().parameters.storageAccount",
-									"type": "Expression"
-								},
-								"sourceDirectory": "contoso_sis"
-							}
+							"ifTrueActivities": [
+								{
+									"name": "create_stage2_sql_db",
+									"type": "ExecutePipeline",
+									"dependsOn": [],
+									"userProperties": [],
+									"typeProperties": {
+										"pipeline": {
+											"referenceName": "create_stage2_sql_db",
+											"type": "PipelineReference"
+										},
+										"waitOnCompletion": true,
+										"parameters": {
+											"storageAccount": {
+												"value": "@pipeline().parameters.storageAccount",
+												"type": "Expression"
+											},
+											"sourceDirectory": "contoso_sis"
+										}
+									}
+								}
+							]
 						}
 					},
 					{
-						"name": "create_stage2_lake_db",
-						"type": "SynapseNotebook",
-						"dependsOn": [],
-						"policy": {
-							"timeout": "7.00:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
+						"name": "If Condition2",
+						"type": "IfCondition",
+						"dependsOn": [
+							{
+								"activity": "Contoso_SIS_ingest",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
 						"userProperties": [],
 						"typeProperties": {
-							"notebook": {
-								"referenceName": "OEA_connector",
-								"type": "NotebookReference"
+							"expression": {
+								"value": "@pipeline().parameters.create_lake_db",
+								"type": "Expression"
 							},
-							"parameters": {
-								"object_name": {
-									"value": "oea",
-									"type": "string"
-								},
-								"method_name": {
-									"value": "create_stage2_lake_db",
-									"type": "string"
-								},
-								"kwargs": {
-									"value": "{'source_directory':'contoso_sis'}",
-									"type": "string"
+							"ifTrueActivities": [
+								{
+									"name": "create_stage2_lake_db",
+									"type": "SynapseNotebook",
+									"dependsOn": [],
+									"policy": {
+										"timeout": "7.00:00:00",
+										"retry": 0,
+										"retryIntervalInSeconds": 30,
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"userProperties": [],
+									"typeProperties": {
+										"notebook": {
+											"referenceName": "OEA_connector",
+											"type": "NotebookReference"
+										},
+										"parameters": {
+											"object_name": {
+												"value": "oea",
+												"type": "string"
+											},
+											"method_name": {
+												"value": "create_stage2_lake_db",
+												"type": "string"
+											},
+											"kwargs": {
+												"value": "{'source_directory':'contoso_sis'}",
+												"type": "string"
+											}
+										},
+										"snapshot": true
+									}
 								}
-							},
-							"snapshot": true
+							]
 						}
 					}
 				],
@@ -384,6 +412,14 @@
 					"storageAccount": {
 						"type": "string",
 						"defaultValue": "stoeacisd3gg1"
+					},
+					"create_sql_db": {
+						"type": "bool",
+						"defaultValue": false
+					},
+					"create_lake_db": {
+						"type": "bool",
+						"defaultValue": false
 					}
 				},
 				"folder": {
@@ -8937,7 +8973,7 @@
 						"spark.dynamicAllocation.enabled": "false",
 						"spark.dynamicAllocation.minExecutors": "4",
 						"spark.dynamicAllocation.maxExecutors": "4",
-						"spark.autotune.trackingId": "1f18238e-2c68-47e7-8171-27a7fe4180b9"
+						"spark.autotune.trackingId": "be8c4f73-e50b-4423-8551-ef2834b03e7f"
 					}
 				},
 				"metadata": {
@@ -9022,9 +9058,10 @@
 						"source": [
 							"# These values should be passed in from the pipeline that is using this notebook as an activity.\r\n",
 							"# Note that kwargs allows you to pass in a dict of params, but the dict has to specified as a string when invoked from a pipeline.\r\n",
+							"# Also note that you can refer to attributes of an object in the params, for example: {'path':oea.stage2np}\r\n",
 							"object_name = 'oea'\r\n",
 							"method_name = 'print_stage'\r\n",
-							"kwargs = \"{'path':oea.stage2np}\""
+							"kwargs = \"{}\""
 						],
 						"outputs": [],
 						"execution_count": 37
@@ -9112,7 +9149,7 @@
 						"spark.dynamicAllocation.enabled": "false",
 						"spark.dynamicAllocation.minExecutors": "2",
 						"spark.dynamicAllocation.maxExecutors": "2",
-						"spark.autotune.trackingId": "24e2b165-af5e-4929-aa82-db75bdf8e504"
+						"spark.autotune.trackingId": "c66ad2ca-e53f-498b-95d8-722b4641b377"
 					}
 				},
 				"metadata": {
@@ -9124,7 +9161,8 @@
 					},
 					"language_info": {
 						"name": "python"
-					}
+					},
+					"sessionKeepAliveTimeout": 30
 				},
 				"cells": [
 					{
