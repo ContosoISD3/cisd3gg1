@@ -115,7 +115,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"items": {
-						"value": "@activity('get folders in stage2p').output.childItems",
+						"value": "@activity('get folders in stageXp').output.childItems",
 						"type": "Expression"
 					},
 					"activities": [
@@ -218,7 +218,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"items": {
-						"value": "@activity('get folders in stage2np').output.childItems",
+						"value": "@activity('get folders in stageXnp').output.childItems",
 						"type": "Expression"
 					},
 					"activities": [
