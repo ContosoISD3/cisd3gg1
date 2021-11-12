@@ -1,0 +1,66 @@
+{
+	"name": "call_oea",
+	"properties": {
+		"activities": [
+			{
+				"name": "Contoso_SIS_ingest",
+				"type": "SynapseNotebook",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"notebook": {
+						"referenceName": "OEA_connector",
+						"type": "NotebookReference"
+					},
+					"parameters": {
+						"object_name": {
+							"value": {
+								"value": "@pipeline().parameters.object_name",
+								"type": "Expression"
+							},
+							"type": "string"
+						},
+						"method_name": {
+							"value": {
+								"value": "@pipeline().parameters.method_name",
+								"type": "Expression"
+							},
+							"type": "string"
+						},
+						"kwargs": {
+							"value": {
+								"value": "@pipeline().parameters.kwargs",
+								"type": "Expression"
+							},
+							"type": "string"
+						}
+					},
+					"snapshot": true
+				}
+			}
+		],
+		"parameters": {
+			"object_name": {
+				"type": "string",
+				"defaultValue": "oea"
+			},
+			"method_name": {
+				"type": "string"
+			},
+			"kwargs": {
+				"type": "string"
+			}
+		},
+		"folder": {
+			"name": "OEA_Framework"
+		},
+		"annotations": []
+	}
+}
