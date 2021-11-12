@@ -13,7 +13,7 @@
 				"spark.dynamicAllocation.enabled": "false",
 				"spark.dynamicAllocation.minExecutors": "2",
 				"spark.dynamicAllocation.maxExecutors": "2",
-				"spark.autotune.trackingId": "8cc5c068-8d18-493a-98ad-bb1c0da88666"
+				"spark.autotune.trackingId": "07ed1bb9-4fcc-4c9e-82ee-c2fe3b6edc41"
 			}
 		},
 		"metadata": {
@@ -75,9 +75,9 @@
 					"\n",
 					"    def path(container_name, directory_path=None):\n",
 					"        if directory_path:\n",
-					"            return f'{abfss://{container_name}@{self.storage_account}.dfs.core.windows.net/{directory_path}'\n",
+					"            return f'abfss://{container_name}@{self.storage_account}.dfs.core.windows.net/{directory_path}'\n",
 					"        else:\n",
-					"            return f'{abfss://{container_name}@{self.storage_account}.dfs.core.windows.net'\n",
+					"            return f'abfss://{container_name}@{self.storage_account}.dfs.core.windows.net'            \n",
 					"\n",
 					"    def _initialize_logger(self, instrumentation_key, logging_level):\n",
 					"        logging.lastResort = None\n",
