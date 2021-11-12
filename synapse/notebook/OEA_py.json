@@ -13,7 +13,7 @@
 				"spark.dynamicAllocation.enabled": "false",
 				"spark.dynamicAllocation.minExecutors": "2",
 				"spark.dynamicAllocation.maxExecutors": "2",
-				"spark.autotune.trackingId": "1012ae8d-6bf3-4b16-bb25-ee565fd08f0a"
+				"spark.autotune.trackingId": "d0d2d936-f212-4722-8ff1-54e046586c41"
 			}
 		},
 		"metadata": {
@@ -315,7 +315,8 @@
 					"            Note that a spark db that points to source data in the delta format can't be queried via SQL serverless pool. More info here: https://docs.microsoft.com/en-us/azure/synapse-analytics/sql/resources-self-help-sql-on-demand#delta-lake\n",
 					"        \"\"\"\n",
 					"        db_name = f's{stage_num}_{source_dir}'\n",
-					"        cmd = f\"IF NOT EXISTS (SELECT * FROM sys.databases WHERE name = '{db_name}')\\nBEGIN\\n  CREATE DATABASE {db_name};\\nEND;\\n\\n\"\n",
+					"        cmd = f\"IF NOT EXISTS (SELECT * FROM sys.databases WHERE name = '{db_name}')\\nBEGIN\\n  CREATE DATABASE {db_name};\\nEND;\\nGO\\n\"\n",
+					"        cmd += f\"USE {db_name};\\nGO\\n\\n\"\n",
 					"        cmd += self.create_sql_views(db_name, self.path(f'stage{stage_num}p', source_dir), source_format)\n",
 					"        cmd += self.create_sql_views(db_name, self.path(f'stage{stage_num}np', source_dir), source_format)\n",
 					"        print(cmd)\n",
@@ -327,12 +328,12 @@
 					"        cmd = ''      \n",
 					"        dirs = self.get_folders(source_path)\n",
 					"        for table_name in dirs:\n",
-					"            cmd += f\"CREATE OR ALTER VIEW {table_name}\\n  AS SELECT * FROM OPENROWSET(BULK '{source_path}/{table_name}', FORMAT='DELTA') AS [r]\\n\"\n",
+					"            cmd += f\"CREATE OR ALTER VIEW {table_name} AS\\n  SELECT * FROM OPENROWSET(BULK '{source_path}/{table_name}', FORMAT='DELTA') AS [r];\\n\"\n",
 					"        return cmd\n",
 					"\n",
 					"    def drop_sql_db(self, db_name):\n",
 					"        print('Copy and paste this into a sql script and execute it:\\n')\n",
-					"        print(f'DROP {db_name}')\n",
+					"        print(f'DROP VIEW {db_name}')\n",
 					"\n",
 					"    # List installed packages\n",
 					"    def list_packages(self):\n",
