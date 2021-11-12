@@ -17,7 +17,7 @@
 				"spark.dynamicAllocation.enabled": "false",
 				"spark.dynamicAllocation.minExecutors": "4",
 				"spark.dynamicAllocation.maxExecutors": "4",
-				"spark.autotune.trackingId": "f644e941-1841-4f9f-96e0-d2e1de4239cb"
+				"spark.autotune.trackingId": "4e45010e-622e-4a2e-bbf2-1082e3ff1bf1"
 			}
 		},
 		"metadata": {
@@ -101,9 +101,10 @@
 				"source": [
 					"# These values should be passed in from the pipeline that is using this notebook as an activity.\r\n",
 					"# Note that kwargs allows you to pass in a dict of params, but the dict has to specified as a string when invoked from a pipeline.\r\n",
+					"# Also note that you can refer to attributes of an object in the params, for example: {'path':oea.stage2np}\r\n",
 					"object_name = 'oea'\r\n",
 					"method_name = 'print_stage'\r\n",
-					"kwargs = \"{'path':oea.stage2np}\""
+					"kwargs = \"{}\""
 				],
 				"execution_count": 37
 			},
