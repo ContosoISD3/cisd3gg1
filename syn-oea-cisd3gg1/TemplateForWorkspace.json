@@ -9141,7 +9141,7 @@
 						"spark.dynamicAllocation.enabled": "false",
 						"spark.dynamicAllocation.minExecutors": "4",
 						"spark.dynamicAllocation.maxExecutors": "4",
-						"spark.autotune.trackingId": "0756c756-dfcb-40ba-9eff-5cdcee27613e"
+						"spark.autotune.trackingId": "11cfca3e-d4c1-4830-9e8a-08031130cba0"
 					}
 				},
 				"metadata": {
@@ -9166,8 +9166,10 @@
 						"sparkVersion": "3.1",
 						"nodeCount": 10,
 						"cores": 4,
-						"memory": 28
-					}
+						"memory": 28,
+						"automaticScaleJobs": false
+					},
+					"sessionKeepAliveTimeout": 30
 				},
 				"cells": [
 					{
@@ -9211,7 +9213,7 @@
 							"kwargs = '{}'"
 						],
 						"outputs": [],
-						"execution_count": 52
+						"execution_count": 67
 					},
 					{
 						"cell_type": "code",
@@ -9231,7 +9233,7 @@
 							"%run /OEA_py"
 						],
 						"outputs": [],
-						"execution_count": 56
+						"execution_count": 68
 					},
 					{
 						"cell_type": "code",
@@ -9251,7 +9253,7 @@
 							"%run /ContosoSIS_py"
 						],
 						"outputs": [],
-						"execution_count": 57
+						"execution_count": 69
 					},
 					{
 						"cell_type": "code",
@@ -9270,7 +9272,7 @@
 							"oea.create_lake_db(2, 'contoso_sis')"
 						],
 						"outputs": [],
-						"execution_count": 58
+						"execution_count": 70
 					},
 					{
 						"cell_type": "code",
@@ -9315,7 +9317,7 @@
 						"spark.dynamicAllocation.enabled": "false",
 						"spark.dynamicAllocation.minExecutors": "2",
 						"spark.dynamicAllocation.maxExecutors": "2",
-						"spark.autotune.trackingId": "bfd249aa-a6c1-4bbb-a1bd-920fd2745472"
+						"spark.autotune.trackingId": "58ec3722-7931-41ae-bd16-43ea021d9362"
 					}
 				},
 				"metadata": {
@@ -9375,7 +9377,7 @@
 							"\n",
 							"        logger.debug(\"OEA initialized.\")\n",
 							"\n",
-							"    def path(container_name, directory_path=None):\n",
+							"    def path(self, container_name, directory_path=None):\n",
 							"        if directory_path:\n",
 							"            return f'abfss://{container_name}@{self.storage_account}.dfs.core.windows.net/{directory_path}'\n",
 							"        else:\n",
