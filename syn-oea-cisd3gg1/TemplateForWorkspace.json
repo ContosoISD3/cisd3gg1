@@ -9141,7 +9141,7 @@
 						"spark.dynamicAllocation.enabled": "false",
 						"spark.dynamicAllocation.minExecutors": "4",
 						"spark.dynamicAllocation.maxExecutors": "4",
-						"spark.autotune.trackingId": "5cfb07b0-705f-47c9-ad78-fdbd95e76694"
+						"spark.autotune.trackingId": "693d4949-8c48-4ebd-927c-746ecc2ec9ab"
 					}
 				},
 				"metadata": {
@@ -9233,7 +9233,7 @@
 							"%run /OEA_py"
 						],
 						"outputs": [],
-						"execution_count": 101
+						"execution_count": 104
 					},
 					{
 						"cell_type": "code",
@@ -9253,7 +9253,7 @@
 							"%run /ContosoSIS_py"
 						],
 						"outputs": [],
-						"execution_count": 102
+						"execution_count": 105
 					},
 					{
 						"cell_type": "code",
@@ -9272,7 +9272,7 @@
 							"oea.create_lake_db(2, 'contoso_sis')"
 						],
 						"outputs": [],
-						"execution_count": 86
+						"execution_count": 107
 					},
 					{
 						"cell_type": "code",
@@ -9310,7 +9310,7 @@
 							"oea.create_sql_db(2, 'contoso_sis')"
 						],
 						"outputs": [],
-						"execution_count": 103
+						"execution_count": 108
 					},
 					{
 						"cell_type": "code",
@@ -9355,7 +9355,7 @@
 						"spark.dynamicAllocation.enabled": "false",
 						"spark.dynamicAllocation.minExecutors": "2",
 						"spark.dynamicAllocation.maxExecutors": "2",
-						"spark.autotune.trackingId": "046c1dc2-3bbb-4b40-a7c8-dd1c6a89713a"
+						"spark.autotune.trackingId": "9fc8f4b7-6ef4-4a3d-a168-b0d52af48c65"
 					}
 				},
 				"metadata": {
@@ -9657,7 +9657,8 @@
 							"            Note that a spark db that points to source data in the delta format can't be queried via SQL serverless pool. More info here: https://docs.microsoft.com/en-us/azure/synapse-analytics/sql/resources-self-help-sql-on-demand#delta-lake\n",
 							"        \"\"\"\n",
 							"        db_name = f's{stage_num}_{source_dir}'\n",
-							"        cmd = f\"IF NOT EXISTS (SELECT * FROM sys.databases WHERE name = '{db_name}')\\nBEGIN\\n  CREATE DATABASE {db_name};\\nEND;\\n\\n\"\n",
+							"        cmd = f\"IF NOT EXISTS (SELECT * FROM sys.databases WHERE name = '{db_name}')\\nBEGIN\\n  CREATE DATABASE {db_name};\\nEND;\\nGO\\n\"\n",
+							"        cmd += f\"USE {db_name};\\nGO\\n\\n\"\n",
 							"        cmd += self.create_sql_views(db_name, self.path(f'stage{stage_num}p', source_dir), source_format)\n",
 							"        cmd += self.create_sql_views(db_name, self.path(f'stage{stage_num}np', source_dir), source_format)\n",
 							"        print(cmd)\n",
@@ -9669,12 +9670,12 @@
 							"        cmd = ''      \n",
 							"        dirs = self.get_folders(source_path)\n",
 							"        for table_name in dirs:\n",
-							"            cmd += f\"CREATE OR ALTER VIEW {table_name}\\n  AS SELECT * FROM OPENROWSET(BULK '{source_path}/{table_name}', FORMAT='DELTA') AS [r]\\n\"\n",
+							"            cmd += f\"CREATE OR ALTER VIEW {table_name} AS\\n  SELECT * FROM OPENROWSET(BULK '{source_path}/{table_name}', FORMAT='DELTA') AS [r];\\n\"\n",
 							"        return cmd\n",
 							"\n",
 							"    def drop_sql_db(self, db_name):\n",
 							"        print('Copy and paste this into a sql script and execute it:\\n')\n",
-							"        print(f'DROP {db_name}')\n",
+							"        print(f'DROP VIEW {db_name}')\n",
 							"\n",
 							"    # List installed packages\n",
 							"    def list_packages(self):\n",
@@ -11705,6 +11706,26 @@
 						"execution_count": 2
 					}
 				]
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('workspaceName'), '/SQL script 4')]",
+			"type": "Microsoft.Synapse/workspaces/sqlscripts",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"content": {
+					"query": "IF NOT EXISTS (SELECT * FROM sys.databases WHERE name = 'tests2_contoso_sis')\nBEGIN\n  CREATE DATABASE tests2_contoso_sis;\nEND;\n\nUSE tests2_contoso_sis;\nGO\n\nCREATE OR ALTER VIEW xstudentattendance_pseudo AS \n  SELECT * FROM OPENROWSET(BULK 'abfss://stage2p@stoeacisd3gg1.dfs.core.windows.net/contoso_sis/studentattendance_pseudo', FORMAT='DELTA') AS [r]\n",
+					"metadata": {
+						"language": "sql"
+					},
+					"currentConnection": {
+						"databaseName": "tests2_contoso_sis",
+						"poolName": "Built-in"
+					},
+					"resultLimit": 5000
+				},
+				"type": "SqlQuery"
 			},
 			"dependsOn": []
 		}
