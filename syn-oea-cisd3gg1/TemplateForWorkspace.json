@@ -9141,7 +9141,7 @@
 						"spark.dynamicAllocation.enabled": "false",
 						"spark.dynamicAllocation.minExecutors": "4",
 						"spark.dynamicAllocation.maxExecutors": "4",
-						"spark.autotune.trackingId": "702586b4-359d-457d-9264-28b7dd4221d9"
+						"spark.autotune.trackingId": "85672c92-15a1-4813-89d8-b34a8451751b"
 					}
 				},
 				"metadata": {
@@ -9233,7 +9233,7 @@
 							"%run /OEA_py"
 						],
 						"outputs": [],
-						"execution_count": 104
+						"execution_count": 109
 					},
 					{
 						"cell_type": "code",
@@ -9253,7 +9253,7 @@
 							"%run /ContosoSIS_py"
 						],
 						"outputs": [],
-						"execution_count": 105
+						"execution_count": 110
 					},
 					{
 						"cell_type": "code",
@@ -9272,7 +9272,7 @@
 							"oea.create_lake_db(2, 'contoso_sis')"
 						],
 						"outputs": [],
-						"execution_count": 107
+						"execution_count": 111
 					},
 					{
 						"cell_type": "code",
@@ -9291,7 +9291,7 @@
 							"oea.drop_sql_db('sqls2_contoso_sis')"
 						],
 						"outputs": [],
-						"execution_count": 82
+						"execution_count": 113
 					},
 					{
 						"cell_type": "code",
@@ -9310,7 +9310,26 @@
 							"oea.create_sql_db(2, 'contoso_sis')"
 						],
 						"outputs": [],
-						"execution_count": 108
+						"execution_count": 112
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"jupyter": {
+								"source_hidden": false,
+								"outputs_hidden": false
+							},
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							}
+						},
+						"source": [
+							"oea.drop_sql_db"
+						],
+						"outputs": [],
+						"execution_count": null
 					},
 					{
 						"cell_type": "code",
@@ -9355,7 +9374,7 @@
 						"spark.dynamicAllocation.enabled": "false",
 						"spark.dynamicAllocation.minExecutors": "2",
 						"spark.dynamicAllocation.maxExecutors": "2",
-						"spark.autotune.trackingId": "2b70a94d-6ecb-4b30-b304-ccde7302938a"
+						"spark.autotune.trackingId": "d247fbb6-3dc8-4005-9c9a-1bae86826b73"
 					}
 				},
 				"metadata": {
@@ -9656,7 +9675,7 @@
 							"        \"\"\" Creates the script for creating db based on the given path (assumes that every folder in the given path is a table).\n",
 							"            Note that a spark db that points to source data in the delta format can't be queried via SQL serverless pool. More info here: https://docs.microsoft.com/en-us/azure/synapse-analytics/sql/resources-self-help-sql-on-demand#delta-lake\n",
 							"        \"\"\"\n",
-							"        db_name = f's{stage_num}_{source_dir}'\n",
+							"        db_name = f'sqls{stage_num}_{source_dir}'\n",
 							"        cmd = f\"IF NOT EXISTS (SELECT * FROM sys.databases WHERE name = '{db_name}')\\nBEGIN\\n  CREATE DATABASE {db_name};\\nEND;\\nGO\\n\"\n",
 							"        cmd += f\"USE {db_name};\\nGO\\n\\n\"\n",
 							"        cmd += self.create_sql_views(self.path(f'stage{stage_num}p', source_dir), source_format)\n",
@@ -9670,12 +9689,11 @@
 							"        cmd = ''      \n",
 							"        dirs = self.get_folders(source_path)\n",
 							"        for table_name in dirs:\n",
-							"            cmd += f\"CREATE OR ALTER VIEW {table_name} AS\\n  SELECT * FROM OPENROWSET(BULK '{source_path}/{table_name}', FORMAT='{source_format}') AS [r];\\n\"\n",
+							"            cmd += f\"CREATE OR ALTER VIEW {table_name} AS\\n  SELECT * FROM OPENROWSET(BULK '{source_path}/{table_name}', FORMAT='{source_format}') AS [r];\\nGO\\n\"\n",
 							"        return cmd\n",
 							"\n",
 							"    def drop_sql_db(self, db_name):\n",
-							"        print('Copy and paste this into a sql script and execute it:\\n')\n",
-							"        print(f'DROP VIEW {db_name}')\n",
+							"        print('Click on the menu next to the SQL db and select \"Delete\"')\n",
 							"\n",
 							"    # List installed packages\n",
 							"    def list_packages(self):\n",
@@ -11715,12 +11733,12 @@
 			"apiVersion": "2019-06-01-preview",
 			"properties": {
 				"content": {
-					"query": "IF NOT EXISTS (SELECT * FROM sys.databases WHERE name = 'tests2_contoso_sis')\nBEGIN\n  CREATE DATABASE tests2_contoso_sis;\nEND;\n\nUSE tests2_contoso_sis;\nGO\n\nCREATE OR ALTER VIEW xstudentattendance_pseudo AS \n  SELECT * FROM OPENROWSET(BULK 'abfss://stage2p@stoeacisd3gg1.dfs.core.windows.net/contoso_sis/studentattendance_pseudo', FORMAT='DELTA') AS [r]\n",
+					"query": "IF NOT EXISTS (SELECT * FROM sys.databases WHERE name = 'tests2_contoso_sis')\nBEGIN\n  CREATE DATABASE tests2_contoso_sis;\nEND;\n\nUSE tests2_contoso_sis;\nGO\n\nCREATE OR ALTER VIEW xstudentattendance_pseudo AS \n  SELECT * FROM OPENROWSET(BULK 'abfss://stage2p@stoeacisd3gg1.dfs.core.windows.net/contoso_sis/studentattendance_pseudo', FORMAT='DELTA') AS [r]\n\n\nIF NOT EXISTS (SELECT * FROM sys.databases WHERE name = 'sqls2_contoso_sis')\nBEGIN\n  CREATE DATABASE sqls2_contoso_sis;\nEND;\nGO\nUSE sqls2_contoso_sis;\nGO\n\nCREATE OR ALTER VIEW studentattendance_pseudo AS\n  SELECT * FROM OPENROWSET(BULK 'abfss://stage2p@stoeacisd3gg1.dfs.core.windows.net/contoso_sis/studentattendance_pseudo', FORMAT='DELTA') AS [r];\nCREATE OR ALTER VIEW studentsectionmark_pseudo AS\n  SELECT * FROM OPENROWSET(BULK 'abfss://stage2p@stoeacisd3gg1.dfs.core.windows.net/contoso_sis/studentsectionmark_pseudo', FORMAT='DELTA') AS [r];\nCREATE OR ALTER VIEW studentattendance_lookup AS SELECT * FROM OPENROWSET(BULK 'abfss://stage2np@stoeacisd3gg1.dfs.core.windows.net/contoso_sis/studentattendance_lookup', FORMAT='DELTA') AS [r];\nGO\nCREATE OR ALTER VIEW studentsectionmark_lookup AS SELECT * FROM OPENROWSET(BULK 'abfss://stage2np@stoeacisd3gg1.dfs.core.windows.net/contoso_sis/studentsectionmark_lookup', FORMAT='DELTA') AS [r]",
 					"metadata": {
 						"language": "sql"
 					},
 					"currentConnection": {
-						"databaseName": "tests2_contoso_sis",
+						"databaseName": "sqls2_contoso_sis",
 						"poolName": "Built-in"
 					},
 					"resultLimit": 5000
