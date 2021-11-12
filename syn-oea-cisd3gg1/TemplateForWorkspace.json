@@ -326,7 +326,7 @@
 							},
 							"ifTrueActivities": [
 								{
-									"name": "create_stage2_sql_db",
+									"name": "create_sql_db",
 									"type": "ExecutePipeline",
 									"dependsOn": [],
 									"userProperties": [],
@@ -341,7 +341,11 @@
 												"value": "@pipeline().parameters.storageAccount",
 												"type": "Expression"
 											},
-											"sourceDirectory": "contoso_sis"
+											"sourceDirectory": {
+												"value": "@pipeline().parameters.sourceDirectory",
+												"type": "Expression"
+											},
+											"stage": "2"
 										}
 									}
 								}
@@ -367,37 +371,23 @@
 							},
 							"ifTrueActivities": [
 								{
-									"name": "create_stage2_lake_db",
-									"type": "SynapseNotebook",
+									"name": "create_lake_db",
+									"type": "ExecutePipeline",
 									"dependsOn": [],
-									"policy": {
-										"timeout": "7.00:00:00",
-										"retry": 0,
-										"retryIntervalInSeconds": 30,
-										"secureOutput": false,
-										"secureInput": false
-									},
 									"userProperties": [],
 									"typeProperties": {
-										"notebook": {
-											"referenceName": "OEA_connector",
-											"type": "NotebookReference"
+										"pipeline": {
+											"referenceName": "tmpcreate_lake_db",
+											"type": "PipelineReference"
 										},
+										"waitOnCompletion": true,
 										"parameters": {
-											"object_name": {
-												"value": "oea",
-												"type": "string"
-											},
-											"method_name": {
-												"value": "create_stage2_lake_db",
-												"type": "string"
-											},
-											"kwargs": {
-												"value": "{'source_directory':'contoso_sis'}",
-												"type": "string"
+											"stageNum": "2",
+											"sourceDirectory": {
+												"value": "@pipeline().parameters.sourceDirectory",
+												"type": "Expression"
 											}
-										},
-										"snapshot": true
+										}
 									}
 								}
 							]
@@ -412,6 +402,10 @@
 					"storageAccount": {
 						"type": "string",
 						"defaultValue": "stoeacisd3gg1"
+					},
+					"sourceDirectory": {
+						"type": "string",
+						"defaultValue": "contoso_sis"
 					},
 					"create_sql_db": {
 						"type": "bool",
@@ -430,7 +424,8 @@
 			"dependsOn": [
 				"[concat(variables('workspaceId'), '/pipelines/Copy_from_each_URL')]",
 				"[concat(variables('workspaceId'), '/notebooks/OEA_connector')]",
-				"[concat(variables('workspaceId'), '/pipelines/create_sql_db')]"
+				"[concat(variables('workspaceId'), '/pipelines/create_sql_db')]",
+				"[concat(variables('workspaceId'), '/pipelines/tmpcreate_lake_db')]"
 			]
 		},
 		{
@@ -1426,6 +1421,148 @@
 			]
 		},
 		{
+			"name": "[concat(parameters('workspaceName'), '/call_oea_framework')]",
+			"type": "Microsoft.Synapse/workspaces/pipelines",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"activities": [
+					{
+						"name": "OEA_connector",
+						"type": "SynapseNotebook",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"notebook": {
+								"referenceName": "OEA_connector",
+								"type": "NotebookReference"
+							},
+							"parameters": {
+								"object_name": {
+									"value": {
+										"value": "@pipeline().parameters.object_name",
+										"type": "Expression"
+									},
+									"type": "string"
+								},
+								"method_name": {
+									"value": {
+										"value": "@pipeline().parameters.method_name",
+										"type": "Expression"
+									},
+									"type": "string"
+								},
+								"kwargs": {
+									"value": {
+										"value": "@pipeline().parameters.kwargs",
+										"type": "Expression"
+									},
+									"type": "string"
+								}
+							},
+							"snapshot": true
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {},
+					"cancelAfter": {}
+				},
+				"parameters": {
+					"object_name": {
+						"type": "string",
+						"defaultValue": "oea"
+					},
+					"method_name": {
+						"type": "string"
+					},
+					"kwargs": {
+						"type": "string"
+					}
+				},
+				"folder": {
+					"name": "OEA_Framework"
+				},
+				"annotations": []
+			},
+			"dependsOn": [
+				"[concat(variables('workspaceId'), '/notebooks/OEA_connector')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('workspaceName'), '/tmpcreate_lake_db')]",
+			"type": "Microsoft.Synapse/workspaces/pipelines",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"activities": [
+					{
+						"name": "create_lake_db",
+						"type": "SynapseNotebook",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"notebook": {
+								"referenceName": "OEA_connector",
+								"type": "NotebookReference"
+							},
+							"parameters": {
+								"object_name": {
+									"value": "oea",
+									"type": "string"
+								},
+								"method_name": {
+									"value": "create_lake_db",
+									"type": "string"
+								},
+								"kwargs": {
+									"value": {
+										"value": "{'stage_num':@{pipeline().parameters.stageNum},'source_dir':@{pipeline().parameters.sourceDirectory}}",
+										"type": "Expression"
+									},
+									"type": "string"
+								}
+							},
+							"snapshot": true
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {},
+					"cancelAfter": {}
+				},
+				"parameters": {
+					"stageNum": {
+						"type": "string",
+						"defaultValue": "2"
+					},
+					"sourceDirectory": {
+						"type": "string",
+						"defaultValue": "contoso_sis"
+					}
+				},
+				"folder": {
+					"name": "OEA_Framework/Ingest"
+				},
+				"annotations": []
+			},
+			"dependsOn": [
+				"[concat(variables('workspaceId'), '/notebooks/OEA_connector')]"
+			]
+		},
+		{
 			"name": "[concat(parameters('workspaceName'), '/create_sql_db')]",
 			"type": "Microsoft.Synapse/workspaces/pipelines",
 			"apiVersion": "2019-06-01-preview",
@@ -2043,60 +2180,6 @@
 				"[concat(variables('workspaceId'), '/datasets/DS_ADLS_binary_folder')]",
 				"[concat(variables('workspaceId'), '/linkedServices/LS_SQL_Serverless_OEA')]",
 				"[concat(variables('workspaceId'), '/pipelines/create_view')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('workspaceName'), '/create_lake_db')]",
-			"type": "Microsoft.Synapse/workspaces/pipelines",
-			"apiVersion": "2019-06-01-preview",
-			"properties": {
-				"activities": [
-					{
-						"name": "create_lake_db",
-						"type": "SynapseNotebook",
-						"dependsOn": [],
-						"policy": {
-							"timeout": "7.00:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"notebook": {
-								"referenceName": "OEA_connector",
-								"type": "NotebookReference"
-							},
-							"parameters": {
-								"object_name": {
-									"value": "oea",
-									"type": "string"
-								},
-								"method_name": {
-									"value": "create_lake_db",
-									"type": "string"
-								},
-								"kwargs": {
-									"value": "{'stage_nu'source_directory':'contoso_sis'}",
-									"type": "string"
-								}
-							},
-							"snapshot": true
-						}
-					}
-				],
-				"policy": {
-					"elapsedTimeMetric": {},
-					"cancelAfter": {}
-				},
-				"folder": {
-					"name": "OEA_Framework/Ingest"
-				},
-				"annotations": []
-			},
-			"dependsOn": [
-				"[concat(variables('workspaceId'), '/notebooks/OEA_connector')]"
 			]
 		},
 		{
@@ -9058,7 +9141,7 @@
 						"spark.dynamicAllocation.enabled": "false",
 						"spark.dynamicAllocation.minExecutors": "4",
 						"spark.dynamicAllocation.maxExecutors": "4",
-						"spark.autotune.trackingId": "7d6e5729-dc96-4b9e-83f5-04aa02b6b599"
+						"spark.autotune.trackingId": "0756c756-dfcb-40ba-9eff-5cdcee27613e"
 					}
 				},
 				"metadata": {
@@ -9083,10 +9166,8 @@
 						"sparkVersion": "3.1",
 						"nodeCount": 10,
 						"cores": 4,
-						"memory": 28,
-						"automaticScaleJobs": false
-					},
-					"sessionKeepAliveTimeout": 30
+						"memory": 28
+					}
 				},
 				"cells": [
 					{
@@ -9130,7 +9211,7 @@
 							"kwargs = '{}'"
 						],
 						"outputs": [],
-						"execution_count": 42
+						"execution_count": 52
 					},
 					{
 						"cell_type": "code",
@@ -9150,27 +9231,7 @@
 							"%run /OEA_py"
 						],
 						"outputs": [],
-						"execution_count": 38
-					},
-					{
-						"cell_type": "code",
-						"metadata": {
-							"jupyter": {
-								"source_hidden": false,
-								"outputs_hidden": false
-							},
-							"nteract": {
-								"transient": {
-									"deleting": false
-								}
-							}
-						},
-						"source": [
-							"stage = '2'\r\n",
-							"print(f'stage{stage}')"
-						],
-						"outputs": [],
-						"execution_count": 49
+						"execution_count": 56
 					},
 					{
 						"cell_type": "code",
@@ -9190,7 +9251,26 @@
 							"%run /ContosoSIS_py"
 						],
 						"outputs": [],
-						"execution_count": 35
+						"execution_count": 57
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"jupyter": {
+								"source_hidden": false,
+								"outputs_hidden": false
+							},
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							}
+						},
+						"source": [
+							"oea.create_lake_db(2, 'contoso_sis')"
+						],
+						"outputs": [],
+						"execution_count": 58
 					},
 					{
 						"cell_type": "code",
@@ -9235,7 +9315,7 @@
 						"spark.dynamicAllocation.enabled": "false",
 						"spark.dynamicAllocation.minExecutors": "2",
 						"spark.dynamicAllocation.maxExecutors": "2",
-						"spark.autotune.trackingId": "c81a215e-5a09-4123-8767-26319a1c68b3"
+						"spark.autotune.trackingId": "bfd249aa-a6c1-4bbb-a1bd-920fd2745472"
 					}
 				},
 				"metadata": {
@@ -9297,9 +9377,9 @@
 							"\n",
 							"    def path(container_name, directory_path=None):\n",
 							"        if directory_path:\n",
-							"            return f'{abfss://{container_name}@{self.storage_account}.dfs.core.windows.net/{directory_path}'\n",
+							"            return f'abfss://{container_name}@{self.storage_account}.dfs.core.windows.net/{directory_path}'\n",
 							"        else:\n",
-							"            return f'{abfss://{container_name}@{self.storage_account}.dfs.core.windows.net'\n",
+							"            return f'abfss://{container_name}@{self.storage_account}.dfs.core.windows.net'            \n",
 							"\n",
 							"    def _initialize_logger(self, instrumentation_key, logging_level):\n",
 							"        logging.lastResort = None\n",
@@ -9515,8 +9595,8 @@
 							"        \"\"\"\n",
 							"        db_name = f's{stage_num}_{source_dir}'\n",
 							"        spark.sql(f'CREATE DATABASE IF NOT EXISTS {db_name}')\n",
-							"        create_lake_views(self, db_name, self.path(f'stage{stage_num}p'), source_format)\n",
-							"        create_lake_views(self, db_name, self.path(f'stage{stage_num}np'), source_format)\n",
+							"        self.create_lake_views(db_name, self.path(f'stage{stage_num}p'), source_format)\n",
+							"        self.create_lake_views(db_name, self.path(f'stage{stage_num}np'), source_format)\n",
 							"        result = \"Database created: \" + db_name\n",
 							"        logger.info(result)\n",
 							"        return result        \n",
