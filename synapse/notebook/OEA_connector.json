@@ -17,7 +17,7 @@
 				"spark.dynamicAllocation.enabled": "false",
 				"spark.dynamicAllocation.minExecutors": "4",
 				"spark.dynamicAllocation.maxExecutors": "4",
-				"spark.autotune.trackingId": "a8d3115f-b9cb-48f8-b470-e689be61ada9"
+				"spark.autotune.trackingId": "8fc7f27d-608e-4b1e-857d-8d23cc91ff8b"
 			}
 		},
 		"metadata": {
@@ -88,7 +88,7 @@
 					"method_name = ''\r\n",
 					"kwargs = '{}'"
 				],
-				"execution_count": 67
+				"execution_count": 78
 			},
 			{
 				"cell_type": "code",
@@ -107,7 +107,7 @@
 				"source": [
 					"%run /OEA_py"
 				],
-				"execution_count": 74
+				"execution_count": 79
 			},
 			{
 				"cell_type": "code",
@@ -126,7 +126,7 @@
 				"source": [
 					"%run /ContosoSIS_py"
 				],
-				"execution_count": 75
+				"execution_count": 80
 			},
 			{
 				"cell_type": "code",
@@ -160,7 +160,25 @@
 					}
 				},
 				"source": [
-					"oea.drop_db()"
+					"oea.drop_sql_db('sqls2_contoso_sis')"
+				],
+				"execution_count": 82
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					"oea.create_sql_db()"
 				],
 				"execution_count": null
 			},

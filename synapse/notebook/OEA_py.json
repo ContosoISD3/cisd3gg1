@@ -13,7 +13,7 @@
 				"spark.dynamicAllocation.enabled": "false",
 				"spark.dynamicAllocation.minExecutors": "2",
 				"spark.dynamicAllocation.maxExecutors": "2",
-				"spark.autotune.trackingId": "eff6112a-c131-46a8-8526-5af27608c693"
+				"spark.autotune.trackingId": "9c37a774-7cf2-44a6-bbfb-22007aef5e3c"
 			}
 		},
 		"metadata": {
@@ -310,7 +310,7 @@
 					"        logger.info(result)\n",
 					"        return result       \n",
 					"\n",
-					"    def create_sql_db(self, source_path, source_format='DELTA'):\n",
+					"    def create_sql_db(self, stage_num, source_dir, source_format='DELTA'):\n",
 					"        \"\"\" Creates the script for creating db based on the given path (assumes that every folder in the given path is a table).\n",
 					"            Note that a spark db that points to source data in the delta format can't be queried via SQL serverless pool. More info here: https://docs.microsoft.com/en-us/azure/synapse-analytics/sql/resources-self-help-sql-on-demand#delta-lake\n",
 					"        \"\"\"\n",
