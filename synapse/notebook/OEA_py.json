@@ -13,7 +13,7 @@
 				"spark.dynamicAllocation.enabled": "false",
 				"spark.dynamicAllocation.minExecutors": "2",
 				"spark.dynamicAllocation.maxExecutors": "2",
-				"spark.autotune.trackingId": "c29da569-4888-4b93-8ac4-c537b2062b3f"
+				"spark.autotune.trackingId": "871c0feb-cb49-4100-b99e-73cda34bd469"
 			}
 		},
 		"metadata": {
@@ -314,7 +314,7 @@
 					"        \"\"\" Creates the script for creating db based on the given path (assumes that every folder in the given path is a table).\n",
 					"            Note that a spark db that points to source data in the delta format can't be queried via SQL serverless pool. More info here: https://docs.microsoft.com/en-us/azure/synapse-analytics/sql/resources-self-help-sql-on-demand#delta-lake\n",
 					"        \"\"\"\n",
-					"        db_name = f's{stage_num}_{source_dir}'\n",
+					"        db_name = f'sqls{stage_num}_{source_dir}'\n",
 					"        cmd = f\"IF NOT EXISTS (SELECT * FROM sys.databases WHERE name = '{db_name}')\\nBEGIN\\n  CREATE DATABASE {db_name};\\nEND;\\nGO\\n\"\n",
 					"        cmd += f\"USE {db_name};\\nGO\\n\\n\"\n",
 					"        cmd += self.create_sql_views(self.path(f'stage{stage_num}p', source_dir), source_format)\n",
