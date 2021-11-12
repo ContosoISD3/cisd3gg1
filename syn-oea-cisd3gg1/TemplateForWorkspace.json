@@ -9141,7 +9141,7 @@
 						"spark.dynamicAllocation.enabled": "false",
 						"spark.dynamicAllocation.minExecutors": "4",
 						"spark.dynamicAllocation.maxExecutors": "4",
-						"spark.autotune.trackingId": "1551036d-93cc-4a72-afe1-26bb83243caa"
+						"spark.autotune.trackingId": "dd7f6814-ea7a-487a-aa2b-5b964f052c26"
 					}
 				},
 				"metadata": {
@@ -9233,7 +9233,7 @@
 							"%run /OEA_py"
 						],
 						"outputs": [],
-						"execution_count": 71
+						"execution_count": 74
 					},
 					{
 						"cell_type": "code",
@@ -9253,7 +9253,7 @@
 							"%run /ContosoSIS_py"
 						],
 						"outputs": [],
-						"execution_count": 72
+						"execution_count": 75
 					},
 					{
 						"cell_type": "code",
@@ -9272,7 +9272,26 @@
 							"oea.create_lake_db(2, 'contoso_sis')"
 						],
 						"outputs": [],
-						"execution_count": 73
+						"execution_count": 76
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"jupyter": {
+								"source_hidden": false,
+								"outputs_hidden": false
+							},
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							}
+						},
+						"source": [
+							"oea.drop_db()"
+						],
+						"outputs": [],
+						"execution_count": null
 					},
 					{
 						"cell_type": "code",
@@ -9317,7 +9336,7 @@
 						"spark.dynamicAllocation.enabled": "false",
 						"spark.dynamicAllocation.minExecutors": "2",
 						"spark.dynamicAllocation.maxExecutors": "2",
-						"spark.autotune.trackingId": "14ab248d-c1f0-417b-a255-04cb65ba7600"
+						"spark.autotune.trackingId": "af946081-d362-4224-92dd-1ba2ff1d9c7e"
 					}
 				},
 				"metadata": {
@@ -9608,7 +9627,7 @@
 							"        for table_name in dirs:\n",
 							"            spark.sql(f\"create table if not exists {db_name}.{table_name} using {source_format} location '{source_path}/{table_name}'\")\n",
 							"\n",
-							"    def drop_db(self, db_name):\n",
+							"    def drop_lake_db(self, db_name):\n",
 							"        spark.sql(f'DROP DATABASE IF EXISTS {db_name} CASCADE')\n",
 							"        result = \"Database dropped: \" + db_name\n",
 							"        logger.info(result)\n",
@@ -9618,15 +9637,19 @@
 							"        \"\"\" Creates the script for creating db based on the given path (assumes that every folder in the given path is a table).\n",
 							"            Note that a spark db that points to source data in the delta format can't be queried via SQL serverless pool. More info here: https://docs.microsoft.com/en-us/azure/synapse-analytics/sql/resources-self-help-sql-on-demand#delta-lake\n",
 							"        \"\"\"\n",
-							"        source_info = self.parse_source_path(source_path)\n",
-							"        db_name = f\"s{source_info['stage_num']}_{source_info['ss']}\"\n",
-							"        spark.sql(f\"CREATE DATABASE IF NOT EXISTS {db_name}\")\n",
-							"        dirs = self.get_folders(source_path)\n",
-							"        for table_name in dirs:\n",
-							"            spark.sql(f\"create table if not exists {db_name}.{table_name} using {source_format} location '{source_path}/{table_name}'\")\n",
+							"        cmd = \"\"\"IF NOT EXISTS (SELECT * FROM sys.databases WHERE name = '@{variables('sqlDBName')}') \n",
+							"                BEGIN\n",
+							"                CREATE DATABASE @{variables('sqlDBName')}; \n",
+							"                END;'\n",
+							"        \"\"\"\n",
+							"        print(cmd)\n",
 							"        result = \"Database created: \" + db_name\n",
 							"        logger.info(result)\n",
 							"        return result\n",
+							"\n",
+							"    def drop_sql_db(self, db_name):\n",
+							"        print('Copy and paste this into a sql script and execute it:\\n')\n",
+							"        print(f'DROP {db_name}')\n",
 							"\n",
 							"    # List installed packages\n",
 							"    def list_packages(self):\n",
