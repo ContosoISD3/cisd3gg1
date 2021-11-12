@@ -35,7 +35,7 @@
 						},
 						"kwargs": {
 							"value": {
-								"value": "{'stage_num':@{pipeline().parameters.stageNum},'source_dir':@{pipeline().parameters.sourceDirectory}",
+								"value": "{'stage_num':@{pipeline().parameters.stageNum},'source_dir':'@{pipeline().parameters.sourceDirectory}'}",
 								"type": "Expression"
 							},
 							"type": "string"
