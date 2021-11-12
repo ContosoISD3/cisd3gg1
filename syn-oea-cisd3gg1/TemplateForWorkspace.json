@@ -9141,7 +9141,7 @@
 						"spark.dynamicAllocation.enabled": "false",
 						"spark.dynamicAllocation.minExecutors": "4",
 						"spark.dynamicAllocation.maxExecutors": "4",
-						"spark.autotune.trackingId": "9538b117-86eb-4694-ae62-cc0fa3f83214"
+						"spark.autotune.trackingId": "7f42d1c6-56e5-49f2-82fd-4d240bd7241d"
 					}
 				},
 				"metadata": {
@@ -9233,7 +9233,7 @@
 							"%run /OEA_py"
 						],
 						"outputs": [],
-						"execution_count": 95
+						"execution_count": 98
 					},
 					{
 						"cell_type": "code",
@@ -9253,7 +9253,7 @@
 							"%run /ContosoSIS_py"
 						],
 						"outputs": [],
-						"execution_count": 96
+						"execution_count": 99
 					},
 					{
 						"cell_type": "code",
@@ -9310,7 +9310,7 @@
 							"oea.create_sql_db(2, 'contoso_sis')"
 						],
 						"outputs": [],
-						"execution_count": 97
+						"execution_count": 100
 					},
 					{
 						"cell_type": "code",
@@ -9355,7 +9355,7 @@
 						"spark.dynamicAllocation.enabled": "false",
 						"spark.dynamicAllocation.minExecutors": "2",
 						"spark.dynamicAllocation.maxExecutors": "2",
-						"spark.autotune.trackingId": "44b5bf48-9be6-4c5c-b42d-9b0dc5ce3810"
+						"spark.autotune.trackingId": "d5d634d7-343e-4169-9c00-54afc28d1b78"
 					}
 				},
 				"metadata": {
@@ -9666,19 +9666,10 @@
 							"        #return result\n",
 							"\n",
 							"    def create_sql_views(self, db_name, source_path, source_format):\n",
-							"        \"\"\"CREATE OR ALTER VIEW @{item().name} AS\n",
-							"        SELECT * FROM OPENROWSET(\n",
-							"        BULK 'https://stoeacisd3gg1.dfs.core.windows.net/stage2np/contoso_sis/student',\n",
-							"        FORMAT='DELTA'\n",
-							"        ) AS [r]\"\"\" \n",
 							"        cmd = ''      \n",
 							"        dirs = self.get_folders(source_path)\n",
 							"        for table_name in dirs:\n",
-							"            cmd += f\"\"\"CREATE OR ALTER VIEW {table_name} AS\n",
-							"        SELECT * FROM OPENROWSET(\n",
-							"        BULK '{source_path}/{table_name}',\n",
-							"        FORMAT='DELTA'\n",
-							"        ) AS [r]\"\"\"\n",
+							"            cmd += f\"CREATE OR ALTER VIEW {table_name} AS SELECT * FROM OPENROWSET(BULK '{source_path}/{table_name}', FORMAT='DELTA') AS [r]\\n\"\n",
 							"        return cmd\n",
 							"\n",
 							"    def drop_sql_db(self, db_name):\n",
