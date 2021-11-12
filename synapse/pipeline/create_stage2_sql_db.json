@@ -10,7 +10,7 @@
 				"typeProperties": {
 					"variableName": "sqlDBName",
 					"value": {
-						"value": "sqls2_@{pipeline().parameters.sourceDirectory}",
+						"value": "sqls@{pipeline().parameters.stage}_@{pipeline().parameters.sourceDirectory}",
 						"type": "Expression"
 					}
 				}
@@ -39,7 +39,7 @@
 					"storedProcedureParameters": {
 						"command": {
 							"value": {
-								"value": "IF NOT EXISTS (SELECT * FROM sys.databases WHERE name = 'sqls2_@{pipeline().parameters.sourceDirectory}') \nBEGIN\n  CREATE DATABASE sqls2_@{pipeline().parameters.sourceDirectory}; \nEND;",
+								"value": "IF NOT EXISTS (SELECT * FROM sys.databases WHERE name = '@{variables('sqlDBName')}') \nBEGIN\n  CREATE DATABASE @{variables('sqlDBName')}; \nEND;",
 								"type": "Expression"
 							},
 							"type": "String"
@@ -55,7 +55,7 @@
 				}
 			},
 			{
-				"name": "get folders in stage2p",
+				"name": "get folders in stageXp",
 				"type": "GetMetadata",
 				"dependsOn": [
 					{
@@ -78,7 +78,10 @@
 						"referenceName": "DS_ADLS_binary_folder",
 						"type": "DatasetReference",
 						"parameters": {
-							"filesystem": "stage2p",
+							"filesystem": {
+								"value": "stage@{pipeline().parameters.stage}p",
+								"type": "Expression"
+							},
 							"directory": {
 								"value": "@pipeline().parameters.sourceDirectory",
 								"type": "Expression"
@@ -103,7 +106,7 @@
 				"type": "ForEach",
 				"dependsOn": [
 					{
-						"activity": "get folders in stage2p",
+						"activity": "get folders in stageXp",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -133,7 +136,7 @@
 								"storedProcedureParameters": {
 									"command": {
 										"value": {
-											"value": "CREATE OR ALTER VIEW @{item().name} AS\nSELECT * FROM OPENROWSET(\nBULK 'https://@{pipeline().parameters.storageAccount}.dfs.core.windows.net/stage2p/@{pipeline().parameters.sourceDirectory}/@{item().name}',\nFORMAT='DELTA'\n) AS [r]",
+											"value": "CREATE OR ALTER VIEW @{item().name} AS\nSELECT * FROM OPENROWSET(\nBULK 'https://@{pipeline().parameters.storageAccount}.dfs.core.windows.net/stage@{pipeline().parameters.stage}p/@{pipeline().parameters.sourceDirectory}/@{item().name}',\nFORMAT='DELTA'\n) AS [r]",
 											"type": "Expression"
 										},
 										"type": "String"
@@ -155,7 +158,7 @@
 				}
 			},
 			{
-				"name": "get folders in stage2np",
+				"name": "get folders in stageXnp",
 				"type": "GetMetadata",
 				"dependsOn": [
 					{
@@ -178,7 +181,10 @@
 						"referenceName": "DS_ADLS_binary_folder",
 						"type": "DatasetReference",
 						"parameters": {
-							"filesystem": "stage2np",
+							"filesystem": {
+								"value": "stage@{pipeline().parameters.stage}np",
+								"type": "Expression"
+							},
 							"directory": {
 								"value": "@pipeline().parameters.sourceDirectory",
 								"type": "Expression"
@@ -203,7 +209,7 @@
 				"type": "ForEach",
 				"dependsOn": [
 					{
-						"activity": "get folders in stage2np",
+						"activity": "get folders in stageXnp",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -233,7 +239,7 @@
 								"storedProcedureParameters": {
 									"command": {
 										"value": {
-											"value": "CREATE OR ALTER VIEW @{item().name} AS\nSELECT * FROM OPENROWSET(\nBULK 'https://@{pipeline().parameters.storageAccount}.dfs.core.windows.net/stage2np/@{pipeline().parameters.sourceDirectory}/@{item().name}',\nFORMAT='DELTA'\n) AS [r]",
+											"value": "CREATE OR ALTER VIEW @{item().name} AS\nSELECT * FROM OPENROWSET(\nBULK 'https://@{pipeline().parameters.storageAccount}.dfs.core.windows.net/stage@{pipeline().parameters.stage}np/@{pipeline().parameters.sourceDirectory}/@{item().name}',\nFORMAT='DELTA'\n) AS [r]",
 											"type": "Expression"
 										},
 										"type": "String"
@@ -263,6 +269,10 @@
 			"sourceDirectory": {
 				"type": "string",
 				"defaultValue": "contoso_sis"
+			},
+			"stage": {
+				"type": "string",
+				"defaultValue": "2"
 			}
 		},
 		"variables": {

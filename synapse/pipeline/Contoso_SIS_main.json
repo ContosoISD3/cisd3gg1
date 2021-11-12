@@ -61,7 +61,7 @@
 				}
 			},
 			{
-				"name": "If Condition1",
+				"name": "If create_sql_db",
 				"type": "IfCondition",
 				"dependsOn": [
 					{
@@ -102,7 +102,7 @@
 				}
 			},
 			{
-				"name": "If Condition2",
+				"name": "If create_lake_db",
 				"type": "IfCondition",
 				"dependsOn": [
 					{
