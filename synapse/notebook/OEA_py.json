@@ -13,7 +13,7 @@
 				"spark.dynamicAllocation.enabled": "false",
 				"spark.dynamicAllocation.minExecutors": "2",
 				"spark.dynamicAllocation.maxExecutors": "2",
-				"spark.autotune.trackingId": "4241c27d-75bc-4bb1-b651-b2112e5b2482"
+				"spark.autotune.trackingId": "35df9d82-a0e0-4c76-9df8-929b17451c02"
 			}
 		},
 		"metadata": {
@@ -73,7 +73,7 @@
 					"\n",
 					"        logger.debug(\"OEA initialized.\")\n",
 					"\n",
-					"    def path(container_name, directory_path=None):\n",
+					"    def path(self, container_name, directory_path=None):\n",
 					"        if directory_path:\n",
 					"            return f'abfss://{container_name}@{self.storage_account}.dfs.core.windows.net/{directory_path}'\n",
 					"        else:\n",
