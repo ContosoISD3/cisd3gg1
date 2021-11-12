@@ -377,7 +377,7 @@
 									"userProperties": [],
 									"typeProperties": {
 										"pipeline": {
-											"referenceName": "tmpcreate_lake_db",
+											"referenceName": "create_lake_db",
 											"type": "PipelineReference"
 										},
 										"waitOnCompletion": true,
@@ -425,7 +425,7 @@
 				"[concat(variables('workspaceId'), '/pipelines/Copy_from_each_URL')]",
 				"[concat(variables('workspaceId'), '/notebooks/OEA_connector')]",
 				"[concat(variables('workspaceId'), '/pipelines/create_sql_db')]",
-				"[concat(variables('workspaceId'), '/pipelines/tmpcreate_lake_db')]"
+				"[concat(variables('workspaceId'), '/pipelines/create_lake_db')]"
 			]
 		},
 		{
@@ -1489,6 +1489,73 @@
 				},
 				"folder": {
 					"name": "OEA_Framework"
+				},
+				"annotations": []
+			},
+			"dependsOn": [
+				"[concat(variables('workspaceId'), '/notebooks/OEA_connector')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('workspaceName'), '/create_lake_db')]",
+			"type": "Microsoft.Synapse/workspaces/pipelines",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"activities": [
+					{
+						"name": "create_lake_db",
+						"type": "SynapseNotebook",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"notebook": {
+								"referenceName": "OEA_connector",
+								"type": "NotebookReference"
+							},
+							"parameters": {
+								"object_name": {
+									"value": "oea",
+									"type": "string"
+								},
+								"method_name": {
+									"value": "create_lake_db",
+									"type": "string"
+								},
+								"kwargs": {
+									"value": {
+										"value": "{'stage_num':@{pipeline().parameters.stageNum},'source_dir':@{pipeline().parameters.sourceDirectory}",
+										"type": "Expression"
+									},
+									"type": "string"
+								}
+							},
+							"snapshot": true
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {},
+					"cancelAfter": {}
+				},
+				"parameters": {
+					"stageNum": {
+						"type": "string",
+						"defaultValue": "2"
+					},
+					"sourceDirectory": {
+						"type": "string",
+						"defaultValue": "contoso_sis"
+					}
+				},
+				"folder": {
+					"name": "OEA_Framework/Ingest"
 				},
 				"annotations": []
 			},
@@ -2615,73 +2682,6 @@
 			},
 			"dependsOn": [
 				"[concat(variables('workspaceId'), '/datasets/DS_ADLS_binary_folder')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('workspaceName'), '/tmpcreate_lake_db')]",
-			"type": "Microsoft.Synapse/workspaces/pipelines",
-			"apiVersion": "2019-06-01-preview",
-			"properties": {
-				"activities": [
-					{
-						"name": "create_lake_db",
-						"type": "SynapseNotebook",
-						"dependsOn": [],
-						"policy": {
-							"timeout": "7.00:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"notebook": {
-								"referenceName": "OEA_connector",
-								"type": "NotebookReference"
-							},
-							"parameters": {
-								"object_name": {
-									"value": "oea",
-									"type": "string"
-								},
-								"method_name": {
-									"value": "create_lake_db",
-									"type": "string"
-								},
-								"kwargs": {
-									"value": {
-										"value": "{'stage_num':@{pipeline().parameters.stageNum},'source_dir':@{pipeline().parameters.sourceDirectory}",
-										"type": "Expression"
-									},
-									"type": "string"
-								}
-							},
-							"snapshot": true
-						}
-					}
-				],
-				"policy": {
-					"elapsedTimeMetric": {},
-					"cancelAfter": {}
-				},
-				"parameters": {
-					"stageNum": {
-						"type": "string",
-						"defaultValue": "2"
-					},
-					"sourceDirectory": {
-						"type": "string",
-						"defaultValue": "contoso_sis"
-					}
-				},
-				"folder": {
-					"name": "OEA_Framework/Ingest"
-				},
-				"annotations": []
-			},
-			"dependsOn": [
-				"[concat(variables('workspaceId'), '/notebooks/OEA_connector')]"
 			]
 		},
 		{
