@@ -13,7 +13,7 @@
 				"spark.dynamicAllocation.enabled": "false",
 				"spark.dynamicAllocation.minExecutors": "2",
 				"spark.dynamicAllocation.maxExecutors": "2",
-				"spark.autotune.trackingId": "29b632b7-e6df-4b12-b7c7-2011c3b4ef20"
+				"spark.autotune.trackingId": "1012ae8d-6bf3-4b16-bb25-ee565fd08f0a"
 			}
 		},
 		"metadata": {
@@ -317,7 +317,7 @@
 					"        db_name = f's{stage_num}_{source_dir}'\n",
 					"        cmd = f\"IF NOT EXISTS (SELECT * FROM sys.databases WHERE name = '{db_name}')\\nBEGIN\\n  CREATE DATABASE {db_name};\\nEND;\\n\\n\"\n",
 					"        cmd += self.create_sql_views(db_name, self.path(f'stage{stage_num}p', source_dir), source_format)\n",
-					"\n",
+					"        cmd += self.create_sql_views(db_name, self.path(f'stage{stage_num}np', source_dir), source_format)\n",
 					"        print(cmd)\n",
 					"        #result = \"Database created: \" + db_name\n",
 					"        #logger.info(result)\n",
@@ -327,7 +327,7 @@
 					"        cmd = ''      \n",
 					"        dirs = self.get_folders(source_path)\n",
 					"        for table_name in dirs:\n",
-					"            cmd += f\"CREATE OR ALTER VIEW {table_name} AS SELECT * FROM OPENROWSET(BULK '{source_path}/{table_name}', FORMAT='DELTA') AS [r]\\n\"\n",
+					"            cmd += f\"CREATE OR ALTER VIEW {table_name}\\n  AS SELECT * FROM OPENROWSET(BULK '{source_path}/{table_name}', FORMAT='DELTA') AS [r]\\n\"\n",
 					"        return cmd\n",
 					"\n",
 					"    def drop_sql_db(self, db_name):\n",
