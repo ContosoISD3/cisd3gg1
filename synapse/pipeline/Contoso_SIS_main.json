@@ -130,7 +130,7 @@
 							"userProperties": [],
 							"typeProperties": {
 								"pipeline": {
-									"referenceName": "create_lake_db",
+									"referenceName": "tmpcreate_lake_db",
 									"type": "PipelineReference"
 								},
 								"waitOnCompletion": true,
