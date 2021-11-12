@@ -13,7 +13,7 @@
 				"spark.dynamicAllocation.enabled": "false",
 				"spark.dynamicAllocation.minExecutors": "2",
 				"spark.dynamicAllocation.maxExecutors": "2",
-				"spark.autotune.trackingId": "07ed1bb9-4fcc-4c9e-82ee-c2fe3b6edc41"
+				"spark.autotune.trackingId": "4241c27d-75bc-4bb1-b651-b2112e5b2482"
 			}
 		},
 		"metadata": {
@@ -293,8 +293,8 @@
 					"        \"\"\"\n",
 					"        db_name = f's{stage_num}_{source_dir}'\n",
 					"        spark.sql(f'CREATE DATABASE IF NOT EXISTS {db_name}')\n",
-					"        create_lake_views(self, db_name, self.path(f'stage{stage_num}p'), source_format)\n",
-					"        create_lake_views(self, db_name, self.path(f'stage{stage_num}np'), source_format)\n",
+					"        self.create_lake_views(db_name, self.path(f'stage{stage_num}p'), source_format)\n",
+					"        self.create_lake_views(db_name, self.path(f'stage{stage_num}np'), source_format)\n",
 					"        result = \"Database created: \" + db_name\n",
 					"        logger.info(result)\n",
 					"        return result        \n",
