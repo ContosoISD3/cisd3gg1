@@ -1,9 +1,9 @@
 {
-	"name": "create_stage2_lake_db",
+	"name": "create_lake_db",
 	"properties": {
 		"activities": [
 			{
-				"name": "create_stage2_lake_db",
+				"name": "create_lake_db",
 				"type": "SynapseNotebook",
 				"dependsOn": [],
 				"policy": {
@@ -25,11 +25,14 @@
 							"type": "string"
 						},
 						"method_name": {
-							"value": "create_stage2_lake_db",
+							"value": "create_lake_db",
 							"type": "string"
 						},
 						"kwargs": {
-							"value": "{'source_directory':'contoso_sis'}",
+							"value": {
+								"value": "{'stage_num':@{pipeline().parameters.stageNum},'source_dir':@{pipeline().parameters.sourceDirectory}}",
+								"type": "Expression"
+							},
 							"type": "string"
 						}
 					},
@@ -37,6 +40,16 @@
 				}
 			}
 		],
+		"parameters": {
+			"stageNum": {
+				"type": "string",
+				"defaultValue": "2"
+			},
+			"sourceDirectory": {
+				"type": "string",
+				"defaultValue": "contoso_sis"
+			}
+		},
 		"folder": {
 			"name": "OEA_Framework/Ingest"
 		},
