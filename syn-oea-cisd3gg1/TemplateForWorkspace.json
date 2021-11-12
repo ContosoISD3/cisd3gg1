@@ -1535,7 +1535,7 @@
 								},
 								"kwargs": {
 									"value": {
-										"value": "{'stage_num':@{pipeline().parameters.stageNum},'source_dir':@{pipeline().parameters.sourceDirectory}",
+										"value": "{'stage_num':@{pipeline().parameters.stageNum},'source_dir':'@{pipeline().parameters.sourceDirectory}'}",
 										"type": "Expression"
 									},
 									"type": "string"
@@ -11691,7 +11691,7 @@
 						"spark.dynamicAllocation.enabled": "false",
 						"spark.dynamicAllocation.minExecutors": "4",
 						"spark.dynamicAllocation.maxExecutors": "4",
-						"spark.autotune.trackingId": "53fcb19b-224f-4063-8d1d-9cf63cef3c4e"
+						"spark.autotune.trackingId": "e48aaec5-411e-4c21-a61e-532f10f0a132"
 					}
 				},
 				"metadata": {
