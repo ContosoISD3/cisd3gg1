@@ -252,7 +252,14 @@
 					{
 						"name": "Copy_from_each_URL - SIS data",
 						"type": "ExecutePipeline",
-						"dependsOn": [],
+						"dependsOn": [
+							{
+								"activity": "create_stage2_lake_db",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
 						"userProperties": [],
 						"typeProperties": {
 							"pipeline": {
@@ -337,14 +344,7 @@
 					{
 						"name": "create_stage2_lake_db",
 						"type": "SynapseNotebook",
-						"dependsOn": [
-							{
-								"activity": "Contoso_SIS_ingest",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							}
-						],
+						"dependsOn": [],
 						"policy": {
 							"timeout": "7.00:00:00",
 							"retry": 0,
@@ -365,6 +365,10 @@
 								},
 								"method_name": {
 									"value": "create_stage2_lake_db",
+									"type": "string"
+								},
+								"kwargs": {
+									"value": "{'source_directory':'contoso_sis'}",
 									"type": "string"
 								}
 							},
@@ -8933,7 +8937,7 @@
 						"spark.dynamicAllocation.enabled": "false",
 						"spark.dynamicAllocation.minExecutors": "4",
 						"spark.dynamicAllocation.maxExecutors": "4",
-						"spark.autotune.trackingId": "01f96384-5b75-4ceb-aa17-28b8496e6834"
+						"spark.autotune.trackingId": "1f18238e-2c68-47e7-8171-27a7fe4180b9"
 					}
 				},
 				"metadata": {
@@ -8991,17 +8995,39 @@
 								"transient": {
 									"deleting": false
 								}
+							}
+						},
+						"source": [
+							"spark.sql(\"DROP DATABASE IF EXISTS s2_contoso_sis CASCADE\")"
+						],
+						"outputs": [],
+						"execution_count": 40
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"jupyter": {
+								"source_hidden": false,
+								"outputs_hidden": false
+							},
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
 							},
 							"tags": [
 								"parameters"
 							]
 						},
 						"source": [
-							"object_name = 'contoso_sis'\r\n",
-							"method_name = 'ingest'"
+							"# These values should be passed in from the pipeline that is using this notebook as an activity.\r\n",
+							"# Note that kwargs allows you to pass in a dict of params, but the dict has to specified as a string when invoked from a pipeline.\r\n",
+							"object_name = 'oea'\r\n",
+							"method_name = 'print_stage'\r\n",
+							"kwargs = \"{'path':oea.stage2np}\""
 						],
 						"outputs": [],
-						"execution_count": 27
+						"execution_count": 37
 					},
 					{
 						"cell_type": "code",
@@ -9021,7 +9047,7 @@
 							"%run /OEA_py"
 						],
 						"outputs": [],
-						"execution_count": 28
+						"execution_count": 38
 					},
 					{
 						"cell_type": "code",
@@ -9041,7 +9067,7 @@
 							"%run /ContosoSIS_py"
 						],
 						"outputs": [],
-						"execution_count": 29
+						"execution_count": 35
 					},
 					{
 						"cell_type": "code",
@@ -9057,11 +9083,13 @@
 							}
 						},
 						"source": [
-							"m = getattr(eval(object_name), method_name)\r\n",
-							"m()"
+							"obj = eval(object_name)\r\n",
+							"kwargs = eval(kwargs)\r\n",
+							"m = getattr(obj, method_name)\r\n",
+							"m(**kwargs)"
 						],
 						"outputs": [],
-						"execution_count": 30
+						"execution_count": 39
 					}
 				]
 			},
@@ -9084,7 +9112,7 @@
 						"spark.dynamicAllocation.enabled": "false",
 						"spark.dynamicAllocation.minExecutors": "2",
 						"spark.dynamicAllocation.maxExecutors": "2",
-						"spark.autotune.trackingId": "97fd0059-d19c-4332-8198-3d59195e4e76"
+						"spark.autotune.trackingId": "24e2b165-af5e-4929-aa82-db75bdf8e504"
 					}
 				},
 				"metadata": {
@@ -9159,16 +9187,6 @@
 							"        if instrumentation_key:\n",
 							"            # Setup logging to go to app insights (more info here: https://github.com/balakreshnan/Samples2021/blob/main/Synapseworkspace/opencensuslog.md#azure-synapse-spark-logs-runtime-errors-to-application-insights)\n",
 							"            self.logger.addHandler(AzureLogHandler(connection_string='InstrumentationKey=' + instrumentation_key))\n",
-							"\n",
-							"    def call_method(self, module_name, method_name):\n",
-							"        \"\"\" Calls the specified method on the specified module \n",
-							"            eg, call_method('ContosoSIS', 'ingest')\n",
-							"        \"\"\"\n",
-							"        if module_name in self.registered_modules:\n",
-							"            m = getattr(self.registered_modules[module_name], method_name)\n",
-							"            m()\n",
-							"        else:\n",
-							"            raise ValueError(\"No registered modules named: \" + module_name)\n",
 							"\n",
 							"    def load(self, folder, table, stage=None, data_format='delta'):\n",
 							"        \"\"\" Loads a dataframe based on the path specified in the given args \"\"\"\n",
@@ -9376,7 +9394,7 @@
 							"    def create_stage2_lake_db(self, source_directory):\n",
 							"        source_path = f'{self.stage2p}/{source_directory}'\n",
 							"        self.create_db(source_path)\n",
-							"        source_path = f'{self.stage2pn}/{source_directory}'\n",
+							"        source_path = f'{self.stage2np}/{source_directory}'\n",
 							"        self.create_db(source_path)\n",
 							"\n",
 							"    def drop_db(self, db_name):\n",
