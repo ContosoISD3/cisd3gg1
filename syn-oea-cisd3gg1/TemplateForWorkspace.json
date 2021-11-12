@@ -9141,7 +9141,7 @@
 						"spark.dynamicAllocation.enabled": "false",
 						"spark.dynamicAllocation.minExecutors": "4",
 						"spark.dynamicAllocation.maxExecutors": "4",
-						"spark.autotune.trackingId": "693d4949-8c48-4ebd-927c-746ecc2ec9ab"
+						"spark.autotune.trackingId": "702586b4-359d-457d-9264-28b7dd4221d9"
 					}
 				},
 				"metadata": {
@@ -9355,7 +9355,7 @@
 						"spark.dynamicAllocation.enabled": "false",
 						"spark.dynamicAllocation.minExecutors": "2",
 						"spark.dynamicAllocation.maxExecutors": "2",
-						"spark.autotune.trackingId": "9fc8f4b7-6ef4-4a3d-a168-b0d52af48c65"
+						"spark.autotune.trackingId": "2b70a94d-6ecb-4b30-b304-ccde7302938a"
 					}
 				},
 				"metadata": {
@@ -9659,18 +9659,18 @@
 							"        db_name = f's{stage_num}_{source_dir}'\n",
 							"        cmd = f\"IF NOT EXISTS (SELECT * FROM sys.databases WHERE name = '{db_name}')\\nBEGIN\\n  CREATE DATABASE {db_name};\\nEND;\\nGO\\n\"\n",
 							"        cmd += f\"USE {db_name};\\nGO\\n\\n\"\n",
-							"        cmd += self.create_sql_views(db_name, self.path(f'stage{stage_num}p', source_dir), source_format)\n",
-							"        cmd += self.create_sql_views(db_name, self.path(f'stage{stage_num}np', source_dir), source_format)\n",
+							"        cmd += self.create_sql_views(self.path(f'stage{stage_num}p', source_dir), source_format)\n",
+							"        cmd += self.create_sql_views(self.path(f'stage{stage_num}np', source_dir), source_format)\n",
 							"        print(cmd)\n",
 							"        #result = \"Database created: \" + db_name\n",
 							"        #logger.info(result)\n",
 							"        #return result\n",
 							"\n",
-							"    def create_sql_views(self, db_name, source_path, source_format):\n",
+							"    def create_sql_views(self, source_path, source_format):\n",
 							"        cmd = ''      \n",
 							"        dirs = self.get_folders(source_path)\n",
 							"        for table_name in dirs:\n",
-							"            cmd += f\"CREATE OR ALTER VIEW {table_name} AS\\n  SELECT * FROM OPENROWSET(BULK '{source_path}/{table_name}', FORMAT='DELTA') AS [r];\\n\"\n",
+							"            cmd += f\"CREATE OR ALTER VIEW {table_name} AS\\n  SELECT * FROM OPENROWSET(BULK '{source_path}/{table_name}', FORMAT='{source_format}') AS [r];\\n\"\n",
 							"        return cmd\n",
 							"\n",
 							"    def drop_sql_db(self, db_name):\n",
