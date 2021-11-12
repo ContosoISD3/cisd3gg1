@@ -17,7 +17,7 @@
 				"spark.dynamicAllocation.enabled": "false",
 				"spark.dynamicAllocation.minExecutors": "4",
 				"spark.dynamicAllocation.maxExecutors": "4",
-				"spark.autotune.trackingId": "4e45010e-622e-4a2e-bbf2-1082e3ff1bf1"
+				"spark.autotune.trackingId": "f7893413-cf7e-4dd1-8f1d-2fc6140ce678"
 			}
 		},
 		"metadata": {
@@ -103,8 +103,8 @@
 					"# Note that kwargs allows you to pass in a dict of params, but the dict has to specified as a string when invoked from a pipeline.\r\n",
 					"# Also note that you can refer to attributes of an object in the params, for example: {'path':oea.stage2np}\r\n",
 					"object_name = 'oea'\r\n",
-					"method_name = 'print_stage'\r\n",
-					"kwargs = \"{}\""
+					"method_name = ''\r\n",
+					"kwargs = '{}'"
 				],
 				"execution_count": 37
 			},
