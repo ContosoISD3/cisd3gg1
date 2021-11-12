@@ -13,7 +13,7 @@
 				"spark.dynamicAllocation.enabled": "false",
 				"spark.dynamicAllocation.minExecutors": "2",
 				"spark.dynamicAllocation.maxExecutors": "2",
-				"spark.autotune.trackingId": "871c0feb-cb49-4100-b99e-73cda34bd469"
+				"spark.autotune.trackingId": "966a163a-5598-4a5b-985c-668de80fc5d0"
 			}
 		},
 		"metadata": {
@@ -328,7 +328,7 @@
 					"        cmd = ''      \n",
 					"        dirs = self.get_folders(source_path)\n",
 					"        for table_name in dirs:\n",
-					"            cmd += f\"CREATE OR ALTER VIEW {table_name} AS\\n  SELECT * FROM OPENROWSET(BULK '{source_path}/{table_name}', FORMAT='{source_format}') AS [r];\\n\"\n",
+					"            cmd += f\"CREATE OR ALTER VIEW {table_name} AS\\n  SELECT * FROM OPENROWSET(BULK '{source_path}/{table_name}', FORMAT='{source_format}') AS [r];\\nGO\\n\"\n",
 					"        return cmd\n",
 					"\n",
 					"    def drop_sql_db(self, db_name):\n",
