@@ -13,7 +13,7 @@
 				"spark.dynamicAllocation.enabled": "false",
 				"spark.dynamicAllocation.minExecutors": "2",
 				"spark.dynamicAllocation.maxExecutors": "2",
-				"spark.autotune.trackingId": "97fd0059-d19c-4332-8198-3d59195e4e76"
+				"spark.autotune.trackingId": "b60d8f56-3f28-44cb-9a00-e0fbeeb5ca6a"
 			}
 		},
 		"metadata": {
@@ -89,16 +89,6 @@
 					"        if instrumentation_key:\n",
 					"            # Setup logging to go to app insights (more info here: https://github.com/balakreshnan/Samples2021/blob/main/Synapseworkspace/opencensuslog.md#azure-synapse-spark-logs-runtime-errors-to-application-insights)\n",
 					"            self.logger.addHandler(AzureLogHandler(connection_string='InstrumentationKey=' + instrumentation_key))\n",
-					"\n",
-					"    def call_method(self, module_name, method_name):\n",
-					"        \"\"\" Calls the specified method on the specified module \n",
-					"            eg, call_method('ContosoSIS', 'ingest')\n",
-					"        \"\"\"\n",
-					"        if module_name in self.registered_modules:\n",
-					"            m = getattr(self.registered_modules[module_name], method_name)\n",
-					"            m()\n",
-					"        else:\n",
-					"            raise ValueError(\"No registered modules named: \" + module_name)\n",
 					"\n",
 					"    def load(self, folder, table, stage=None, data_format='delta'):\n",
 					"        \"\"\" Loads a dataframe based on the path specified in the given args \"\"\"\n",
