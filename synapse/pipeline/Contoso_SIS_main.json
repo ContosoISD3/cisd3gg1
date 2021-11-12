@@ -85,7 +85,7 @@
 							"userProperties": [],
 							"typeProperties": {
 								"pipeline": {
-									"referenceName": "create_stage2_sql_db",
+									"referenceName": "create_sql_db",
 									"type": "PipelineReference"
 								},
 								"waitOnCompletion": true,

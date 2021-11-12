@@ -1,5 +1,5 @@
 {
-	"name": "create_stage2_sql_db",
+	"name": "create_sql_db",
 	"properties": {
 		"activities": [
 			{
