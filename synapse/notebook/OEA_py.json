@@ -13,7 +13,7 @@
 				"spark.dynamicAllocation.enabled": "false",
 				"spark.dynamicAllocation.minExecutors": "2",
 				"spark.dynamicAllocation.maxExecutors": "2",
-				"spark.autotune.trackingId": "9c37a774-7cf2-44a6-bbfb-22007aef5e3c"
+				"spark.autotune.trackingId": "e33a7334-5ee4-4d84-a410-439c0934ec4e"
 			}
 		},
 		"metadata": {
@@ -320,9 +320,9 @@
 					"                END;'\n",
 					"        \"\"\"\n",
 					"        print(cmd)\n",
-					"        result = \"Database created: \" + db_name\n",
-					"        logger.info(result)\n",
-					"        return result\n",
+					"        #result = \"Database created: \" + db_name\n",
+					"        #logger.info(result)\n",
+					"        #return result\n",
 					"\n",
 					"    def drop_sql_db(self, db_name):\n",
 					"        print('Copy and paste this into a sql script and execute it:\\n')\n",
