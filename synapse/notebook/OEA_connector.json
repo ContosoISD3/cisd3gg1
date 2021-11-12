@@ -17,7 +17,7 @@
 				"spark.dynamicAllocation.enabled": "false",
 				"spark.dynamicAllocation.minExecutors": "4",
 				"spark.dynamicAllocation.maxExecutors": "4",
-				"spark.autotune.trackingId": "f297c0fa-4381-4194-a65b-283477b8dcbc"
+				"spark.autotune.trackingId": "0080ce9c-afda-4365-b47a-3737f7711290"
 			}
 		},
 		"metadata": {
@@ -75,24 +75,6 @@
 						"transient": {
 							"deleting": false
 						}
-					}
-				},
-				"source": [
-					"spark.sql(\"DROP DATABASE IF EXISTS s2_contoso_sis CASCADE\")"
-				],
-				"execution_count": 40
-			},
-			{
-				"cell_type": "code",
-				"metadata": {
-					"jupyter": {
-						"source_hidden": false,
-						"outputs_hidden": false
-					},
-					"nteract": {
-						"transient": {
-							"deleting": false
-						}
 					},
 					"tags": [
 						"parameters"
@@ -106,7 +88,7 @@
 					"method_name = ''\r\n",
 					"kwargs = '{}'"
 				],
-				"execution_count": 37
+				"execution_count": 42
 			},
 			{
 				"cell_type": "code",
