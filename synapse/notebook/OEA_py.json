@@ -13,7 +13,7 @@
 				"spark.dynamicAllocation.enabled": "false",
 				"spark.dynamicAllocation.minExecutors": "2",
 				"spark.dynamicAllocation.maxExecutors": "2",
-				"spark.autotune.trackingId": "acab89a6-6307-4a8f-b630-a69068f0ab1c"
+				"spark.autotune.trackingId": "0d28347d-c7a5-45d0-a900-890e54ee98d7"
 			}
 		},
 		"metadata": {
@@ -328,15 +328,16 @@
 					"        SELECT * FROM OPENROWSET(\n",
 					"        BULK 'https://stoeacisd3gg1.dfs.core.windows.net/stage2np/contoso_sis/student',\n",
 					"        FORMAT='DELTA'\n",
-					"        ) AS [r]\"\"\"        \n",
+					"        ) AS [r]\"\"\" \n",
+					"        cmd = ''      \n",
 					"        dirs = self.get_folders(source_path)\n",
-					"        #for table_name in dirs:\n",
-					"        #    spark.sql(f\"create table if not exists {db_name}.{table_name} using {source_format} location '{source_path}/{table_name}'\")\n",
-					"        return f\"\"\"CREATE OR ALTER VIEW @{item().name} AS\n",
+					"        for table_name in dirs:\n",
+					"            cmd += f\"\"\"CREATE OR ALTER VIEW {table_name} AS\n",
 					"        SELECT * FROM OPENROWSET(\n",
-					"        BULK '{source_path}/student',\n",
+					"        BULK '{source_path}/{table_name}',\n",
 					"        FORMAT='DELTA'\n",
 					"        ) AS [r]\"\"\"\n",
+					"        return cmd\n",
 					"\n",
 					"    def drop_sql_db(self, db_name):\n",
 					"        print('Copy and paste this into a sql script and execute it:\\n')\n",
