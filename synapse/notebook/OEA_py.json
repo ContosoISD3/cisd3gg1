@@ -13,7 +13,7 @@
 				"spark.dynamicAllocation.enabled": "false",
 				"spark.dynamicAllocation.minExecutors": "2",
 				"spark.dynamicAllocation.maxExecutors": "2",
-				"spark.autotune.trackingId": "0d28347d-c7a5-45d0-a900-890e54ee98d7"
+				"spark.autotune.trackingId": "29b632b7-e6df-4b12-b7c7-2011c3b4ef20"
 			}
 		},
 		"metadata": {
@@ -324,19 +324,10 @@
 					"        #return result\n",
 					"\n",
 					"    def create_sql_views(self, db_name, source_path, source_format):\n",
-					"        \"\"\"CREATE OR ALTER VIEW @{item().name} AS\n",
-					"        SELECT * FROM OPENROWSET(\n",
-					"        BULK 'https://stoeacisd3gg1.dfs.core.windows.net/stage2np/contoso_sis/student',\n",
-					"        FORMAT='DELTA'\n",
-					"        ) AS [r]\"\"\" \n",
 					"        cmd = ''      \n",
 					"        dirs = self.get_folders(source_path)\n",
 					"        for table_name in dirs:\n",
-					"            cmd += f\"\"\"CREATE OR ALTER VIEW {table_name} AS\n",
-					"        SELECT * FROM OPENROWSET(\n",
-					"        BULK '{source_path}/{table_name}',\n",
-					"        FORMAT='DELTA'\n",
-					"        ) AS [r]\"\"\"\n",
+					"            cmd += f\"CREATE OR ALTER VIEW {table_name} AS SELECT * FROM OPENROWSET(BULK '{source_path}/{table_name}', FORMAT='DELTA') AS [r]\\n\"\n",
 					"        return cmd\n",
 					"\n",
 					"    def drop_sql_db(self, db_name):\n",
