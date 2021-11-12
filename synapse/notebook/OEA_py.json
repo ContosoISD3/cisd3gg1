@@ -13,7 +13,7 @@
 				"spark.dynamicAllocation.enabled": "false",
 				"spark.dynamicAllocation.minExecutors": "2",
 				"spark.dynamicAllocation.maxExecutors": "2",
-				"spark.autotune.trackingId": "7a3e2bd6-0c87-4332-bff2-765fc42d851b"
+				"spark.autotune.trackingId": "8cc5c068-8d18-493a-98ad-bb1c0da88666"
 			}
 		},
 		"metadata": {
@@ -291,7 +291,6 @@
 					"            Example: create_lake_db(2, 'contoso_sis')\n",
 					"            Note that a spark db that points to source data in the delta format can't be queried via SQL serverless pool. More info here: https://docs.microsoft.com/en-us/azure/synapse-analytics/sql/resources-self-help-sql-on-demand#delta-lake\n",
 					"        \"\"\"\n",
-					"        stage_num_str = str(stage_num)\n",
 					"        db_name = f's{stage_num}_{source_dir}'\n",
 					"        spark.sql(f'CREATE DATABASE IF NOT EXISTS {db_name}')\n",
 					"        create_lake_views(self, db_name, self.path(f'stage{stage_num}p'), source_format)\n",
