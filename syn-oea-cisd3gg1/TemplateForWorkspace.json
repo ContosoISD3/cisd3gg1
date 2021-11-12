@@ -9141,7 +9141,7 @@
 						"spark.dynamicAllocation.enabled": "false",
 						"spark.dynamicAllocation.minExecutors": "4",
 						"spark.dynamicAllocation.maxExecutors": "4",
-						"spark.autotune.trackingId": "7f42d1c6-56e5-49f2-82fd-4d240bd7241d"
+						"spark.autotune.trackingId": "5cfb07b0-705f-47c9-ad78-fdbd95e76694"
 					}
 				},
 				"metadata": {
@@ -9233,7 +9233,7 @@
 							"%run /OEA_py"
 						],
 						"outputs": [],
-						"execution_count": 98
+						"execution_count": 101
 					},
 					{
 						"cell_type": "code",
@@ -9253,7 +9253,7 @@
 							"%run /ContosoSIS_py"
 						],
 						"outputs": [],
-						"execution_count": 99
+						"execution_count": 102
 					},
 					{
 						"cell_type": "code",
@@ -9310,7 +9310,7 @@
 							"oea.create_sql_db(2, 'contoso_sis')"
 						],
 						"outputs": [],
-						"execution_count": 100
+						"execution_count": 103
 					},
 					{
 						"cell_type": "code",
@@ -9355,7 +9355,7 @@
 						"spark.dynamicAllocation.enabled": "false",
 						"spark.dynamicAllocation.minExecutors": "2",
 						"spark.dynamicAllocation.maxExecutors": "2",
-						"spark.autotune.trackingId": "d5d634d7-343e-4169-9c00-54afc28d1b78"
+						"spark.autotune.trackingId": "046c1dc2-3bbb-4b40-a7c8-dd1c6a89713a"
 					}
 				},
 				"metadata": {
@@ -9659,7 +9659,7 @@
 							"        db_name = f's{stage_num}_{source_dir}'\n",
 							"        cmd = f\"IF NOT EXISTS (SELECT * FROM sys.databases WHERE name = '{db_name}')\\nBEGIN\\n  CREATE DATABASE {db_name};\\nEND;\\n\\n\"\n",
 							"        cmd += self.create_sql_views(db_name, self.path(f'stage{stage_num}p', source_dir), source_format)\n",
-							"\n",
+							"        cmd += self.create_sql_views(db_name, self.path(f'stage{stage_num}np', source_dir), source_format)\n",
 							"        print(cmd)\n",
 							"        #result = \"Database created: \" + db_name\n",
 							"        #logger.info(result)\n",
@@ -9669,7 +9669,7 @@
 							"        cmd = ''      \n",
 							"        dirs = self.get_folders(source_path)\n",
 							"        for table_name in dirs:\n",
-							"            cmd += f\"CREATE OR ALTER VIEW {table_name} AS SELECT * FROM OPENROWSET(BULK '{source_path}/{table_name}', FORMAT='DELTA') AS [r]\\n\"\n",
+							"            cmd += f\"CREATE OR ALTER VIEW {table_name}\\n  AS SELECT * FROM OPENROWSET(BULK '{source_path}/{table_name}', FORMAT='DELTA') AS [r]\\n\"\n",
 							"        return cmd\n",
 							"\n",
 							"    def drop_sql_db(self, db_name):\n",
