@@ -9141,7 +9141,7 @@
 						"spark.dynamicAllocation.enabled": "false",
 						"spark.dynamicAllocation.minExecutors": "4",
 						"spark.dynamicAllocation.maxExecutors": "4",
-						"spark.autotune.trackingId": "56d4c10e-5be8-4048-a301-2a7838c4c98b"
+						"spark.autotune.trackingId": "86c14219-8950-4524-90eb-05c17b0b26b9"
 					}
 				},
 				"metadata": {
@@ -9233,7 +9233,7 @@
 							"%run /OEA_py"
 						],
 						"outputs": [],
-						"execution_count": 84
+						"execution_count": 89
 					},
 					{
 						"cell_type": "code",
@@ -9253,7 +9253,7 @@
 							"%run /ContosoSIS_py"
 						],
 						"outputs": [],
-						"execution_count": 85
+						"execution_count": 90
 					},
 					{
 						"cell_type": "code",
@@ -9310,7 +9310,7 @@
 							"oea.create_sql_db(2, 'contoso_sis')"
 						],
 						"outputs": [],
-						"execution_count": 87
+						"execution_count": 91
 					},
 					{
 						"cell_type": "code",
@@ -9355,7 +9355,7 @@
 						"spark.dynamicAllocation.enabled": "false",
 						"spark.dynamicAllocation.minExecutors": "2",
 						"spark.dynamicAllocation.maxExecutors": "2",
-						"spark.autotune.trackingId": "5eeb285d-aa6f-499b-8e2b-a25cf3e6762e"
+						"spark.autotune.trackingId": "6bd34cc5-a67a-4262-a227-a7da3112e0b2"
 					}
 				},
 				"metadata": {
@@ -9656,15 +9656,24 @@
 							"        \"\"\" Creates the script for creating db based on the given path (assumes that every folder in the given path is a table).\n",
 							"            Note that a spark db that points to source data in the delta format can't be queried via SQL serverless pool. More info here: https://docs.microsoft.com/en-us/azure/synapse-analytics/sql/resources-self-help-sql-on-demand#delta-lake\n",
 							"        \"\"\"\n",
-							"        cmd = \"\"\"IF NOT EXISTS (SELECT * FROM sys.databases WHERE name = '@{variables('sqlDBName')}') \n",
-							"                BEGIN\n",
-							"                CREATE DATABASE @{variables('sqlDBName')}; \n",
-							"                END;'\n",
-							"        \"\"\"\n",
+							"        db_name = f's{stage_num}_{source_dir}'\n",
+							"        cmd = f\"IF NOT EXISTS (SELECT * FROM sys.databases WHERE name = '{db_name}')\\nBEGIN\\n  CREATE DATABASE {db_name};\\nEND;\\n\\n\"\n",
+							"        cmd += self.create_sql_views(db_name, self.path(f'stage{stage_num}p', source_dir), source_format)\n",
+							"\n",
 							"        print(cmd)\n",
 							"        #result = \"Database created: \" + db_name\n",
 							"        #logger.info(result)\n",
 							"        #return result\n",
+							"\n",
+							"    def create_sql_views(self, db_name, source_path, source_format):\n",
+							"        dirs = self.get_folders(source_path)\n",
+							"        #for table_name in dirs:\n",
+							"        #    spark.sql(f\"create table if not exists {db_name}.{table_name} using {source_format} location '{source_path}/{table_name}'\")\n",
+							"        return \"\"\"CREATE OR ALTER VIEW @{item().name} AS\n",
+							"        SELECT * FROM OPENROWSET(\n",
+							"        BULK 'https://stoeacisd3gg1.dfs.core.windows.net/stage2np/contoso_sis/student',\n",
+							"        FORMAT='DELTA'\n",
+							"        ) AS [r]\"\"\"\n",
 							"\n",
 							"    def drop_sql_db(self, db_name):\n",
 							"        print('Copy and paste this into a sql script and execute it:\\n')\n",
