@@ -1,9 +1,9 @@
 {
-	"name": "call_oea",
+	"name": "call_oea_framework",
 	"properties": {
 		"activities": [
 			{
-				"name": "Contoso_SIS_ingest",
+				"name": "OEA_connector",
 				"type": "SynapseNotebook",
 				"dependsOn": [],
 				"policy": {
