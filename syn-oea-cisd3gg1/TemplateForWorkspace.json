@@ -8349,6 +8349,69 @@
 			"dependsOn": []
 		},
 		{
+			"name": "[concat(parameters('workspaceName'), '/Notebook 5')]",
+			"type": "Microsoft.Synapse/workspaces/notebooks",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"nbformat": 4,
+				"nbformat_minor": 2,
+				"bigDataPool": {
+					"referenceName": "spark4v3p1",
+					"type": "BigDataPoolReference"
+				},
+				"sessionProperties": {
+					"driverMemory": "28g",
+					"driverCores": 4,
+					"executorMemory": "28g",
+					"executorCores": 4,
+					"numExecutors": 4,
+					"conf": {
+						"spark.dynamicAllocation.enabled": "false",
+						"spark.dynamicAllocation.minExecutors": "4",
+						"spark.dynamicAllocation.maxExecutors": "4",
+						"spark.autotune.trackingId": "0e13e462-1df2-4461-8ad9-5f1d6e413cf7"
+					}
+				},
+				"metadata": {
+					"saveOutput": true,
+					"enableDebugMode": false,
+					"kernelspec": {
+						"name": "synapse_pyspark",
+						"display_name": "Synapse PySpark"
+					},
+					"language_info": {
+						"name": "python"
+					},
+					"a365ComputeOptions": {
+						"id": "/subscriptions/7b9a4896-4541-483f-bdc7-d8f4ec6be3ee/resourceGroups/rg-oea-CISD3GG1/providers/Microsoft.Synapse/workspaces/syn-oea-cisd3gg1/bigDataPools/spark4v3p1",
+						"name": "spark4v3p1",
+						"type": "Spark",
+						"endpoint": "https://syn-oea-cisd3gg1.dev.azuresynapse.net/livyApi/versions/2019-11-01-preview/sparkPools/spark4v3p1",
+						"auth": {
+							"type": "AAD",
+							"authResource": "https://dev.azuresynapse.net"
+						},
+						"sparkVersion": "3.1",
+						"nodeCount": 10,
+						"cores": 4,
+						"memory": 28
+					}
+				},
+				"cells": [
+					{
+						"cell_type": "code",
+						"source": [
+							"%%pyspark\n",
+							"spark.sql(\"DROP DATABASE IF EXISTS s2_contoso_sis CASCADE\")"
+						],
+						"outputs": [],
+						"execution_count": 2
+					}
+				]
+			},
+			"dependsOn": []
+		},
+		{
 			"name": "[concat(parameters('workspaceName'), '/Notebook2')]",
 			"type": "Microsoft.Synapse/workspaces/notebooks",
 			"apiVersion": "2019-06-01-preview",
@@ -9322,7 +9385,7 @@
 						"spark.dynamicAllocation.enabled": "false",
 						"spark.dynamicAllocation.minExecutors": "2",
 						"spark.dynamicAllocation.maxExecutors": "2",
-						"spark.autotune.trackingId": "a3e7ecc7-8ae6-40da-adac-402def6e0e3c"
+						"spark.autotune.trackingId": "3fa21c37-898b-45a2-86bb-5f5a0d4bec39"
 					}
 				},
 				"metadata": {
@@ -9334,7 +9397,8 @@
 					},
 					"language_info": {
 						"name": "python"
-					}
+					},
+					"sessionKeepAliveTimeout": 30
 				},
 				"cells": [
 					{
@@ -11671,70 +11735,189 @@
 			"dependsOn": []
 		},
 		{
-			"name": "[concat(parameters('workspaceName'), '/Notebook 5')]",
-			"type": "Microsoft.Synapse/workspaces/notebooks",
+			"name": "[concat(parameters('workspaceName'), '/example_main_pipeline')]",
+			"type": "Microsoft.Synapse/workspaces/pipelines",
 			"apiVersion": "2019-06-01-preview",
 			"properties": {
-				"nbformat": 4,
-				"nbformat_minor": 2,
-				"bigDataPool": {
-					"referenceName": "spark4v3p1",
-					"type": "BigDataPoolReference"
-				},
-				"sessionProperties": {
-					"driverMemory": "28g",
-					"driverCores": 4,
-					"executorMemory": "28g",
-					"executorCores": 4,
-					"numExecutors": 4,
-					"conf": {
-						"spark.dynamicAllocation.enabled": "false",
-						"spark.dynamicAllocation.minExecutors": "4",
-						"spark.dynamicAllocation.maxExecutors": "4",
-						"spark.autotune.trackingId": "e48aaec5-411e-4c21-a61e-532f10f0a132"
-					}
-				},
-				"metadata": {
-					"saveOutput": true,
-					"enableDebugMode": false,
-					"kernelspec": {
-						"name": "synapse_pyspark",
-						"display_name": "Synapse PySpark"
-					},
-					"language_info": {
-						"name": "python"
-					},
-					"a365ComputeOptions": {
-						"id": "/subscriptions/7b9a4896-4541-483f-bdc7-d8f4ec6be3ee/resourceGroups/rg-oea-CISD3GG1/providers/Microsoft.Synapse/workspaces/syn-oea-cisd3gg1/bigDataPools/spark4v3p1",
-						"name": "spark4v3p1",
-						"type": "Spark",
-						"endpoint": "https://syn-oea-cisd3gg1.dev.azuresynapse.net/livyApi/versions/2019-11-01-preview/sparkPools/spark4v3p1",
-						"auth": {
-							"type": "AAD",
-							"authResource": "https://dev.azuresynapse.net"
-						},
-						"sparkVersion": "3.1",
-						"nodeCount": 10,
-						"cores": 4,
-						"memory": 28,
-						"automaticScaleJobs": false
-					},
-					"sessionKeepAliveTimeout": 30
-				},
-				"cells": [
+				"activities": [
 					{
-						"cell_type": "code",
-						"metadata": {},
-						"source": [
-							"%%pyspark\n",
-							"spark.sql(\"DROP DATABASE IF EXISTS s2_contoso_sis CASCADE\")"
+						"name": "Extract from source - land in stage1np",
+						"type": "ExecutePipeline",
+						"dependsOn": [],
+						"userProperties": [],
+						"typeProperties": {
+							"pipeline": {
+								"referenceName": "Copy_from_each_URL",
+								"type": "PipelineReference"
+							},
+							"waitOnCompletion": true,
+							"parameters": {
+								"endpoints": {
+									"value": "@json('[{\"URL\": \"https://raw.githubusercontent.com/microsoft/OpenEduAnalytics/main/modules/Contoso_SIS/test_data/batch1/studentattendance.csv\",\"sinkDirectory\": \"contoso_sis/studentattendance\",\"sinkFilename\": \"part1.csv\"}, {\"URL\": \"https://raw.githubusercontent.com/microsoft/OpenEduAnalytics/main/modules/Contoso_SIS/test_data/batch1/studentdemographics.csv\",\"sinkDirectory\": \"contoso_sis/studentdemographics\",\"sinkFilename\": \"part1.csv\"}, {\"URL\": \"https://raw.githubusercontent.com/microsoft/OpenEduAnalytics/main/modules/Contoso_SIS/test_data/batch1/studentsectionmark.csv\",\"sinkDirectory\": \"contoso_sis/studentsectionmark\",\"sinkFilename\": \"part1.csv\"}]')",
+									"type": "Expression"
+								},
+								"sinkFilesystem": "stage1np",
+								"timezone": "Eastern Standard Time"
+							}
+						}
+					},
+					{
+						"name": "ingest into stage2p and 2np",
+						"type": "SynapseNotebook",
+						"dependsOn": [
+							{
+								"activity": "Extract from source - land in stage1np",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
 						],
-						"outputs": [],
-						"execution_count": 2
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"notebook": {
+								"referenceName": "OEA_connector",
+								"type": "NotebookReference"
+							},
+							"parameters": {
+								"object_name": {
+									"value": "contoso_sis",
+									"type": "string"
+								},
+								"method_name": {
+									"value": "ingest",
+									"type": "string"
+								}
+							},
+							"snapshot": true
+						}
+					},
+					{
+						"name": "If create_sql_db",
+						"type": "IfCondition",
+						"dependsOn": [
+							{
+								"activity": "ingest into stage2p and 2np",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"userProperties": [],
+						"typeProperties": {
+							"expression": {
+								"value": "@pipeline().parameters.create_sql_db",
+								"type": "Expression"
+							},
+							"ifTrueActivities": [
+								{
+									"name": "create_sql_db",
+									"type": "ExecutePipeline",
+									"dependsOn": [],
+									"userProperties": [],
+									"typeProperties": {
+										"pipeline": {
+											"referenceName": "create_sql_db",
+											"type": "PipelineReference"
+										},
+										"waitOnCompletion": true,
+										"parameters": {
+											"storageAccount": {
+												"value": "@pipeline().parameters.storageAccount",
+												"type": "Expression"
+											},
+											"sourceDirectory": {
+												"value": "@pipeline().parameters.sourceDirectory",
+												"type": "Expression"
+											},
+											"stage": "2"
+										}
+									}
+								}
+							]
+						}
+					},
+					{
+						"name": "If create_lake_db",
+						"type": "IfCondition",
+						"dependsOn": [
+							{
+								"activity": "ingest into stage2p and 2np",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"userProperties": [],
+						"typeProperties": {
+							"expression": {
+								"value": "@pipeline().parameters.create_lake_db",
+								"type": "Expression"
+							},
+							"ifTrueActivities": [
+								{
+									"name": "create_lake_db",
+									"type": "ExecutePipeline",
+									"dependsOn": [],
+									"userProperties": [],
+									"typeProperties": {
+										"pipeline": {
+											"referenceName": "create_lake_db",
+											"type": "PipelineReference"
+										},
+										"waitOnCompletion": true,
+										"parameters": {
+											"stageNum": "2",
+											"sourceDirectory": {
+												"value": "@pipeline().parameters.sourceDirectory",
+												"type": "Expression"
+											}
+										}
+									}
+								}
+							]
+						}
 					}
-				]
+				],
+				"policy": {
+					"elapsedTimeMetric": {},
+					"cancelAfter": {}
+				},
+				"parameters": {
+					"storageAccount": {
+						"type": "string",
+						"defaultValue": "stoeacisd3gg1"
+					},
+					"sourceDirectory": {
+						"type": "string",
+						"defaultValue": "contoso_sis"
+					},
+					"create_sql_db": {
+						"type": "bool",
+						"defaultValue": false
+					},
+					"create_lake_db": {
+						"type": "bool",
+						"defaultValue": false
+					}
+				},
+				"folder": {
+					"name": "OEA_Framework"
+				},
+				"annotations": []
 			},
-			"dependsOn": []
+			"dependsOn": [
+				"[concat(variables('workspaceId'), '/pipelines/Copy_from_each_URL')]",
+				"[concat(variables('workspaceId'), '/notebooks/OEA_connector')]",
+				"[concat(variables('workspaceId'), '/pipelines/create_sql_db')]",
+				"[concat(variables('workspaceId'), '/pipelines/create_lake_db')]"
+			]
 		}
 	]
 }
