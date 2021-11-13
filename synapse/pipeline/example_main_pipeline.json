@@ -1,6 +1,7 @@
 {
 	"name": "example_main_pipeline",
 	"properties": {
+		"description": "Example pipeline demonstrating typical orchestration of data extraction, landing, ingestion, and creation of lake and sql db's.",
 		"activities": [
 			{
 				"name": "Extract from source - land in stage1np",
