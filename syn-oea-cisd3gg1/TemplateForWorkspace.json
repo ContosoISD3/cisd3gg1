@@ -1426,6 +1426,7 @@
 			"type": "Microsoft.Synapse/workspaces/pipelines",
 			"apiVersion": "2019-06-01-preview",
 			"properties": {
+				"description": "Simplifies the invoking of methods on the OEA framework or supporting modules.",
 				"activities": [
 					{
 						"name": "OEA_connector",
