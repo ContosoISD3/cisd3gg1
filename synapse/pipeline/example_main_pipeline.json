@@ -3,7 +3,7 @@
 	"properties": {
 		"activities": [
 			{
-				"name": "Copy_from_each_URL - SIS data",
+				"name": "Extract from source - land in stage1np",
 				"type": "ExecutePipeline",
 				"dependsOn": [],
 				"userProperties": [],
@@ -24,11 +24,11 @@
 				}
 			},
 			{
-				"name": "Contoso_SIS_ingest",
+				"name": "ingest into stage2p and 2np",
 				"type": "SynapseNotebook",
 				"dependsOn": [
 					{
-						"activity": "Copy_from_each_URL - SIS data",
+						"activity": "Extract from source - land in stage1np",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -65,7 +65,7 @@
 				"type": "IfCondition",
 				"dependsOn": [
 					{
-						"activity": "Contoso_SIS_ingest",
+						"activity": "ingest into stage2p and 2np",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -110,7 +110,7 @@
 				"type": "IfCondition",
 				"dependsOn": [
 					{
-						"activity": "Contoso_SIS_ingest",
+						"activity": "ingest into stage2p and 2np",
 						"dependencyConditions": [
 							"Succeeded"
 						]
