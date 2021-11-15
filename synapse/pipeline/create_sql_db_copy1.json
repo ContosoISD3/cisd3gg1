@@ -13,17 +13,7 @@
 					"secureOutput": false,
 					"secureInput": false
 				},
-				"userProperties": [],
-				"typeProperties": {
-					"storedProcedureName": "[dbo].[sp_MSrepl_startup]"
-				},
-				"linkedServiceName": {
-					"referenceName": "LS_SQL_Serverless_OEA",
-					"type": "LinkedServiceReference",
-					"parameters": {
-						"databaseName": "master"
-					}
-				}
+				"userProperties": []
 			}
 		],
 		"parameters": {
