@@ -1,0 +1,83 @@
+{
+	"name": "create_sql_db_copy1",
+	"properties": {
+		"activities": [
+			{
+				"name": "set sqlDBName",
+				"type": "SetVariable",
+				"dependsOn": [],
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "sqlDBName",
+					"value": {
+						"value": "sqls@{pipeline().parameters.stage}_@{pipeline().parameters.sourceDirectory}",
+						"type": "Expression"
+					}
+				}
+			},
+			{
+				"name": "Stored procedure1",
+				"type": "SqlServerStoredProcedure",
+				"dependsOn": [
+					{
+						"activity": "set sqlDBName",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"storedProcedureName": "[dbo].[sp_executesql]",
+					"storedProcedureParameters": {
+						"command": {
+							"value": {
+								"value": "IF NOT EXISTS (SELECT * FROM sys.databases WHERE name = '@{variables('sqlDBName')}') \nBEGIN\n  CREATE DATABASE @{variables('sqlDBName')}; \nEND;",
+								"type": "Expression"
+							},
+							"type": "String"
+						}
+					}
+				},
+				"linkedServiceName": {
+					"referenceName": "LS_SQL_Serverless_OEA",
+					"type": "LinkedServiceReference",
+					"parameters": {
+						"databaseName": "master"
+					}
+				}
+			}
+		],
+		"parameters": {
+			"storageAccount": {
+				"type": "string",
+				"defaultValue": "stoeacisd3gg1"
+			},
+			"sourceDirectory": {
+				"type": "string",
+				"defaultValue": "contoso_sis"
+			},
+			"stage": {
+				"type": "string",
+				"defaultValue": "2"
+			}
+		},
+		"variables": {
+			"sqlDBName": {
+				"type": "String",
+				"defaultValue": "sqls2_mydb"
+			}
+		},
+		"folder": {
+			"name": "OEA_Framework/Ingest"
+		},
+		"annotations": []
+	}
+}
