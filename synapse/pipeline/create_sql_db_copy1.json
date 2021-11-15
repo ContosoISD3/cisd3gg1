@@ -15,11 +15,14 @@
 				},
 				"userProperties": [],
 				"typeProperties": {
-					"storedProcedureName": "[dbo].[sp_sysdac_drop_database]"
+					"storedProcedureName": "[dbo][mytest]"
 				},
 				"linkedServiceName": {
-					"referenceName": "AzureSqlDatabase1",
-					"type": "LinkedServiceReference"
+					"referenceName": "LS_SQL_Serverless_OEA",
+					"type": "LinkedServiceReference",
+					"parameters": {
+						"databaseName": "master"
+					}
 				}
 			}
 		],
