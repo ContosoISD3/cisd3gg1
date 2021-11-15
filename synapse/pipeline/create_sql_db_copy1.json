@@ -15,23 +15,11 @@
 				},
 				"userProperties": [],
 				"typeProperties": {
-					"storedProcedureName": "[dbo].[sp_executesql]",
-					"storedProcedureParameters": {
-						"command": {
-							"value": {
-								"value": "SELECT * FROM sys.databases",
-								"type": "Expression"
-							},
-							"type": "String"
-						}
-					}
+					"storedProcedureName": "[dbo].[sp_MScleanupmergepublisher]"
 				},
 				"linkedServiceName": {
 					"referenceName": "LS_SQL_Serverless_OEA",
-					"type": "LinkedServiceReference",
-					"parameters": {
-						"databaseName": "master"
-					}
+					"type": "LinkedServiceReference"
 				}
 			}
 		],
