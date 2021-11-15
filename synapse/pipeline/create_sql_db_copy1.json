@@ -3,29 +3,9 @@
 	"properties": {
 		"activities": [
 			{
-				"name": "set sqlDBName",
-				"type": "SetVariable",
-				"dependsOn": [],
-				"userProperties": [],
-				"typeProperties": {
-					"variableName": "sqlDBName",
-					"value": {
-						"value": "sqls@{pipeline().parameters.stage}_@{pipeline().parameters.sourceDirectory}",
-						"type": "Expression"
-					}
-				}
-			},
-			{
 				"name": "Stored procedure1",
 				"type": "SqlServerStoredProcedure",
-				"dependsOn": [
-					{
-						"activity": "set sqlDBName",
-						"dependencyConditions": [
-							"Succeeded"
-						]
-					}
-				],
+				"dependsOn": [],
 				"policy": {
 					"timeout": "7.00:00:00",
 					"retry": 0,
@@ -39,7 +19,7 @@
 					"storedProcedureParameters": {
 						"command": {
 							"value": {
-								"value": "IF NOT EXISTS (SELECT * FROM sys.databases WHERE name = '@{variables('sqlDBName')}') \nBEGIN\n  CREATE DATABASE @{variables('sqlDBName')}; \nEND;",
+								"value": "SELECT * FROM sys.databases",
 								"type": "Expression"
 							},
 							"type": "String"
